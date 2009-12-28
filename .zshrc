@@ -8,6 +8,8 @@ setopt hist_ignore_space
 setopt hist_ignore_all_dups
 unsetopt appendhistory
 bindkey -e
+bindkey "[Z" expand-or-complete-prefix
+
 # The following lines were added by compinstall
 zstyle :compinstall filename '~/.zshrc'
 
