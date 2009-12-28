@@ -8,7 +8,7 @@ setopt hist_ignore_space
 setopt hist_ignore_all_dups
 unsetopt appendhistory
 bindkey -e
-bindkey "[Z" expand-or-complete-prefix #Middleword completion
+bindkey "[Z" expand-or-complete-prefix
 
 # The following lines were added by compinstall
 zstyle :compinstall filename '~/.zshrc'
@@ -73,3 +73,7 @@ setopt CDABLE_VARS
 setopt AUTO_PUSHD
 setopt PUSHD_IGNORE_DUPS
 setopt PUSHD_SILENT
+
+### DEFINING DISTRO AND EDITOR ###
+[[ -e /etc/issue ]] && DISTRO=`cat /etc/issue.net | head -n 1 | awk '{print $2 }'`
+EDITOR=nano

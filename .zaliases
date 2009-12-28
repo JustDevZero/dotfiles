@@ -1,48 +1,73 @@
-# Some general Alias
+#####      PROGRAMS     #####
+
+###      GENERAL ALIAS     ###
 alias mkdir='nocorrect mkdir' # no spelling correction on mkdir
-alias fecha='date "+%A %B %d, %Y %l:%M %p %Z"'
 alias nano='nano -w -B'
 alias home='cd ~'
 alias desk='cd ~/Escritorio'
-alias top='htop'
-alias mytop='htop -u $USER'
 alias hist="grep '$1' ~/.histfile"
-alias man='LC_ALL=es_ES.UTF-8 man'
+alias man='LC_ALL=es_ES.UTF-8 man' #For having manpages in spanish
 alias less='less -M'
 alias g='grep --color=auto'
+alias nestat='sudo netstat -tpav'
+alias unix2dos='recode lat1..ibmpc'
+alias dos2unix='recode ibmpc..lat1'
 
-#Process snapshot alias.
+###      ALIAS FOR OWNER LAZYNESS     ###
+alias x=exit
+alias md='mkdir'
+alias rd='rmdir'
+alias cls='clear'
+alias se='sudo $EDITOR'
+alias top='htop'
+alias mytop='htop -u $USER'
+alias fecha='date "+%A %B %d, %Y %l:%M %p %Z"'
+
+###      ALIAS FOR SECURITY     ###
+alias rm='rm -i'
+alias mv='mv -i'
+alias ln='ln -i'
+
+###      ALIAS FOR PROCESS SNAPSHOT     ###
 alias psa='ps auxf'
 alias psg='ps aux | grep --color=auto $1'  #Requiere un argumento
 
-#Space ussage alias.
+###      ALIAS FOR SPACE USAGE     ###
 alias du='du -sh'
 alias dul='\du -h | less'
 alias df='df -h'
 
 
-#Listing alias
+###      ALIAS FOR LISTING     ###
 alias ls='ls --color=auto'
 alias ll='ls -oF --color=tty --sort=size'
 alias la='ls -oaF --color=tty --sort=size'
 alias count='(ls -1 /$(pwd) | wc -l)'
 
-#Apt-Get alias
+
+###      ALIAS FOR APTITUDE AND APT-GET     ###
 alias update='sudo apt-get update'
 alias install='sudo apt-get install'
 alias insta='sudo aptitude install'
-alias apfind='sudo aptitude search'
+alias reinstall='sudo aptitude reinstall'
+alias afind='sudo aptitude search'
 alias ipconfig='ifconfig|grep inet:'
+alias afile='dpkg-query -S'
 
-#Change directory alias
+###      ALIAS FOR CHANGE DIRECTORY     ###
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ......="cd ../../../../.."
+alias dotfile="cd ~/git/dotfiles"
 
-# git
+###      ALIAS FOR GIT     ###
 alias gitps="git push origin master"
 alias gitp="git pull"
 alias gitc="git commit -a"
+alias gitb='git branch'
+alias gitd='git diff | kompare -o -'
 alias gitm="git commit "
 alias giti="git init"
+alias gitst='git status'
+alias gitl='git pull'

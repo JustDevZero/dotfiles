@@ -1,5 +1,6 @@
-###      PROGRAMS     ###
+#####      PROGRAMS     #####
 
+###    PROGRAM FOR EXTRACTING COMPRESSED ARCHIVES   ###
 function extraer ()
 {
   if [ -f "$1" ] ; then
@@ -12,7 +13,7 @@ function extraer ()
       *.rar)                unrar x $1     ;;
       *.gz)                 gunzip $1     ;;
       *.zip)                unzip $1     ;;
-      *.Z)                uncompress "$1" ;;
+      *.Z)                  uncompress "$1" ;;
       *.7z)                 7z x $1    ;;
       *.ace)                 unace x $1    ;;
       *)   echo ""${1}" no se reconoce el formato.()" ;;
@@ -22,12 +23,12 @@ function extraer ()
    fi
 }
 
-# Creates an archive from given directory
+###      PROGRAM FOR CREATE ARCHIVES OF DIRECTORY     ###
 mktar() { tar cvf "${1%%/}.tar" "${1%%/}/"; }
 mktgz() { tar cvzf "${1%%/}.tar.gz" "${1%%/}/"; }
 mktbz() { tar cvjf "${1%%/}.tar.bz2" "${1%%/}/"; }
 
-# Takes a screenshot
+###      PROGRAM FOR SCREENSHOTING WITH TIMESTAMP     ###
 screenshot() {
 if ! which scrot &>/dev/null; then
 echo "${FUNCNAME[0]}(): Debes instalar primero 'scrot'"
@@ -36,3 +37,6 @@ fi
  
 scrot "$HOME/Imágenes/Screenshots/screenshot_`date +%d%m%y%H%M%S`.png"
 }
+
+###      PROGRAM FOR AUTOMATING PROCESS     ###
+function cdl { cd "$@" && ls; } #Go to the directory, and list it.
