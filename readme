@@ -1,2 +1,9 @@
-Here are some config files.
-Created for backup and improving.
+In this repository i will put my config files for improving it, and sharing.
+Programs needed to work it.
+ZSH: If it wasn't enought obvious.
+gawk: Used in some alias and functions
+recode: recoding UNIX2DOS and DOS2UNIX.
+manpages-es, manpages-es-extra: (optional, but remember to change man alias, in .zaliases).
+htop: I prefer it, instead of normal top, change alias (top,mytop) in .zaliases if you don't want it.
+most: I use it for pager.
+git: Obviously no?
