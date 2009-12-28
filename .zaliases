@@ -31,7 +31,7 @@ alias count='(ls -1 /$(pwd) | wc -l)'
 alias update='sudo apt-get update'
 alias install='sudo apt-get install'
 alias insta='sudo aptitude install'
-alias search='sudo aptitude search'
+alias apfind='sudo aptitude search'
 alias ipconfig='ifconfig|grep inet:'
 
 #Change directory alias
