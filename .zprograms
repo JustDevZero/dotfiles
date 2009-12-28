@@ -27,6 +27,9 @@ function extraer ()
 mktar() { tar cvf "${1%%/}.tar" "${1%%/}/"; }
 mktgz() { tar cvzf "${1%%/}.tar.gz" "${1%%/}/"; }
 mktbz() { tar cvjf "${1%%/}.tar.bz2" "${1%%/}/"; }
+mkrar() { rar a "${1%%/}.rar" "${1%%/}/"; }
+mkzip() { zip -r "${1%%/}.zip" "${1%%/}/"; }
+mk7zp() { 7z a "${1%%/}.7z" "${1%%/}/"; }
 
 ###      PROGRAM FOR SCREENSHOTING WITH TIMESTAMP     ###
 screenshot() {
