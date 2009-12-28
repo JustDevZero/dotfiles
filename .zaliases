@@ -1,15 +1,7 @@
-# Alias
+# Some general Alias
 alias mkdir='nocorrect mkdir' # no spelling correction on mkdir
-alias psa='ps auxf'
-alias psg='ps aux | grep'  #Requiere un argumento
 alias fecha='date "+%A %B %d, %Y %l:%M %p %Z"'
-alias du='du -sh'
-alias dul='\du -h | less'
-alias df='df -h'
 alias nano='nano -w -B'
-alias ls='ls --color=auto'
-alias ll='ls -oF --color=tty --sort=size'
-alias la='ls -oaF --color=tty --sort=size'
 alias home='cd ~'
 alias desk='cd ~/Escritorio'
 alias top='htop'
@@ -17,7 +9,25 @@ alias mytop='htop -u $USER'
 alias hist="grep '$1' ~/.histfile"
 alias man='LC_ALL=es_ES.UTF-8 man'
 alias less='less -M'
+alias g='grep --color=auto'
+
+#Process snapshot alias.
+alias psa='ps auxf'
+alias psg='ps aux | grep --color=auto $1'  #Requiere un argumento
+
+#Space ussage alias.
+alias du='du -sh'
+alias dul='\du -h | less'
+alias df='df -h'
+
+
+#Listing alias
+alias ls='ls --color=auto'
+alias ll='ls -oF --color=tty --sort=size'
+alias la='ls -oaF --color=tty --sort=size'
 alias count='(ls -1 /$(pwd) | wc -l)'
+
+#Apt-Get alias
 alias update='sudo apt-get update'
 alias install='sudo apt-get install'
 alias insta='sudo aptitude install'
