@@ -27,3 +27,12 @@ mktar() { tar cvf "${1%%/}.tar" "${1%%/}/"; }
 mktgz() { tar cvzf "${1%%/}.tar.gz" "${1%%/}/"; }
 mktbz() { tar cvjf "${1%%/}.tar.bz2" "${1%%/}/"; }
 
+# Takes a screenshot
+screenshot() {
+if ! which scrot &>/dev/null; then
+echo "${FUNCNAME[0]}(): Debes instalar primero 'scrot'"
+return 1
+fi
+ 
+scrot "$HOME/Imágenes/Screenshots/screenshot_`date +%d%m%y%H%M%S`.png"
+}
