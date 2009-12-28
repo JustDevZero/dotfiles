@@ -9,11 +9,14 @@ setopt hist_ignore_all_dups
 unsetopt appendhistory
 bindkey -e
 
-# The following lines were added by compinstall
+#Autocompletion styles
 zstyle :compinstall filename '~/.zshrc'
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*' insert-tab pending
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*'   force-list always
 
+#Here it reads the other config files.
 if [ -f ~/.zaliases ]; then
         . ~/.zaliases
 fi
@@ -25,7 +28,7 @@ fi
 if [ -f~/.zshort ]; then
         . ~/.zshort
 fi
-
+# The following lines were added by compinstall
 # Lines configured by zsh-newuser-install
 
 autoload -Uz compinit
