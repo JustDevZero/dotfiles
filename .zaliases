@@ -23,3 +23,16 @@ alias install='sudo apt-get install'
 alias insta='sudo aptitude install'
 alias search='sudo aptitude search'
 alias ipconfig='ifconfig|grep inet:'
+
+#Change directory alias
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
+
+# git
+alias gitps="git push origin master"
+alias gitp="git pull"
+alias gitc="git commit -a"
+alias gitm="git commit "
+alias giti="git init"
