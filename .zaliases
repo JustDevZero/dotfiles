@@ -2,7 +2,7 @@
 alias mkdir='nocorrect mkdir' # no spelling correction on mkdir
 alias psa='ps auxf'
 alias psg='ps aux | grep'  #Requiere un argumento
-alias date='date "+%A %B %d, %Y %l:%M %p %Z"'
+alias fecha='date "+%A %B %d, %Y %l:%M %p %Z"'
 alias du='du -sh'
 alias dul='\du -h | less'
 alias df='df -h'
