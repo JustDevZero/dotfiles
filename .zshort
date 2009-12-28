@@ -27,9 +27,9 @@ if [[ "$TERM" != emacs ]]; then
 [[ "$terminfo[khome]" == "O"* ]] && bindkey -M emacs "${terminfo[khome]/O/[}" beginning-of-line
 [[ "$terminfo[kend]" == "O"* ]] && bindkey -M emacs "${terminfo[kend]/O/[}" end-of-line
 fi
+
+
 bindkey "^[Z" expand-or-complete-prefix
-
-
 bindkey "\e[1~" beginning-of-line
 bindkey "\e[4~" end-of-line
 bindkey "\e[5~" beginning-of-history
