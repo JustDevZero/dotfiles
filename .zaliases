@@ -30,7 +30,7 @@ alias ln='ln -i'
 
 ###      ALIAS FOR PROCESS SNAPSHOT     ###
 alias psa='ps auxf'
-alias psg='ps aux | grep --color=auto $1'  #Requiere un argumento
+alias psg='ps aux | grep --color=auto $1'  #It requires an argument
 
 ###      ALIAS FOR SPACE USAGE     ###
 alias du='du -sh'
