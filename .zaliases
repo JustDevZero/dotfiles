@@ -1,0 +1,25 @@
+# Alias
+alias mkdir='nocorrect mkdir' # no spelling correction on mkdir
+alias psa='ps auxf'
+alias psg='ps aux | grep'  #Requiere un argumento
+alias date='date "+%A %B %d, %Y %l:%M %p %Z"'
+alias du='du -sh'
+alias dul='\du -h | less'
+alias df='df -h'
+alias nano='nano -w -B'
+alias ls='ls --color=auto'
+alias ll='ls -oF --color=tty --sort=size'
+alias la='ls -oaF --color=tty --sort=size'
+alias home='cd ~'
+alias desk='cd ~/Escritorio'
+alias top='htop'
+alias mytop='htop -u $USER'
+alias hist="grep '$1' ~/.histfile"
+alias man='LC_ALL=es_ES.UTF-8 man'
+alias less='less -M'
+alias count='(ls -1 /$(pwd) | wc -l)'
+alias update='sudo apt-get update'
+alias install='sudo apt-get install'
+alias insta='sudo aptitude install'
+alias search='sudo aptitude search'
+alias ipconfig='ifconfig|grep inet:'
