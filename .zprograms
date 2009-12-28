@@ -43,3 +43,7 @@ scrot "$HOME/Imágenes/Screenshots/screenshot_`date +%d%m%y%H%M%S`.png"
 
 ###      PROGRAM FOR AUTOMATING PROCESS     ###
 function cdl { cd "$@" && ls; } #Go to the directory, and list it.
+function newest { ls -ld *(/om[1]) }
+
+### FUNNY PROGRAMS ###
+function reverse { echo "${(j::)${(@Oa)${(s::):-$1}}}" }
