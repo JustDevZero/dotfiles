@@ -38,11 +38,11 @@ autoload -U colors
 colors
 # End of lines configured by zsh-newuser-install
 
-#ls de colores
+#LS WITH COLORS
     export ZLS_COLORS=$LS_COLORS
     alias ls='ls -FX --format=across --color=auto'
     
-# Man pages de color
+# MANPAGES WITH COLORS
 if [ -e $(which most) ]
 then
   export PAGER='most -s'
@@ -51,7 +51,7 @@ else
   export PAGER=less
 fi
 
-# Algunos modulos utiles
+# Some usefull modules
 zmodload -i zsh/complete
 zmodload -i zsh/mapfile
 zmodload -i zsh/mathfunc
@@ -59,16 +59,12 @@ zmodload -i zsh/complist
 zmodload -a zsh/zpty zpty
 zmodload -a zsh/zprof zprof
 
-# Usar la tecla ESC para limpiar terminal:
-bindkey '^[' clear-screen
-
-
-# Activando auto-correción:
+# Autocorrectionn:
 setopt CORRECT
 setopt CORRECT_ALL
 export SPROMPT="$(print '%{\e[31m%}Quisiste decir %S%r%s ? (n|y|e): %{\e[0m%}')"
 
-# Autoarranque de cd:
+# Autocd:
 setopt AUTO_CD
 setopt CDABLE_VARS
 setopt AUTO_PUSHD
