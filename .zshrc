@@ -8,7 +8,7 @@ setopt hist_ignore_space
 setopt hist_ignore_all_dups
 unsetopt appendhistory
 bindkey -e
-bindkey "[Z" expand-or-complete-prefix
+bindkey "[Z" expand-or-complete-prefix #Middleword completion
 
 # The following lines were added by compinstall
 zstyle :compinstall filename '~/.zshrc'
