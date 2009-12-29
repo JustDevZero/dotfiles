@@ -43,7 +43,14 @@ scrot "$HOME/Imágenes/Screenshots/screenshot_`date +%d%m%y%H%M%S`.png"
 
 ###      PROGRAM FOR AUTOMATING PROCESS     ###
 function cdl { cd "$@" && ls; } #Go to the directory, and list it.
-function newest { ls -ld *(/om[1]) }
+function newest { ls -ld *(/om[1]) } #List the newest directory.
+function rmtype { rm -i *.$1(.) } #Remove files in specified format in a directory
+function ipconfig { print Your private IP is: ${${$(LC_ALL=C /sbin/ifconfig eth0)[7]}:gs/addr://} } #Gives your private ip, with nice format, change to your interface if needed.
+function lenght { print -rl $HOME/${(l:$1::?:)~:-}* } # List files with lenght superior than specified.
+function age { ls -tald **/*(m-$1) } # List files with age younger than specified.
+function rmspace { for a in ./**/*\ *(Dod); do mv $a ${a:h}/${a:t:gs/ /_}; done }
+function nextion { zmv '(**/)(*).(#i)mp3' '$1$2.mp3'  && zmv '* *' '$f:gs/ /_'}
+
 
 ### FUNNY PROGRAMS ###
 function reverse { echo "${(j::)${(@Oa)${(s::):-$1}}}" }
