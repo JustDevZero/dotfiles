@@ -51,7 +51,6 @@ alias install='sudo apt-get install'
 alias insta='sudo aptitude install'
 alias reinstall='sudo aptitude reinstall'
 alias afind='sudo aptitude search'
-alias ipconfig='ifconfig|grep inet:'
 alias afile='dpkg-query -S'
 
 ###      ALIAS FOR CHANGE DIRECTORY     ###
