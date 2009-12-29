@@ -29,6 +29,7 @@ if [ -f~/.zshort ]; then
         . ~/.zshort
 fi
 # The following lines were added by compinstall
+autoload zmv
 # Lines configured by zsh-newuser-install
 
 autoload -Uz compinit
