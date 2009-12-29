@@ -30,6 +30,8 @@ mktbz() { tar cvjf "${1%%/}.tar.bz2" "${1%%/}/"; }
 mkrar() { rar a "${1%%/}.rar" "${1%%/}/"; }
 mkzip() { zip -r "${1%%/}.zip" "${1%%/}/"; }
 mk7zp() { 7z a "${1%%/}.7z" "${1%%/}/"; }
+mkiso() { mkisofs -r $1>$1.iso; }
+
 
 ###      PROGRAM FOR SCREENSHOTING WITH TIMESTAMP     ###
 screenshot() {
