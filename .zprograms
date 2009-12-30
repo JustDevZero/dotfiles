@@ -51,7 +51,7 @@ function ipconfig { print Your private IP is: ${${$(LC_ALL=C /sbin/ifconfig eth0
 function lenght { print -rl $HOME/${(l:$1::?:)~:-}* } # List files with lenght superior than specified.
 function age { ls -tald **/*(m-$1) } # List files with age younger than specified.
 function rmspace { for a in ./**/*\ *(Dod); do mv $a ${a:h}/${a:t:gs/ /_}; done }
-function nextion { zmv '(**/)(*).(#i)mp3' '$1$2.mp3'  && zmv '* *' '$f:gs/ /_'}
+function mp32psp { zmv '(**/)(*).(#i)mp3' '$1$2.mp3'  && zmv '* *' '$f:gs/ /_'}
 
 
 ### FUNNY PROGRAMS ###

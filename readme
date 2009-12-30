@@ -1,10 +1,38 @@
-In this repository i will put my config files for improving it, and sharing.
-Programs needed to work it.
-ZSH: If it wasn't enought obvious.
-gawk: Used in some alias and functions
-recode: recoding UNIX2DOS and DOS2UNIX.
-manpages-es, manpages-es-extra: (optional, but remember to change man alias, in .zaliases).
-htop: I prefer it, instead of normal top, change alias (top,mytop) in .zaliases if you don't want it.
-most: I use it for pager.
-git: Obviously no?
-rar,unrar,unace, ncompress, bunzip2, gunzip,p7zip-full: If you don't have it.
+/*
+ *		
+ *		Copyright 2009 Mephiston <meph.snake@gmail.com>
+ *		
+ *		This stuff is free software; you can redistribute it and/or modify
+ *		it under the terms of the GNU General Public License as published by
+ *		the Free Software Foundation; either version 2 of the License, or
+ *		(at your option) any later version.
+ *      
+ *		This program is distributed in the hope that it will be useful,
+ *		but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *		GNU General Public License for more details.
+ *		
+ *		You should have received a copy of the GNU General Public License
+ *		along with this program; if not, get a copy on http://www.gnu.org/licenses/gpl.txt
+ */
+
+
+
+2009-12-30  Mephiston  <meph.snake@gmail.com>
+
+ * Added ogg2mp3 script, compatible with bash.
+
+This repository is used for puting my config files, or little scripts.
+This files are maded for working with zsh (except ogg2mp3) but can be easyly adapted for using in a diferent shell.
+
+The .zaliases and .zprograms contains alias and functions, for programs that maybe are not installed by default.
+This programs are:
+gawk.
+recode
+manpages-es,manpages-es-extra (You can change to another manpages in .zaliases).
+htop
+git
+rar, unrar, unace, ncompress, bunzip2, gunzip, p7zip-full.
+lame
+vorbis-tools
+normalize-audio
