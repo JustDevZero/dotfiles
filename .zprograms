@@ -1,14 +1,14 @@
 #####      PROGRAMS     #####
 
 ###    PROGRAM FOR EXTRACTING COMPRESSED ARCHIVES   ###
-function extraer ()
+function extr ()
 {
   if [ -f "$1" ] ; then
     case "$1" in
       *.tar)                tar xf $1        ;;
       *.tar.bz2 | *.tbz2 )  tar xjvf $1        ;;
       *.tar.gz | *.tgz )    tar xzvf $1     ;;
-      *.jar)		    7z x "$1" ;;
+      *.jar)                7z x "$1" ;;
       *.bz2)                bunzip2 $1       ;;
       *.rar)                unrar x $1     ;;
       *.gz)                 gunzip $1     ;;
@@ -16,10 +16,11 @@ function extraer ()
       *.Z)                  uncompress "$1" ;;
       *.7z)                 7z x $1    ;;
       *.ace)                 unace x $1    ;;
-      *)   echo ""${1}" no se reconoce el formato.()" ;;
+      *.lha)                 lha e $1    ;;
+      *)   echo ""${1}" format not recognized.()" ;;
      esac
    else
-     echo ""${1}" No es un archivo valido"
+     echo ""${1}" Is not a valid file"
    fi
 }
 
@@ -36,23 +37,28 @@ mkiso() { mkisofs -r $1>$1.iso; }
 ###      PROGRAM FOR SCREENSHOTING WITH TIMESTAMP     ###
 screenshot() {
 if ! which scrot &>/dev/null; then
-echo "${FUNCNAME[0]}(): Debes instalar primero 'scrot'"
+echo "${FUNCNAME[0]}(): First you must install 'scrot'"
 return 1
 fi
  
-scrot "$HOME/Imágenes/Screenshots/screenshot_`date +%d%m%y%H%M%S`.png"
+scrot "$HOME/Images/Screenshots/screenshot_`date +%d%m%y%H%M%S`.png"
 }
 
 ###      PROGRAM FOR AUTOMATING PROCESS     ###
 function cdl { cd "$@" && ls; } #Go to the directory, and list it.
-function newest { ls -ld *(/om[1]) } #List the newest directory.
+function ndir { ls -ld *(/om[1]) } #List the newest directory.
+function nfile { ls *(.om[1]) } #List the newest file
 function rmtype { rm -i *.$1(.) } #Remove files in specified format in a directory
 function ipconfig { print Your private IP is: ${${$(LC_ALL=C /sbin/ifconfig eth0)[7]}:gs/addr://} } #Gives your private ip, with nice format, change to your interface if needed.
 function lenght { print -rl $HOME/${(l:$1::?:)~:-}* } # List files with lenght superior than specified.
 function age { ls -tald **/*(m-$1) } # List files with age younger than specified.
 function rmspace { for a in ./**/*\ *(Dod); do mv $a ${a:h}/${a:t:gs/ /_}; done }
-function mp32psp { zmv '(**/)(*).(#i)mp3' '$1$2.mp3'  && zmv '* *' '$f:gs/ /_'}
-
+function lower { zmv '(*)' '${(L)1}'  }
+function uper { zmv '(*)' '${(U)1}' }
+#function capitalize { zmv '(**/)(*).(#i)mp3' '$1$2.mp3'  && zmv '* *' '$f:gs/ /_'} #capitalize all mp3 files, need to be improved for use with any extension
+function twit $1 { curl -u user:password -d status=" $1 " http://twitter.com/statuses/update.xml}
+function twitden $1 { curl -u user:password -d status=" $1 " http://twitter.com/statuses/update.xml && curl --basic --user mph2:daniel9090 --data-ascii "status=$1" http://identi.ca/api/statuses/update.xml }
+function identica $1 { curl --basic --user user:password --data-ascii "status=$1" http://identi.ca/api/statuses/update.xml }
 
 ### FUNNY PROGRAMS ###
 function reverse { echo "${(j::)${(@Oa)${(s::):-$1}}}" }
