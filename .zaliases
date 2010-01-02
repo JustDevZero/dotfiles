@@ -12,6 +12,8 @@ alias g='grep --color=auto'
 alias nestat='sudo netstat -tpav'
 alias unix2dos='recode lat1..ibmpc'
 alias dos2unix='recode ibmpc..lat1'
+alias ls='ls -FX --format=across --color=auto'
+alias hg='fc -l 0|grep'  # Very often I want to see a bunch of history entries instead of simply searching back
 
 ###      ALIAS FOR OWNER LAZYNESS     ###
 alias x=exit
@@ -71,3 +73,25 @@ alias gitm="git commit -m"
 alias giti="git init"
 alias gitst='git status'
 alias gitl='git pull'
+
+###      SET UP AUTO EXTENSION     ###
+alias -s html=$BROWSER
+alias -s org=$BROWSER
+alias -s php=$BROWSER
+alias -s com=$BROWSER
+alias -s net=$BROWSER
+alias -s png=feh
+alias -s pnm=feh
+alias -s bmp=feh
+alias -s jpg=feh
+alias -s gif=feg
+alias -s sxw=soffice
+alias -s doc=soffice
+alias -s gz=tar -xzvf
+alias -s bz2=tar -xjvf
+alias -s java=$EDITOR
+alias -s txt=$EDITOR
+alias -s pdf=evince
+alias -s xcf="gimp"
+alias -s psd="gimp"
+#alias -s PKGBUILD=$EDITOR
