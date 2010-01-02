@@ -1,5 +1,5 @@
 /*
- *		
+ *		Readme
  *		Copyright 2009 Mephiston <meph.snake@gmail.com>
  *		
  *		This stuff is free software; you can redistribute it and/or modify
@@ -15,24 +15,46 @@
  *		You should have received a copy of the GNU General Public License
  *		along with this program; if not, get a copy on http://www.gnu.org/licenses/gpl.txt
  */
+ 
+Changelog:
 
+2010-01-02  Mephiston  <meph.snake@gmail.com>
 
+ * Separated projects of ogg2mp3, one with lame & normalize, another with ffmpeg.
+ * Separated project for ogg2mp3 with zsh instead of bash. 
+ * Added twitter, identi.ca, and syncronized captability with one only command (look in .zprograms for twit, identica, and twitden)
+ * Separated file for completion styles
+ * Changed HISTFILE name to .zsh_history that is more Z-logical :P, increased the max commands in history to 50.000 for having better stadistics and losing less comands.
+ * Added autoextension stuf in .zaliases.
+ 
 
 2009-12-30  Mephiston  <meph.snake@gmail.com>
 
  * Added ogg2mp3 script, compatible with bash.
 
-This repository is used for puting my config files, or little scripts.
-This files are maded for working with zsh (except ogg2mp3) but can be easyly adapted for using in a diferent shell.
+This repository is used for puting my config files, or little scripts, you can use this files with the terms indicated about.
+If a file uses some other license, will be specified in the begining of it.
 
 The .zaliases and .zprograms contains alias and functions, for programs that maybe are not installed by default.
-This programs are:
-gawk.
+Programs that are used:
+zsh
+most
+openoffice.org
+gimp
+gawk
 recode
 manpages-es,manpages-es-extra (You can change to another manpages in .zaliases).
 htop
+nano
+firefox
+evince
+feh
 git
-rar, unrar, unace, ncompress, bunzip2, gunzip, p7zip-full.
+rar, unrar, unace, ncompress, bunzip2, gunzip, p7zip-full, lha.
 lame
+mkisofs
 vorbis-tools
+ffmpeg
+scrot
+curl
 normalize-audio
