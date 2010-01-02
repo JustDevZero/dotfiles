@@ -37,6 +37,7 @@ alias unix2dos='recode lat1..ibmpc'
 alias dos2unix='recode ibmpc..lat1'
 alias ls='ls -FX --format=across --color=auto'
 alias hg='fc -l 0|grep'  # Very often I want to see a bunch of history entries instead of simply searching back
+alias diffc='colordiff'
 
 ###      ALIAS FOR OWNER LAZYNESS     ###
 alias x=exit
@@ -78,10 +79,10 @@ alias afind='sudo aptitude search'
 alias afile='dpkg-query -S'
 
 ###      ALIAS FOR CHANGE DIRECTORY     ###
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-alias ......="cd ../../../../.."
+alias -g ...='../..'
+alias -g ....='../../..'
+alias -g .....='../../../..'
+alias -g ......="../../../../.."
 alias dotfile="cd ~/git/dotfiles"
 
 ###      ALIAS FOR GIT     ###
