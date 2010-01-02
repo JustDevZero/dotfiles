@@ -1,0 +1,78 @@
+#!/bin/bash
+
+#		ogg2mp3 written in bash
+#		version 0.1
+#		Copyright 2009 Mephiston <meph.snake@gmail.com>
+#		
+#		This program is free software; you can redistribute it and/or modify
+#		it under the terms of the GNU General Public License as published by
+#		the Free Software Foundation; either version 2.1.1 of the License, or
+#		(at your option) any later version.
+#		
+#		This program is distributed in the hope that it will be useful,
+#		but WITHOUT ANY WARRANTY; without even the implied warranty of
+#		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#		GNU General Public License for more details.
+#		
+#		You should have received a copy of the GNU General Public License
+#		along with this program; if not, get a copy on http://www.gnu.org/licenses/gpl.txt
+
+# ---------------- Generic utilities ---------------- #
+# The main purpose of this script is to easily conver OGG files into MP3 files.
+# Because some devices don't accept ogg format.
+# This script converts massively the ogg files of your actual directory.
+
+# ---------------- Instructions ---------------- #
+# For using this script you must have installed Bash, lame, and oggdec.
+# As optional extra you can decide to use normalize-audio.
+# If you don't want to normalize audio files, you must comment lines refering to normalize-audio.
+
+if [ -z "$1" ]
+	then
+	value=160
+	valuet=$(( ($value*1000) ))
+	#If bitrate is not specified will use
+	mensaje="Bitrate value not supplied. Default: 160kbps."
+	mensaj=" Note: If you want to specify some specify bitrate in kbps, just write something like 'ogg2mp3 120 '"
+else
+	value=$1
+	valuet=$(( ($1*1000) ))
+	mensaje="Bitrate value suplied. Using $value"
+	mensaj=""
+fi
+
+elif ! which ffmpeg &>/dev/null; then
+echo "ogg2mp3: You must install first 'ffmpeg'. "
+
+else
+echo "-----------------------------------"
+echo "| ogg2mp3-ffmpeg v0.2 BASH VERSION|"
+echo "| Author: Mephiston               |"
+echo "----------------------------------"
+
+#Lowercasing names
+rename 'y/A-Z/a-z/' *.ogg
+
+#Erasing spaces between words
+rename 'y/\ /_/' *.ogg
+
+for archivo in *.ogg; do
+	oggname="$(basename "$archivo" .ogg)"
+	echo $mensaje$mensaj && sleep 3 && ffmpeg -i "$oggname.ogg" -ab $valuet "$oggname.mp3"
+done
+	#Now it checks if exists some errors.
+	#If all is correct offer to delete the ogg.
+	if [ $? -eq 0 ]
+	then
+	clear
+		echo "File conversion with bitrate on $value finished"
+		echo " Do you want to delete OGG files? y/n"
+		read respuesta;
+		case $respuesta in
+			Y|y) rm -f "$oggname.ogg";;
+			S|s) rm -f "$oggname.ogg";;
+			*) echo "The files were not deleted";;
+		esac
+	fi
+fi
+
