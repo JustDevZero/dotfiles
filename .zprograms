@@ -1,25 +1,25 @@
 #
-#		The MIT License
+#       The MIT License
 #
-#		Copyright (c) Mephiston <meph.snake@gmail.com>
+#       Copyright (c) Mephiston <meph.snake@gmail.com>
 #
-#		Permission is hereby granted, free of charge, to any person obtaining a copy
-#		of this software and associated documentation files (the "Software"), to deal
-#		in the Software without restriction, including without limitation the rights
-#		to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#		copies of the Software, and to permit persons to whom the Software is
-#		furnished to do so, subject to the following conditions:
+#       Permission is hereby granted, free of charge, to any person obtaining a copy
+#       of this software and associated documentation files (the "Software"), to deal
+#       in the Software without restriction, including without limitation the rights
+#       to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#       copies of the Software, and to permit persons to whom the Software is
+#       furnished to do so, subject to the following conditions:
 #
-#		The above copyright notice and this permission notice shall be included in
-#		all copies or substantial portions of the Software.
+#       The above copyright notice and this permission notice shall be included in
+#       all copies or substantial portions of the Software.
 #
-#		THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#		IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#		FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#		AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#		LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#		OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-#		THE SOFTWARE.
+#       THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#       IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#       FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#       AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#       LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#       THE SOFTWARE.
 
 
 #####      PROGRAMS     #####
@@ -47,6 +47,45 @@ function extr ()
      echo ""${1}" Is not a valid file"
    fi
 }
+
+###    PROGRAM FOR VIEW MANPAGES IN PDF   ###
+man2pdf() {
+    if [ -z $1 ]; then
+        echo "USAGE: man2pdf [manpage]"
+    else
+        if [ `find /usr/share/man -name $1\* | wc -l` -gt 0 ]; then
+        out=/tmp/$1.pdf
+        if [ ! -e $out ]; then
+            man -t $1 | ps2pdf - > $out
+        fi
+        if [ -e $out ]; then
+            /usr/bin/evince $out
+        fi
+    else
+        echo "There is no manual entry for $1."
+    fi
+    fi
+}
+
+
+###    PROGRAM FOR MOUNTING ISO IMAGES ON /media   ###
+miso () {
+    [ ! -f "$1" ] && { echo "Provide a valid iso file"; return 1; }
+    mountpoint="/media/${1//.iso}"
+    sudo mkdir -p "$mountpoint"
+    sudo mount -o loop "$1" "$mountpoint"
+
+}
+
+###    PROGRAM FOR UMOUNTING ISO IMAGES ON /media   ###
+umiso () {
+    mountpoint="/media/${1//.iso}"
+    [ ! -d "$mountpoint" ] && { echo "Not a valid mount point"; return 1; }
+    sudo umount "$mountpoint"
+    sudo rm -ir "$mountpoint"
+
+}
+
 
 ###      PROGRAM FOR CREATE ARCHIVES OF DIRECTORY     ###
 mktar() { tar cvf "${1%%/}.tar" "${1%%/}/"; }

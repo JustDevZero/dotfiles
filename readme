@@ -1,32 +1,38 @@
 /*
- *		Readme
- *		Copyright 2009 Mephiston <meph.snake@gmail.com>
- *		
- *		This stuff is free software; you can redistribute it and/or modify
- *		it under the terms of the GNU General Public License as published by
- *		the Free Software Foundation; either version 2 of the License, or
- *		(at your option) any later version.
- *      
- *		This program is distributed in the hope that it will be useful,
- *		but WITHOUT ANY WARRANTY; without even the implied warranty of
- *		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *		GNU General Public License for more details.
- *		
- *		You should have received a copy of the GNU General Public License
- *		along with this program; if not, get a copy on http://www.gnu.org/licenses/gpl.txt
+ *      Readme
+ *      Copyright 2009 Mephiston <meph.snake@gmail.com>
+ *
+ *      This stuff is free software; you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation; either version 2 of the License, or
+ *      (at your option) any later version.
+ *
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program; if not, get a copy on http://www.gnu.org/licenses/gpl.txt
  */
- 
+
 Changelog:
+
+
+
+2010-04-16  Mephiston  <meph.snake@gmail.com>
+
+ * Added miso, umiso, and man2pdf
 
 2010-01-02  Mephiston  <meph.snake@gmail.com>
 
  * Separated projects of ogg2mp3, one with lame & normalize, another with ffmpeg.
- * Separated project for ogg2mp3 with zsh instead of bash. 
+ * Separated project for ogg2mp3 with zsh instead of bash.
  * Added twitter, identi.ca, and syncronized captability with one only command (look in .zprograms for twit, identica, and twitden)
  * Separated file for completion styles
  * Changed HISTFILE name to .zsh_history that is more Z-logical :P, increased the max commands in history to 50.000 for having better stadistics and losing less comands.
  * Added autoextension stuf in .zaliases.
- 
+
 
 2009-12-30  Mephiston  <meph.snake@gmail.com>
 
@@ -58,3 +64,8 @@ ffmpeg
 scrot
 curl
 normalize-audio
+
+groff
+groff-base
+man2html
+texlive
