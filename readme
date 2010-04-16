@@ -65,6 +65,7 @@ scrot
 curl
 normalize-audio
 
+Needed for man2pdf:
 groff
 groff-base
 man2html
