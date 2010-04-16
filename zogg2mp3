@@ -1,21 +1,21 @@
 #!/bin/zsh
 
-#		ogg2mp3 written in zsh
-#		version 0.1
-#		Copyright 2009 Mephiston <meph.snake@gmail.com>
-#		
-#		This program is free software; you can redistribute it and/or modify
-#		it under the terms of the GNU General Public License as published by
-#		the Free Software Foundation; either version 2.1.1 of the License, or
-#		(at your option) any later version.
-#		
-#		This program is distributed in the hope that it will be useful,
-#		but WITHOUT ANY WARRANTY; without even the implied warranty of
-#		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#		GNU General Public License for more details.
-#		
-#		You should have received a copy of the GNU General Public License
-#		along with this program; if not, get a copy on http://www.gnu.org/licenses/gpl.txt
+#       ogg2mp3 written in zsh
+#       version 0.1
+#       Copyright 2009 Mephiston <meph.snake@gmail.com>
+#
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 3 of the License, or
+#       (at your option) any later version.
+#
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, get a copy on http://www.gnu.org/licenses/gpl.txt
 
 
 # ---------------- Generic utilities ---------------- #
@@ -27,27 +27,27 @@
 # For using this script ou must have installed ZSH and ffmpeg
 zmodload zsh/mathfunc
 if [ -z "$1" ]
-	then
-	value=160
-	valuet=$(( ($value*1000) ))
-	#If bitrate is not specified will use
-	mensaje="Bitrate value not supplied. Default: 160kbps.\nNote: If you want to specify some specify bitrate in kbps, just write something like 'ogg2mp3 120 ''"
+    then
+    value=160
+    valuet=$(( ($value*1000) ))
+    #If bitrate is not specified will use
+    mensaje="Bitrate value not supplied. Default: 160kbps.\nNote: If you want to specify some specify bitrate in kbps, just write something like 'ogg2mp3 120 ''"
 else
-	value=$1
-	valuet=$(( ($1*1000) ))
-	mensaje="Bitrate value suplied. Using $value"
+    value=$1
+    valuet=$(( ($1*1000) ))
+    mensaje="Bitrate value suplied. Using $value"
 fi
 
 function capitalize {
-	for i in *.ogg; do
-	mv $i ${${(C)i}:s/Ogg/ogg/}
-	done
+    for i in *.ogg; do
+    mv $i ${${(C)i}:s/Ogg/ogg/}
+    done
 }
 
 function removespace {
-	for a in ./**/*\ *(Dod);
-	do mv $a ${a:h}/${a:t:gs/ /_};
-	done
+    for a in ./**/*\ *(Dod);
+    do mv $a ${a:h}/${a:t:gs/ /_};
+    done
 }
 
 echo "---------------------------"
@@ -60,20 +60,20 @@ removespace #Now we remove spaces between the words
 
 sleep 2
 for archivo in *.ogg; do
-	oggname="$(basename "$archivo" .ogg)"
-	echo $mensaje && sleep 3 && ffmpeg -i "$oggname.ogg" -ab $valuet "$oggname.mp3"
+    oggname="$(basename "$archivo" .ogg)"
+    echo $mensaje && sleep 3 && ffmpeg -i "$oggname.ogg" -ab $valuet "$oggname.mp3"
 done
-	#Now it checks if exists some errors.
-	#If all is correct delete the ogg.
-	if [ $? -eq 0 ]
-	then
-	clear
-		echo "File conversion with bitrate on $value finished\nDo you want to delete OGG files? y/n"
-		read respuesta;
-		case $respuesta in
-			Y|y) rm -f "$oggname.ogg";;
-			S|s) rm -f "$oggname.ogg";;
-			*) echo "The files were not deleted";;
-		esac
-	fi
-	
+    #Now it checks if exists some errors.
+    #If all is correct delete the ogg.
+    if [ $? -eq 0 ]
+    then
+    clear
+        echo "File conversion with bitrate on $value finished\nDo you want to delete OGG files? y/n"
+        read respuesta;
+        case $respuesta in
+            Y|y) rm -f "$oggname.ogg";;
+            S|s) rm -f "$oggname.ogg";;
+            *) echo "The files were not deleted";;
+        esac
+    fi
+
