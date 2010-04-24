@@ -45,7 +45,7 @@ alias myip="wget http://checkip.dyndns.org/ -q -O - | grep -Eo '\<[[:digit:]]{1,
 
 ###     ALIAS FOR CHECKSUMS           ###
 alias md5='md5sum'
-alias md5='sha1sum'
+alias sha1='sha1sum'
 alias ha224='sha224sum'
 alias sha256='sha256sum'
 alias sha384='sha384sum'
