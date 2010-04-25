@@ -551,7 +551,7 @@ then
                          else
                               echo "deb http://linux.dropbox.com/ubuntu karmic main" | sudo tee -a /etc/apt/sources.list > /dev/null
                               echo "deb-src http://linux.dropbox.com/ubuntu karmic main" | sudo tee -a /etc/apt/sources.list > /dev/null
-                              sudo gpg --keyserver pgp.mit.edu --recv-keys 5044912E
+                              sudo apt-key adv --keyserver pgp.mit.edu --recv-keys 5044912E
                               sudo apt-get update
                               sudo apt-get -y --force-yes install nautilus-dropbox
                          fi
