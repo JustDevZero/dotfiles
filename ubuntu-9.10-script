@@ -358,15 +358,15 @@ then
 
                     #For normal user
                     wget -c http://github.com/Mephiston/dotfiles/raw/master/.zshrc -O ~/.zshrc
-                    wget -c http://github.com/Mephiston/dotfiles/raw//master/.zshort -O ~/.zshrc
-                    wget -c http://github.com/Mephiston/dotfiles/raw//master/.zcompletion -O ~/.zshrc
+                    wget -c http://github.com/Mephiston/dotfiles/raw/master/.zshort -O ~/.zshrc
+                    wget -c http://github.com/Mephiston/dotfiles/raw/master/.zcompletion -O ~/.zshrc
                     wget -c http://github.com/Mephiston/dotfiles/raw/master/.zaliases -O ~/.zshrc
                     wget -c http://github.com/Mephiston/dotfiles/raw/master/.zprograms -O ~/.zshrc
 
                     #For root user
                     sudo wget -c http://github.com/Mephiston/dotfiles/raw/master/.zshrc -O /root/.zshrc
-                    sudo wget -c http://github.com/Mephiston/dotfiles/raw//master/.zshort -O /root/.zshrc
-                    sudo wget -c http://github.com/Mephiston/dotfiles/raw//master/.zcompletion -O /root/.zshrc
+                    sudo wget -c http://github.com/Mephiston/dotfiles/raw/master/.zshort -O /root/.zshrc
+                    sudo wget -c http://github.com/Mephiston/dotfiles/raw/master/.zcompletion -O /root/.zshrc
                     sudo wget -c http://github.com/Mephiston/dotfiles/raw/master/.zaliases -O /root/.zshrc
                     sudo wget -c http://github.com/Mephiston/dotfiles/raw/master/.zprograms -O /root/.zshrc
               elif [ "$choicee" = "Include converters to \".iso\"" ];
