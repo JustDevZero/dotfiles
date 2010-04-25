@@ -97,7 +97,7 @@ mk7zp() { 7z a "${1%%/}.7z" "${1%%/}/"; }
 mkiso() { mkisofs -r $1>$1.iso; }
 
 
-###      VERSION OF THE MOST USED COMMAND MEME     ###
+###      VERSION OF THE MOST USED COMMAND MEME BY CHOMS    ###
 most-used-command () {
     hist|awk '1 { if ( $1=="sudo") { print $1,$2 } else { print $1 } }'|sort|uniq -c|sort -rn|head -10
     }
