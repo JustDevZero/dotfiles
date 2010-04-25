@@ -396,7 +396,7 @@ if [ $? -eq 0 ]
 then
         IFS="|"
         testConnection
-        /usr/bin/zenity --info --text="The package download and installation will begin. Please do not restart your computer until the script is done. \n\nClick OK to start!"
+        /usr/bin/zenity --info --text="The package download and installation will begin. Please do not restart your computer until the script is done.\nThis will take a long time, get a cofee while waiting. \n\nClick OK to start!"
         for choice in $choices
         do
               if [ "$choice" = "Codecs and extras" ];
@@ -406,13 +406,13 @@ then
                            sudo apt-get update
                            sudo echo sun-java6-jre shared/accepted-sun-dlj-v1-1 select true | sudo /usr/bin/debconf-set-selections
                            sudo apt-get install --yes sun-java6-plugin
-                           sudo apt-get -y --force-yes install gstreamer0.10-ffmpeg gstreamer0.10-pitfdll gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse libdvdnav4 libdvdread4 libdvdcss2 libxine1-ffmpeg ffmpeg lame flashplugin-nonfree sun-java6-fonts rar unrar p7zip-full p7zip-rar unace-nonfree lha unp ttf-mscorefonts-installer ttf-liberation uncompress libsdl1.2debian-all libtheora libvorbis
+                           sudo apt-get -y --force-yes install gstreamer0.10-ffmpeg gstreamer0.10-pitfdll gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse libdvdnav4 libdvdread4 libdvdcss2 libxine1-ffmpeg ffmpeg lame flashplugin-nonfree sun-java6-fonts rar unrar p7zip-full p7zip-rar unace-nonfree lha unp ttf-mscorefonts-installer ttf-liberation uncompress libsdl1.2debian-all libtheora libvorbis libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-0 libavformat-extra-52 libavutil-extra-49
                        else
                            sudo add-apt-repository ppa:towolf/codecs/
                            sudo apt-get update
                            sudo echo sun-java6-jre shared/accepted-sun-dlj-v1-1 select true | sudo /usr/bin/debconf-set-selections
                            sudo apt-get install --yes sun-java6-plugin
-                           sudo apt-get -y --force-yes install gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse libdvdnav4 libdvdread4 libdvdcss2 libxine1-ffmpeg ffmpeg lame sun-java6-fonts rar unrar p7zip-full p7zip-rar unace-nonfree lha unp ttf-mscorefonts-installer ttf-liberation uncompress libsdl1.2debian-all libtheora libvorbis
+                           sudo apt-get -y --force-yes install gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse libdvdnav4 libdvdread4 libdvdcss2 libxine1-ffmpeg ffmpeg lame sun-java6-fonts rar unrar p7zip-full p7zip-rar unace-nonfree lha unp ttf-mscorefonts-installer ttf-liberation uncompress libsdl1.2debian-all libtheora libvorbis libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-0 libavformat-extra-52 libavutil-extra-49
                            cd /tmp
                            wget http://download.macromedia.com/pub/labs/flashplayer10/libflashplayer-10.0.45.2.linux-x86_64.so.tar.gz
                            tar xzf libflashplayer-10.0.45.2.linux-x86_64.so.tar.gz
