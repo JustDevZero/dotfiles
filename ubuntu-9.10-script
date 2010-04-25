@@ -131,7 +131,7 @@ echo $DBUS_SESSION_BUS_PID
 choicess=`/usr/bin/zenity --title="Step 1: Tweaks, fixes and repositories" --width=500 --height=450 \
                           --text="Important: \n\n1. If you do not select the 'Add additional repositories' option, you will not be able \nto install some packages in Step 2. \n\n2. for some settings take place, you'll have to log out and then log back in \n(but only do this after both Step 1 and Step 2 have been completed!).\n\n3. Selecting \"Reset\" will reset that option if you've previously used it. Do not select \nboth a tweak and it's reset option! \n\nSelect:" \
                          --list --column="Selected" --column="Tweak" \
-                         --checklist FALSE "Move window buttons to the left (Lucid style)" FALSE ">> Reset: Move window buttons to the right (Karmic style)" FALSE "Change Update Manager behavior to the one in Jaunty" FALSE ">> Reset: \"Change Update Manager behavior to the one in Jaunty\"" FALSE "Remove mounted drive icons from desktop" FALSE ">> Reset: \"Remove mounted drive icons from desktop\"" FALSE "Disable the GDM login sound" FALSE ">> Reset: \"Disable the GDM login sound\"" FALSE "Enable the icons in menus and buttons" FALSE ">> Reset: \"Enable the icons in menus and buttons\"" FALSE "Disable the GDM login user list" FALSE ">> Reset \"Disable the GDM login user list\"" FALSE "Change Gnome Calendar first day of the week from Sunday to Monday" FALSE ">> Reset: \"Change Gnome Calendar first day of the week from Sunday to Monday\"" FALSE "Remove the ubuntu-docs package (frees up 252MB)" FALSE ">> Reset \"Remove the ubuntu-docs package (frees up 252MB)\"" FALSE "Install and configure sharp fonts (including Firefox)" FALSE ">> Reset: \"Install and configure sharp fonts (including Firefox)\"" TRUE "Fix 'apt-get update' delay for Google repository" FALSE ">> Reset: \"Fix 'apt-get update' delay for Google repository\"" TRUE "Automatically mount NTFS drives on startup" FALSE ">> Reset: \"Automatically mount NTFS drives on startup\"" TRUE "Add additional repositories (GetDeb, Medibuntu etc.)" TRUE "Install zsh, csh, and tcsh" TRUE "Install a base for zsh, that includes usefull stuff (look readme)" False "Include converters to \".iso\"" False "Install manpages on spanish" False "Install newtworking utilities (traceroute,wireshark,etc.)"`
+                         --checklist FALSE "Move window buttons to the left (Lucid style)" FALSE ">> Reset: Move window buttons to the right (Karmic style)" FALSE "Change Update Manager behavior to the one in Jaunty" FALSE ">> Reset: \"Change Update Manager behavior to the one in Jaunty\"" FALSE "Remove mounted drive icons from desktop" FALSE ">> Reset: \"Remove mounted drive icons from desktop\"" FALSE "Disable the GDM login sound" FALSE ">> Reset: \"Disable the GDM login sound\"" FALSE "Enable the icons in menus and buttons" FALSE ">> Reset: \"Enable the icons in menus and buttons\"" FALSE "Disable the GDM login user list" FALSE ">> Reset \"Disable the GDM login user list\"" FALSE "Change Gnome Calendar first day of the week from Sunday to Monday" FALSE ">> Reset: \"Change Gnome Calendar first day of the week from Sunday to Monday\"" FALSE "Remove the ubuntu-docs package (frees up 252MB)" FALSE ">> Reset \"Remove the ubuntu-docs package (frees up 252MB)\"" FALSE "Install and configure sharp fonts (including Firefox)" FALSE ">> Reset: \"Install and configure sharp fonts (including Firefox)\"" TRUE "Fix 'apt-get update' delay for Google repository" FALSE ">> Reset: \"Fix 'apt-get update' delay for Google repository\"" TRUE "Automatically mount NTFS drives on startup" FALSE ">> Reset: \"Automatically mount NTFS drives on startup\"" TRUE "Add additional repositories (GetDeb, Medibuntu etc.)" TRUE "Install zsh, csh, and tcsh and make zsh default" TRUE "Install a base for zsh, that includes usefull stuff (look readme)" False "Include converters to \".iso\"" False "Install manpages on spanish" False "Install newtworking utilities (traceroute,wireshark,etc.)"`
 
 
 if [ $? -eq 0 ];
@@ -341,12 +341,12 @@ then
                          fi
                       done
                    testConnection
-                   rm /etc/apt/sources.list.d/medibuntu.list /etc/apt/sources.list.d/dropbox.list /etc/apt/sources.list.d/getdeb.list #delete medibuntu, dropbox and getdeb repos if they were placed in a different location (not sources.list) because we'll add them anyway - fix for not getting double repos
+                   sudo rm /etc/apt/sources.list.d/medibuntu.list /etc/apt/sources.list.d/dropbox.list /etc/apt/sources.list.d/getdeb.list #delete medibuntu, dropbox and getdeb repos if they were placed in a different location (not sources.list) because we'll add them anyway - fix for not getting double repos
                    wget -q -O- $mediserv/medibuntu-key.gpg | sudo apt-key add -
                    #sudo apt-get --quiet update && sudo apt-get --yes --quiet --allow-unauthenticated install medibuntu-keyring && sudo apt-get --quiet update
                    wget -q -O- http://archive.getdeb.net/getdeb-archive.key | sudo apt-key add -
                    sudo apt-get update
-                            elif [ "$choicee" = "Install zsh, csh, and tcsh and make zsh default" ];
+              elif [ "$choicee" = "Install zsh, csh, and tcsh and make zsh default" ];
                      then
                      sudo apt-get install tcsh zsh csh
                      chsh -s /bin/zsh $ON_USER
@@ -402,13 +402,13 @@ then
               if [ "$choice" = "Codecs and extras" ];
                    then
                        if [ "i686" = `uname -m` ]; then
-                           sudo add-apt-repository ppa:towolf/codecs/
+                           sudo add-apt-repository ppa:towolf/codecs
                            sudo apt-get update
                            sudo echo sun-java6-jre shared/accepted-sun-dlj-v1-1 select true | sudo /usr/bin/debconf-set-selections
                            sudo apt-get install --yes sun-java6-plugin
                            sudo apt-get -y --force-yes install gstreamer0.10-ffmpeg gstreamer0.10-pitfdll gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse libdvdnav4 libdvdread4 libdvdcss2 libxine1-ffmpeg ffmpeg lame flashplugin-nonfree sun-java6-fonts rar unrar p7zip-full p7zip-rar unace-nonfree lha unp ttf-mscorefonts-installer ttf-liberation uncompress libsdl1.2debian-all libtheora libvorbis libavcodec-extra-52 libavdevice-extra-52 libavfilter-extra-0 libavformat-extra-52 libavutil-extra-49
                        else
-                           sudo add-apt-repository ppa:towolf/codecs/
+                           sudo add-apt-repository ppa:towolf/codecs
                            sudo apt-get update
                            sudo echo sun-java6-jre shared/accepted-sun-dlj-v1-1 select true | sudo /usr/bin/debconf-set-selections
                            sudo apt-get install --yes sun-java6-plugin
@@ -495,7 +495,7 @@ then
                         sudo apt-get -y --force-yes install pidgin pidgin-otr pidgin-plugin-pack pidgin-themes
              elif [ "$choice" = "Development tools" ];
                    then
-                        sudo add-apt-repository ppa:geany-dev/
+                        sudo add-apt-repository ppa:geany-dev
                         sudo apt-get update
                         sudo apt-get -y --force-yes install build-essential automake make checkinstall patch dpatch patchutils autotools-dev debhelper quilt fakeroot xutils lintian pbuilder cmake dh-make libtool autoconf git-core gitg subversion bzr gcc g++ geany geany-plugins geany-plugins-addons
              elif [ "$choice" = "WINE" ];
@@ -522,7 +522,7 @@ then
                         sudo apt-get -y --force-yes install openoffice.org openoffice.org-pdfimport writer2latex writer2latex-manual ooo-thumbnailer
              elif [ "$choice" = "Database Admin Kit" ];
                    then
-                        sudo add-apt-repository ppa:geany-dev/
+                        sudo add-apt-repository ppa:geany-dev
                         sudo apt-get update
                         sudo apt-get -y --force-yes install geany geany-plugins geany-plugins-addons dia dia2code tedia2sql
              elif [ "$choice" = "Virtualbox" ];
@@ -534,7 +534,7 @@ then
                         sudo chmod +x /usr/share/applications/virtualbox.desktop
              elif [ "$choice" = "Clamav" ];
                    then
-                        sudo add-apt-repository ppa:ubuntu-clamav/
+                        sudo add-apt-repository ppa:ubuntu-clamav
                         sudo apt-get update
                         sudo apt-get -y --force-yes install clamav clamav-docs libclamunrar6
                         wget http://downloads.sourceforge.net/project/clamtk/ClamTk/4.25/clamtk_4.25-1_all.deb
