@@ -42,6 +42,8 @@ alias diffc='colordiff'
 alias pget='http_proxy=proxy:port wget' #wget behind proxy
 alias myproxy="http_proxy=proxy:port wget http://checkip.dyndns.org/ -q -O - | grep -Eo '\<[[:digit:]]{1,3}(\.[[:digit:]]{1,3}){3}\>'" #Used for knowing the ip
 alias myip="wget http://checkip.dyndns.org/ -q -O - | grep -Eo '\<[[:digit:]]{1,3}(\.[[:digit:]]{1,3}){3}\>'" #Used for discover my external ip
+alias ban='iptables -I INPUT -j DROP -s'
+alias unban='iptables -D INPUT -j DROP -s'
 
 ###     ALIAS FOR CHECKSUMS           ###
 alias md5='md5sum'

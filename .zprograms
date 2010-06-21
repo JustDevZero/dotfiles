@@ -41,6 +41,7 @@ function extr ()
       *.7z)                 7z x $1    ;;
       *.ace)                 unace x $1    ;;
       *.lha)                 lha e $1    ;;
+      *.lz)                  lzip -dk $1 ;;
       *)   echo ""${1}" format not recognized.()" ;;
      esac
    else
@@ -95,6 +96,8 @@ mkrar() { rar a "${1%%/}.rar" "${1%%/}/"; }
 mkzip() { zip -r "${1%%/}.zip" "${1%%/}/"; }
 mk7zp() { 7z a "${1%%/}.7z" "${1%%/}/"; }
 mkiso() { mkisofs -r $1>$1.iso; }
+mklz() { lzip -k9 $1 }
+mkrzip() { rzip -k9 $1 }
 
 
 ###      VERSION OF THE MOST USED COMMAND MEME BY CHOMS    ###
