@@ -79,8 +79,8 @@ alias df='df -h'
 
 
 ###      ALIAS FOR LISTING     ###
-alias ll='ls -oF --color=tty --sort=size'
-alias la='ls -oaF --color=tty --sort=size'
+alias ll='ls -lF --color=tty --sort=size'
+alias la='ls -laF --color=tty --sort=size'
 alias count='(ls -1 /$(pwd) | wc -l)'
 
 
@@ -92,12 +92,13 @@ alias reinstall='sudo aptitude reinstall'
 alias afind='sudo aptitude search'
 alias afile='dpkg-query -S'
 
-###      ALIAS FOR CHANGE DIRECTORY     ###
+###     GLOBAL ALIAS FOR CHANGE DIRECTORY     ###
 alias -g ...='../..'
 alias -g ....='../../..'
 alias -g .....='../../../..'
 alias -g ......="../../../../.."
-alias dotfile="cd ~/git/dotfiles"
+alias dotfiles="cd ~/git/dotfiles"
+alias p="cd .."
 
 ###      ALIAS FOR GIT     ###
 alias gitps="git push origin master"
