@@ -120,3 +120,9 @@ compinit
 autoload -U colors
 colors
 # End of lines configured by zsh-newuser-install
+
+#if [ "$PS1" ] ;
+#then mkdir -m 0700 /dev/cgroup/cpu/user/$$
+#echo $$ > /dev/cgroup/cpu/user/$$/tasks
+#echo "1" > /dev/cgroup/cpu/user/$$/notify_on_release
+#fi
