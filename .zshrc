@@ -66,13 +66,24 @@ zmodload zsh/complist
 OS=`cat /etc/issue|head -n 1|awk '{print $1}'`
 DISTRO=`cat /etc/issue|head -n 1|awk '{print $2}'`
 VERSION=`cat /etc/issue|head -n 1|awk '{print $3}'`
-export EDITOR="/usr/bin/nano"
+export EDITOR="/usr/bin/vim"
 export BROWSER="/usr/bin/firefox"
 export PAGER='most -s'
 export LESSHISTFILE='most -s'
 export ZLS_COLORS=$LS_COLORS
-export PS1="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print ' %{\e[0;31m%}% \ %d %{\e[0;32m%}\nQue quieres?%{\e[0m%}') "
+#export PS1="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print ' %{\e[0;31m%}% \ %d %{\e[0;32m%}\nQue quieres?%{\e[0m%}') "
 export PS2="$(print '%{\e[0;34m%}>%{\e[0m%}')"
+
+if [ $UID -eq 0 ]; then
+    export PS1="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print ' %{\e[0;31m%}% \ %d %{\e[0;32m%}\n$%{\e[0m%}') "
+else
+    PROMPT="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print '%{${fg[cyan]}%}%B%~%b$(prompt_git_info)%{${fg[default]}%} %{\e[0;32m%}\n# %{\e[0m%}')"
+fi
+# Allow for functions in the prompt.
+setopt PROMPT_SUBST
+
+
+
 
 # Define a few Color's
 BLACK='\e[0;30m'
@@ -95,20 +106,24 @@ NC='\e[0m'              # No Color
 
 
 #Here it reads the other config files.
-if [ -f ~/.zaliases ]; then
-        . ~/.zaliases
-fi
-
-if [ -f ~/.zprograms ]; then
-        . ~/.zprograms
-fi
-
-if [ -f~/.zshort ]; then
+if [ -f ~/.zshort ]; then
         . ~/.zshort
 fi
 
-if [ -f~/.zcompletion ]; then
+if [ -f ~/.zcompletion ]; then
         . ~/.zcompletion
+fi
+
+if [ "$ls -A $HOME/.zsh/functions" ]; then
+        fpath=($HOME/.zsh/functions $fpath)
+        autoload -U ~/.zsh/functions/*(:t)
+        # Enable auto-execution of functions.
+        typeset -ga preexec_functions
+        typeset -ga precmd_functions
+        typeset -ga chpwd_functionsi
+        preexec_functions+='preexec_update_git_vars'
+        precmd_functions+='precmd_update_git_vars'
+        chpwd_functions+='chpwd_update_git_vars'
 fi
 
 # The following lines were added by compinstall
@@ -119,10 +134,24 @@ autoload -Uz compinit
 compinit
 autoload -U colors
 colors
-# End of lines configured by zsh-newuser-install
 
-#if [ "$PS1" ] ;
-#then mkdir -m 0700 /dev/cgroup/cpu/user/$$
-#echo $$ > /dev/cgroup/cpu/user/$$/tasks
-#echo "1" > /dev/cgroup/cpu/user/$$/notify_on_release
-#fi
+autoload -U compinit zrecompile
+
+zsh_cache=${HOME}/.zsh/cache
+mkdir -p $zsh_cache
+
+#~ if [ $UID -eq 0 ]; then
+#~ compinit
+#~ else
+compinit -d $zsh_cache/zcomp-$HOST
+
+for f in ~/.zshrc $zsh_cache/zcomp-$HOST; do
+        zrecompile -p $f && rm -f $f.zwc.old
+done
+#~ fi
+
+setopt extended_glob
+#for zshrc_snipplet in ~/.zsh/functions/S[0-9][0-9]*[^~] ; do
+for zshrc_snipplet in ~/.zsh/*[^~] ; do
+        source $zshrc_snipplet
+done
