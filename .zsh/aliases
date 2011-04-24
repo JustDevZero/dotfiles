@@ -84,20 +84,32 @@ alias la='ls -laF --color=tty --sort=size'
 alias count='(ls -1 /$(pwd) | wc -l)'
 
 
-###      ALIAS FOR APTITUDE AND APT-GET     ###
-alias update='sudo apt-get update'
-alias instal='sudo apt-get install'
-alias insta='sudo aptitude install'
-alias reinstall='sudo aptitude reinstall'
-alias afind='sudo aptitude search'
-alias afile='dpkg-query -S'
+###      ALIAS FOR APTITUDE AND APT-GET, and YUM     ###
+OS=`cat /etc/issue|head -n 1|awk '{print $1}'`
+if [ "$OS" = "Ubuntu" ] || [ "$OS" = "Debian" ] ;then
+    alias update='sudo apt-get update'
+    alias instal='sudo apt-get install'
+    alias insta='sudo aptitude install'
+    alias reinstall='sudo aptitude reinstall'
+    alias afind='sudo aptitude search'
+    alias afile='dpkg-query -S'
+    alias linstall='dpkg -i'
+elif [ "$OS" = "Fedora" ];then
+    alias update='sudo yum check-update'
+    alias upgrade='sudo yum update'
+    alias instal='sudo yum install'
+    alias linstall='sudo yum localinstall'
+    alias afind='sudo yum search'
+    alias reinstall='sudo yum reinstall'
+fi
 
 ###     GLOBAL ALIAS FOR CHANGE DIRECTORY     ###
-alias -g ...='../..'
-alias -g ....='../../..'
-alias -g .....='../../../..'
-alias -g ......="../../../../.."
-alias dotfiles="cd ~/git/dotfiles"
+#alias -g ...='../..'
+#alias -g ....='../../..'
+#alias -g .....='../../../..'
+#alias -g ......="../../../../.."
+#alias dotfiles="cd ~/git/dotfiles"
+#
 alias p="cd .."
 
 ###      ALIAS FOR GIT     ###
@@ -111,6 +123,17 @@ alias gitm="git commit -m"
 alias giti="git init"
 alias gitst='git status'
 alias gitl='git pull'
+
+###	ALIAS FOR APACHE ###
+alias a2stop='sudo invoke-rc.d apache2 stop'
+alias a2start='sudo invoke-rc.d apache2 start'
+alias a2restart='sudo invoke-rc.d apache2 restart'
+alias a2reload='sudo invoke-rc.d apache2  reload'
+alias a2force='sudo invoke-rc.d apache2 force-reload'
+alias a2ensite='sudo a2ensite'
+alias a2dissite='sudo a2dissite'
+alias a2enmod='sudo a2enmod'
+alias a2dismod='sudo a2dismod'
 
 ###      SET UP AUTO EXTENSION STUFF    ###
 alias -s html=$BROWSER
@@ -139,3 +162,5 @@ alias -s psd="gimp"
 alias lol="echo '¿Y tu de que te ries?'"
 alias xD="echo '¿Que te ries solo?'"
 alias hola="echo 'Hola, saludar a tu PC no te parece triste?'"
+
+alias gpg="/usr/local/bin/gpg"

@@ -55,7 +55,7 @@ function ad() { # decompress archive (to directory $2 if wished for and possible
     echo "rar, zip, 7z, xz and lzma"
    fi
 }
-function ac() { # compress a file or folder
+function cf() { # compress a file or folder
     case "$1" in
         tar.bz2|.tar.bz2) tar cvjf "${2%%/}.tar.bz2" "${2%%/}/" ;;
         tbz2|.tbz2) tar cvjf "${2%%/}.tbz2" "${2%%/}/" ;;
@@ -199,6 +199,16 @@ function uper { zmv '(*)' '${(U)1}' }
 #function twit $1 { curl -u user:password -d status=" $1 " http://twitter.com/statuses/update.xml} # DEPRECATED, TWITTER DOESN'T ACCEPT PLAIN LOGIN ANYMORE
 #function twitden $1 { curl -u user:password -d status=" $1 " http://twitter.com/statuses/update.xml && curl --basic --user user:password --data-ascii "status=$1" http://identi.ca/api/statuses/update.xml } # DEPRECATED, TWITTER DOESN'T ACCEPT PLAIN LOGIN ANYMORE
 function identica $1 { curl --basic --user user:password --data-ascii "status=$1" http://identi.ca/api/statuses/update.xml }
+rationalise-dot() {
+  if [[ $LBUFFER = *.. ]]; then
+    LBUFFER+=/..
+  else
+    LBUFFER+=.
+  fi
+}
+zle -N rationalise-dot
+bindkey . rationalise-dot
+
 
 ### FUNNY PROGRAMS ###
 function reverse { echo "${(j::)${(@Oa)${(s::):-$1}}}" }
