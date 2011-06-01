@@ -70,17 +70,17 @@ export EDITOR="/usr/bin/vim"
 export BROWSER="/usr/bin/firefox"
 export PAGER='most -s'
 export LESSHISTFILE='most -s'
-export ZLS_COLORS=$LS_COLORS
+#export ZLS_COLORS=$LS_COLORS
 #export PS1="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print ' %{\e[0;31m%}% \ %d %{\e[0;32m%}\nQue quieres?%{\e[0m%}') "
 export PS2="$(print '%{\e[0;34m%}>%{\e[0m%}')"
 
-if [ $UID -eq 0 ]; then
+#if [ $UID -eq 0 ]; then
     export PS1="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print ' %{\e[0;31m%}% \ %d %{\e[0;32m%}\n$%{\e[0m%}') "
-else
-    PROMPT="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print '%{${fg[cyan]}%}%B%~%b$(prompt_git_info)%{${fg[default]}%} %{\e[0;32m%}\n# %{\e[0m%}')"
-fi
+#else
+#    PROMPT="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print '%{${fg[cyan]}%}%B%~%b$(prompt_git_info)%{${fg[default]}%} %{\e[0;32m%}\n# %{\e[0m%}')"
+#fi
 # Allow for functions in the prompt.
-setopt PROMPT_SUBST
+#setopt PROMPT_SUBST
 
 
 
@@ -120,10 +120,10 @@ if [ "$ls -A $HOME/.zsh/functions" ]; then
         # Enable auto-execution of functions.
         typeset -ga preexec_functions
         typeset -ga precmd_functions
-        typeset -ga chpwd_functionsi
-        preexec_functions+='preexec_update_git_vars'
-        precmd_functions+='precmd_update_git_vars'
-        chpwd_functions+='chpwd_update_git_vars'
+        typeset -ga chpwd_functions
+#        preexec_functions+='preexec_update_git_vars'
+#        precmd_functions+='precmd_update_git_vars'
+#        chpwd_functions+='chpwd_update_git_vars'
 fi
 
 # The following lines were added by compinstall
