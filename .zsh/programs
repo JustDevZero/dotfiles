@@ -189,16 +189,19 @@ function cdl { cd "$@" && ls; } #Go to the directory, and list it.
 function ndir { ls -ld *(/om[1]) } #List the newest directory.
 function nfile { ls *(.om[1]) } #List the newest file
 function rmtype { rm -i *.$1(.) } #Remove files in specified format in a directory
-function ipconfig { print Your private IP is: ${${$(LC_ALL=C /sbin/ifconfig eth0)[7]}:gs/addr://} } #Gives your private ip, with nice format, change to your interface if needed.
+function iprivate { print Your private IP is: ${${$(LC_ALL=C /sbin/ifconfig eth0)[7]}:gs/addr://} } #Gives your private ip, with nice format, change to your interface if needed.
 function lenght { print -rl $HOME/${(l:$1::?:)~:-}* } # List files with lenght superior than specified.
 function age { ls -tald **/*(m-$1) } # List files with age younger than specified.
 function rmspace { for a in ./**/*\ *(Dod); do mv $a ${a:h}/${a:t:gs/ /_}; done }
 function lower { zmv '(*)' '${(L)1}'  }
 function uper { zmv '(*)' '${(U)1}' }
+function watchssh { watch -n 1 'ps aux | grep ssh | grep -v grep' }
 #function capitalize { zmv '(**/)(*).(#i)mp3' '$1$2.mp3'  && zmv '* *' '$f:gs/ /_'} #capitalize all mp3 files, need to be improved for use with any extension
-#function twit $1 { curl -u user:password -d status=" $1 " http://twitter.com/statuses/update.xml} # DEPRECATED, TWITTER DOESN'T ACCEPT PLAIN LOGIN ANYMORE
-#function twitden $1 { curl -u user:password -d status=" $1 " http://twitter.com/statuses/update.xml && curl --basic --user user:password --data-ascii "status=$1" http://identi.ca/api/statuses/update.xml } # DEPRECATED, TWITTER DOESN'T ACCEPT PLAIN LOGIN ANYMORE
+
+
 function identica $1 { curl --basic --user user:password --data-ascii "status=$1" http://identi.ca/api/statuses/update.xml }
+
+### This write the backward on the LBUFFER automagically
 rationalise-dot() {
   if [[ $LBUFFER = *.. ]]; then
     LBUFFER+=/..
