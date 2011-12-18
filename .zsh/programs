@@ -141,8 +141,8 @@ function man2pdf() {
 miso () {
     [ ! -f "$1" ] && { echo "Provide a valid iso file"; return 1; }
     mountpoint="/media/${1//.iso}"
-    sudo mkdir -p "$mountpoint"
-    sudo mount -o loop "$1" "$mountpoint"
+    $IFSUDO mkdir -p "$mountpoint"
+    $IFSUDO mount -o loop "$1" "$mountpoint"
 
 }
 
@@ -150,8 +150,8 @@ miso () {
 umiso () {
     mountpoint="/media/${1//.iso}"
     [ ! -d "$mountpoint" ] && { echo "Not a valid mount point"; return 1; }
-    sudo umount "$mountpoint"
-    sudo rm -ir "$mountpoint"
+    $IFSUDO umount "$mountpoint"
+    $IFSUDO rm -ir "$mountpoint"
 
 }
 
@@ -170,7 +170,7 @@ mkrzip() { rzip -k9 $1 }
 
 ###      VERSION OF THE MOST USED COMMAND MEME BY CHOMS    ###
 most-used-command () {
-    hist|awk '1 { if ( $1=="sudo") { print $1,$2 } else { print $1 } }'|sort|uniq -c|sort -rn|head -10
+    hist|awk '1 { if ( $1=="$IFSUDO") { print $1,$2 } else { print $1 } }'|sort|uniq -c|sort -rn|head -10
     }
 
 

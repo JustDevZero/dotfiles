@@ -68,6 +68,7 @@ DISTRO=`cat /etc/issue|head -n 1|awk '{print $2}'`
 VERSION=`cat /etc/issue|head -n 1|awk '{print $3}'`
 export EDITOR="/usr/bin/vim"
 export BROWSER="/usr/bin/firefox"
+export VISOR="/usr/bin/eog"
 export PAGER='most -s'
 export LESSHISTFILE='most -s'
 #export ZLS_COLORS=$LS_COLORS
@@ -75,14 +76,18 @@ export LESSHISTFILE='most -s'
 export PS2="$(print '%{\e[0;34m%}>%{\e[0m%}')"
 
 #if [ $UID -eq 0 ]; then
-    export PS1="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print ' %{\e[0;31m%}% \ %d %{\e[0;32m%}\n$%{\e[0m%}') "
+export PS1="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print ' %{\e[0;31m%}% \ %d %{\e[0;32m%}\n$%{\e[0m%}') "
 #else
 #    PROMPT="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print '%{${fg[cyan]}%}%B%~%b$(prompt_git_info)%{${fg[default]}%} %{\e[0;32m%}\n# %{\e[0m%}')"
 #fi
 # Allow for functions in the prompt.
 #setopt PROMPT_SUBST
 
-
+if [ $UID -eq 0 ]; then
+    export IFSUDO=""
+else
+    export IFSUDO="sudo"
+fi
 
 
 # Define a few Color's
