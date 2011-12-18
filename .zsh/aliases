@@ -33,10 +33,11 @@ alias hist="grep '$1' ~/.zsh_history"
 alias man='LC_ALL=es_ES.UTF-8 man' #For having manpages in spanish
 alias less='less -M'
 alias grep='grep --color=auto'
-alias nestat='sudo netstat -tpav'
+alias nestat='$IFSUDO netstat -tpav'
 alias unix2dos='recode lat1..ibmpc'
 alias dos2unix='recode ibmpc..lat1'
 alias ls='ls -FX --format=across --color=auto'
+alias l='ls'
 alias hgg='fc -l 0|grep'  # Very often I want to see a bunch of history entries instead of simply searching back
 alias diffc='colordiff'
 alias pget='http_proxy=127.0.0.1:8118 wget' #wget behind proxy
@@ -58,7 +59,7 @@ alias sha512='sha512sum'
 alias md='mkdir'
 alias rd='rmdir'
 alias cls='clear'
-alias se='sudo $EDITOR'
+alias se='$IFSUDO $EDITOR'
 alias top='htop'
 alias mytop='htop -u $USER'
 alias fecha='date "+%A %B %d, %Y %l:%M %p %Z"'
@@ -87,20 +88,20 @@ alias count='(ls -1 /$(pwd) | wc -l)'
 ###      ALIAS FOR APTITUDE AND APT-GET, and YUM     ###
 OS=`cat /etc/issue|head -n 1|awk '{print $1}'`
 if [ "$OS" = "Ubuntu" ] || [ "$OS" = "Debian" ] ;then
-    alias update='sudo apt-get update'
-    alias instal='sudo apt-get install'
-    alias insta='sudo aptitude install'
-    alias reinstall='sudo aptitude reinstall'
-    alias afind='sudo aptitude search'
+    alias update='$IFSUDO apt-get update'
+    alias instal='$IFSUDO apt-get install'
+    alias insta='$IFSUDO aptitude install'
+    alias reinstall='$IFSUDO aptitude reinstall'
+    alias afind='$IFSUDO aptitude search'
     alias afile='dpkg-query -S'
     alias linstall='dpkg -i'
 elif [ "$OS" = "Fedora" ];then
-    alias update='sudo yum check-update'
-    alias upgrade='sudo yum update'
-    alias instal='sudo yum install'
-    alias linstall='sudo yum localinstall'
-    alias afind='sudo yum search'
-    alias reinstall='sudo yum reinstall'
+    alias update='$IFSUDO yum check-update'
+    alias upgrade='$IFSUDO yum update'
+    alias instal='$IFSUDO yum install'
+    alias linstall='$IFSUDO yum localinstall'
+    alias afind='$IFSUDO yum search'
+    alias reinstall='$IFSUDO yum reinstall'
 fi
 
 ###     GLOBAL ALIAS FOR CHANGE DIRECTORY     ###
@@ -124,16 +125,25 @@ alias giti="git init"
 alias gitst='git status'
 alias gitl='git pull'
 
+
 ###	ALIAS FOR APACHE ###
-alias a2stop='sudo invoke-rc.d apache2 stop'
-alias a2start='sudo invoke-rc.d apache2 start'
-alias a2restart='sudo invoke-rc.d apache2 restart'
-alias a2reload='sudo invoke-rc.d apache2  reload'
-alias a2force='sudo invoke-rc.d apache2 force-reload'
-alias a2ensite='sudo a2ensite'
-alias a2dissite='sudo a2dissite'
-alias a2enmod='sudo a2enmod'
-alias a2dismod='sudo a2dismod'
+if [ "$OS" = "Ubuntu" ] || [ "$OS" = "Debian" ] ;then
+    alias a2stop='$IFSUDO invoke-rc.d apache2 stop'
+    alias a2start='$IFSUDO invoke-rc.d apache2 start'
+    alias a2restart='$IFSUDO invoke-rc.d apache2 restart'
+    alias a2reload='$IFSUDO invoke-rc.d apache2  reload'
+    alias a2force='$IFSUDO invoke-rc.d apache2 force-reload'
+elif [ "$OS" = "Fedora" ];then
+    alias a2stop='$IFSUDO service httpd stop'
+    alias a2start='$IFSUDO service httpd start'
+    alias a2restart='$IFSUDO service httpd restart'
+    alias a2reload='$IFSUDO service httpd reload'
+    alias a2force='$IFSUDO service http dforce-reload'
+fi
+alias a2ensite='$IFSUDO a2ensite'
+alias a2dissite='$IFSUDO a2dissite'
+alias a2enmod='$IFSUDO a2enmod'
+alias a2dismod='$IFSUDO a2dismod'
 
 ###      SET UP AUTO EXTENSION STUFF    ###
 alias -s html=$BROWSER
@@ -141,10 +151,10 @@ alias -s org=$BROWSER
 alias -s php=$BROWSER
 alias -s com=$BROWSER
 alias -s net=$BROWSER
-alias -s png=feh
-alias -s pnm=feh
-alias -s bmp=feh
-alias -s jpg=feh
+alias -s png=$VISOR
+alias -s pnm=$VISOR
+alias -s bmp=$VISOR
+alias -s jpg=$VISOR
 alias -s gif=feg
 alias -s sxw=soffice
 alias -s doc=soffice

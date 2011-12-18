@@ -1,0 +1,9 @@
+[alias]
+	st = status
+	br = branch
+	amend = commit --amend
+	co = checkout
+[color]
+	ui = true
+[commit]
+	template = /etc/gittemplate
