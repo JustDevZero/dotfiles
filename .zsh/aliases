@@ -167,10 +167,9 @@ alias -s xcf="gimp"
 alias -s psd="gimp"
 #alias -s PKGBUILD=$EDITOR
 
-
 #funny alias
 alias lol="echo '¿Y tu de que te ries?'"
 alias xD="echo '¿Que te ries solo?'"
 alias hola="echo 'Hola, saludar a tu PC no te parece triste?'"
 
-alias gpg="/usr/local/bin/gpg"
+#alias gpg="/usr/local/bin/gpg"
