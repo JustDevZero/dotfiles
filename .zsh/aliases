@@ -97,6 +97,8 @@ if [ "$OS" = "Ubuntu" ] || [ "$OS" = "Debian" ] ;then
     alias afile='dpkg-query -S'
     alias ainfo='$IFSUDO apt-cache show'
     alias linstall='$IFSUDO dpkg -i'
+    alias remove='$IFSUDO apt-get remove'
+    alias purge='$IFSUDO apt-get purge'
 elif [ "$OS" = "Fedora" ];then
     alias update='$IFSUDO yum check-update'
     alias upgrade='$IFSUDO yum update'
@@ -104,6 +106,7 @@ elif [ "$OS" = "Fedora" ];then
     alias linstall='$IFSUDO yum localinstall'
     alias afind='$IFSUDO yum search'
     alias ainfo='$IFSUDO yum info'
+    alias remove='$IFSUDO yum remove'
     alias reinstall='$IFSUDO yum reinstall'
 fi
 
