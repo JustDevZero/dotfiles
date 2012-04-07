@@ -91,16 +91,19 @@ if [ "$OS" = "Ubuntu" ] || [ "$OS" = "Debian" ] ;then
     alias update='$IFSUDO apt-get update'
     alias instal='$IFSUDO apt-get install'
     alias insta='$IFSUDO aptitude install'
+    alias upgrade='$IFSUDO apt-get upgrade'
     alias reinstall='$IFSUDO aptitude reinstall'
     alias afind='$IFSUDO aptitude search'
     alias afile='dpkg-query -S'
-    alias linstall='dpkg -i'
+    alias ainfo='$IFSUDO apt-cache show'
+    alias linstall='$IFSUDO dpkg -i'
 elif [ "$OS" = "Fedora" ];then
     alias update='$IFSUDO yum check-update'
     alias upgrade='$IFSUDO yum update'
     alias instal='$IFSUDO yum install'
     alias linstall='$IFSUDO yum localinstall'
     alias afind='$IFSUDO yum search'
+    alias ainfo='$IFSUDO yum info'
     alias reinstall='$IFSUDO yum reinstall'
 fi
 
