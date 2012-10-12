@@ -75,11 +75,11 @@ export LESSHISTFILE='most -s'
 #export PS1="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print ' %{\e[0;31m%}% \ %d %{\e[0;32m%}\nQue quieres?%{\e[0m%}') "
 export PS2="$(print '%{\e[0;34m%}>%{\e[0m%}')"
 
-#if [ $UID -eq 0 ]; then
-export PS1="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print ' %{\e[0;31m%}% \ %d %{\e[0;32m%}\n$%{\e[0m%}') "
-#else
-#    PROMPT="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print '%{${fg[cyan]}%}%B%~%b$(prompt_git_info)%{${fg[default]}%} %{\e[0;32m%}\n# %{\e[0m%}')"
-#fi
+if [ $UID -eq 0 ]; then
+    export PS1="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print ' %{\e[0;31m%}% \ %d %{\e[0;32m%}\n#%{\e[0m%}') "
+else
+    export PS1="$(print '%{\e[0;34m%}%n%{\e[0m%}'): $(print ' %{\e[0;31m%}% \ %d %{\e[0;32m%}\n$%{\e[0m%}') "
+fi
 # Allow for functions in the prompt.
 #setopt PROMPT_SUBST
 
