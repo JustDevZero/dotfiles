@@ -56,32 +56,27 @@ fi
 # Instructions about how to prepare an enviroment for phonegpa
 # http://www.howtoforge.com/setting-up-an-android-app-build-environment-with-eclipse-android-sdk-phonegap-fedora-14
 # http://www.howtoforge.com/setting-up-an-android-app-build-environment-with-eclipse-android-sdk-phonegap-ubuntu-11.04
-if [ -d "$HOME/Desarrollo/phonegap-android/bin" ]; then
-    export PHONEGAP="$HOME/Desarrollo/phonegap-android/bin"
+if [ -d "$HOME/Desenvolupament/phonegap-android/bin" ]; then
+    export PHONEGAP="$HOME/Desenvolupament/phonegap-android/bin"
 fi
 
 
 # Instructions about how to use android-cmake here
 # http://code.google.com/p/android-cmake/
 # themeph mirror on gitorious:  https://gitorious.org/android-cmake
-if [ -d "$HOME/Proyectos/android-cmake/toolchain" ]; then
-    export ANDTOOLCHAIN="$HOME/Proyectos/android-cmake/toolchain/android.toolchain.cmake"
+if [ -d "$HOME/Projectes/android-cmake/toolchain" ]; then
+    export ANDTOOLCHAIN="$HOME/Projectes/android-cmake/toolchain/android.toolchain.cmake"
 fi
 
-if [ -d "$HOME/Proyectos/android-cmake/" ]; then
-    export ANDROID_CMAKE="$HOME/Proyectos/android-cmake/"
+if [ -d "$HOME/Projectes/android-cmake/" ]; then
+    export ANDROID_CMAKE="$HOME/Projectes/android-cmake/"
 fi
 
 
 # Instructions about where to download android-ndk.
 # http://developer.android.com/sdk/ndk/index.html
-if [ -d "$HOME/android-ndk" ]; then
-    export ANDROID_NDK="$HOME/android-ndk"
+if [ -d "/opt/android-ndk" ]; then
+    export ANDROID_NDK="/opt/android-ndk"
 fi
-
-export ANDTOOLCHAIN=/home/mephiston/Proyectos/android-cmake/toolchain/android.toolchain.cmake
-export ANDROID_CMAKE=/home/mephiston/Proyectos/android-cmake
-export ANDROID_NDK=/home/mephiston/android-ndk
-
 
 export PATH="$HOMEBIN:$ANDROID_TOOLS:$ANDROID_PLATAFORM_TOOLS:$ECLIPSE:$PHONEGAP:$ANDTOOLCHAIN:$ANDROID_CMAKE:$ANDROID_NDK:$PATH"
