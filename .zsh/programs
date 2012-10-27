@@ -198,6 +198,21 @@ function uper { zmv '(*)' '${(U)1}' }
 function watchssh { watch -n 1 'ps aux | grep ssh | grep -v grep' }
 #function capitalize { zmv '(**/)(*).(#i)mp3' '$1$2.mp3'  && zmv '* *' '$f:gs/ /_'} #capitalize all mp3 files, need to be improved for use with any extension
 
+    
+# Check new ip and whatch if changed.
+function myip {
+    if [ ! -f "$HOME/.lastip" ]; then
+        wget http://checkip.dyndns.org/ -q -O - | grep -Eo '\<[[:digit:]]{1,3}(\.[[:digit:]]{1,3}){3}\>' > "$HOME/.lastip"
+    else
+        lastip=`cat "$HOME/.lastip"`
+        newip=`wget http://checkip.dyndns.org/ -q -O - | grep -Eo '\<[[:digit:]]{1,3}(\.[[:digit:]]{1,3}){3}\>'`
+        if [ "$lastip" != "$newip"  ]; then
+			echo "Your ip has changed from $lastip to:"
+            sed s"=$lastip=$newip="g -i $HOME/.lastip
+        fi
+    fi
+    cat $HOME/.lastip
+}
 
 function identica $1 { curl --basic --user user:password --data-ascii "status=$1" http://identi.ca/api/statuses/update.xml }
 
