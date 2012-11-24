@@ -145,6 +145,10 @@ autoload -U compinit zrecompile
 zsh_cache=${HOME}/.zsh/cache
 mkdir -p $zsh_cache
 
+if [ -f ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+    source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
 #~ if [ $UID -eq 0 ]; then
 #~ compinit
 #~ else
@@ -160,3 +164,4 @@ setopt extended_glob
 for zshrc_snipplet in ~/.zsh/*[^~] ; do
         source $zshrc_snipplet
 done
+
