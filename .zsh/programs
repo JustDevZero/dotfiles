@@ -25,7 +25,7 @@
 #####      PROGRAMS     #####
 
 ###    PROGRAM FOR EXTRACTING COMPRESSED ARCHIVES   ###
-function ad() { # decompress archive (to directory $2 if wished for and possible)
+function extraer() { # decompress archive (to directory $2 if wished for and possible)
    if [ -f "$1" ] ; then
     case "$1" in
         *.tar.bz2|*.tbz2|*.tbz) mkdir -v "$2" 2>/dev/null ; tar xvjf "$1" -C "$2" ;;
@@ -55,7 +55,7 @@ function ad() { # decompress archive (to directory $2 if wished for and possible
     echo "rar, zip, 7z, xz and lzma"
    fi
 }
-function cf() { # compress a file or folder
+function comprimir() { # compress a file or folder
     case "$1" in
         tar.bz2|.tar.bz2) tar cvjf "${2%%/}.tar.bz2" "${2%%/}/" ;;
         tbz2|.tbz2) tar cvjf "${2%%/}.tbz2" "${2%%/}/" ;;
@@ -82,7 +82,7 @@ function cf() { # compress a file or folder
     esac
 }
 
-function al() { # list content of archive but don't unpack
+function listar() { # list content of archive but don't unpack
     if [ -f "$1" ]; then
         case "$1" in
             *.tar.bz2|*.tbz2|*.tbz) tar -jtf "$1" ;;
