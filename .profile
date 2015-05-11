@@ -25,7 +25,7 @@ fi
 
 #if running zsh...
 if [ -n "$ZSH_VERSION" ]; then
-    #include .bashrc
+    #include .zshrc
     if [ -f "$HOME/.zshrc" ]; then
         . "$HOME/.zshrc"
     fi
@@ -34,15 +34,17 @@ fi
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ]; then
     export HOMEBIN="$HOME/bin"
+    export $PATH=$HOMEBIN
 fi
 
 
 # Instructions about how to instal android-sdk on:
 # http://www.if-not-true-then-false.com/2010/android-sdk-and-eclipse-adt-on-fedora-centos-red-hat-rhel/
 # http://blog.sudobits.com/2011/07/27/android-sdk-for-ubuntu-11-0410-1011-10/
-if [ -d "/opt/android-sdk" ]; then
-    export ANDROID_TOOLS="/opt/android-sdk/tools"
-    export ANDROID_PLATAFORM_TOOLS="/opt/android-sdk/platform-tools"
+if [ -d "/opt/android/sdk" ]; then
+    export ANDROID_TOOLS="/opt/android/sdk/tools"
+    export ANDROID_PLATAFORM_TOOLS="/opt/android/sdk/platform-tools"
+    export $PATH:$ANDROID_TOOLS:$ANDROID_PLATAFORM_TOOLS
 fi
 
 
@@ -50,33 +52,17 @@ fi
 # http://www.if-not-true-then-false.com/2010/linux-install-eclipse-on-fedora-centos-red-hat-rhel/
 if [ -d "/opt/eclipse" ]; then
     export ECLIPSE="/opt/eclipse"
+    export $PATH=$ECLIPSE:$PATH
 fi
 
-
-# Instructions about how to prepare an enviroment for phonegpa
-# http://www.howtoforge.com/setting-up-an-android-app-build-environment-with-eclipse-android-sdk-phonegap-fedora-14
-# http://www.howtoforge.com/setting-up-an-android-app-build-environment-with-eclipse-android-sdk-phonegap-ubuntu-11.04
-if [ -d "$HOME/Desenvolupament/phonegap-android/bin" ]; then
-    export PHONEGAP="$HOME/Desenvolupament/phonegap-android/bin"
-fi
-
-
-# Instructions about how to use android-cmake here
-# http://code.google.com/p/android-cmake/
-# themeph mirror on gitorious:  https://gitorious.org/android-cmake
-if [ -d "$HOME/Projectes/android-cmake/toolchain" ]; then
-    export ANDTOOLCHAIN="$HOME/Projectes/android-cmake/toolchain/android.toolchain.cmake"
-fi
-
-if [ -d "$HOME/Projectes/android-cmake/" ]; then
-    export ANDROID_CMAKE="$HOME/Projectes/android-cmake/"
+if [ -d "/opt/android/cmake/" ]; then
+    export ANDROID_CMAKE="/opt/android/cmake/"
+    export $PATH=$ANDROID_CMAKE:$PATH
 fi
 
 
 # Instructions about where to download android-ndk.
 # http://developer.android.com/sdk/ndk/index.html
-if [ -d "/opt/android-ndk" ]; then
-    export ANDROID_NDK="/opt/android-ndk"
+if [ -d "/opt/android/ndk" ]; then
+    export ANDROID_NDK="/opt/android/ndk"
 fi
-
-export PATH="$HOMEBIN:$ANDROID_TOOLS:$ANDROID_PLATAFORM_TOOLS:$ECLIPSE:$PHONEGAP:$ANDTOOLCHAIN:$ANDROID_CMAKE:$ANDROID_NDK:$PATH"
