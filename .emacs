@@ -1,0 +1,47 @@
+
+(setq cua-enable-cua-keys nil)
+(cua-mode t)
+(setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
+(transient-mark-mode 1) ;; No region when it is not highlighted
+(setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
+(show-paren-mode t)
+
+(require 'tramp)
+(setq tramp-default-method "scp")
+(setq-default indent-tabs-mode nil)
+(setq c-basic-indent 2)
+(setq tab-width 4)
+
+(add-to-list 'load-path "~/.emacs.d/modes/")
+
+(autoload 'php-mode "php-mode" "Major mode for editing php code." t)
+(autoload 'web-mode "web-mode" "Major mode for editing web code." t)
+(autoload 'd-mode "d-mode" "Major mode for d-lang." t)
+
+(autoload 'jade-mode "jade-mode" "Major mode for diet-lang." t) 
+
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
+(add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
+(add-to-list 'auto-mode-alist '("\\.css$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.d$" . d-mode))
+(add-to-list 'auto-mode-alist '("\\.dt$" . jade-mode))
+(add-to-list 'auto-mode-alist '("\\.erb$" . web-mode))
+
+(setq web-mode-ac-sources-alist
+      '(("php" . (ac-source-yasnippet ac-source-php-auto-yasnippets))
+        ("inc" . (ac-source-yasnippet ac-source-php-auto-yasnippets))
+        ("html" . (ac-source-emmet-html-aliases ac-source-emmet-html-snippets))
+        ("css" . (ac-source-css-property ac-source-emmet-css-snippets))))
+
+(add-hook 'web-mode-before-auto-complete-hooks '(
+                                                 lambda ()
+                                                        (let ((web-mode-cur-language (web-mode-language-at-pos)))
+                                                          (if (string= web-mode-cur-language "php")
+                                                              (yas-activate-extra-mode 'php-mode)
+                                                            (yas-deactivate-extra-mode 'php-mode))
+                                                          (if (string= web-mode-cur-language "css")
+                                                              (setq emmet-use-css-transform t)
+                                                            (setq emmet-use-css-transform nil)))))
+
+
