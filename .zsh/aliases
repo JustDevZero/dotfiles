@@ -86,7 +86,8 @@ alias count='(ls -1 /$(pwd) | wc -l)'
 
 
 ###      ALIAS FOR APTITUDE AND APT-GET, and YUM     ###
-OS=`cat /etc/issue|head -n 1|awk '{print $1}'`
+OS=`grep '^NAME' /etc/os-release|sed s'?=? ?'|awk '{print $2}'`
+VERSION=`grep '^VERSION_ID' /etc/os-release |sed s'?=? ?'|awk '{print $2}'`
 if [ "$OS" = "Ubuntu" ] || [ "$OS" = "Debian" ] ;then
     alias update='$IFSUDO apt-get update'
     alias instal='$IFSUDO apt-get install'
@@ -100,14 +101,25 @@ if [ "$OS" = "Ubuntu" ] || [ "$OS" = "Debian" ] ;then
     alias remove='$IFSUDO apt-get remove'
     alias purge='$IFSUDO apt-get purge'
 elif [ "$OS" = "Fedora" ];then
-    alias update='$IFSUDO yum check-update'
-    alias upgrade='$IFSUDO yum update'
-    alias instal='$IFSUDO yum install'
-    alias linstall='$IFSUDO yum localinstall'
-    alias afind='$IFSUDO yum search'
-    alias ainfo='$IFSUDO yum info'
-    alias remove='$IFSUDO yum remove'
-    alias reinstall='$IFSUDO yum reinstall'
+    if [ "$VERSION" = "22" ]; then     
+      alias update='$IFSUDO dnf check-update'
+      alias upgrade='$IFSUDO dnf update'
+      alias instal='$IFSUDO dnf install'
+      alias afind='$IFSUDO dnf search'
+      alias ainfo='$IFSUDO dnf info'
+      alias remove='$IFSUDO dnf remove'
+      alias reinstall='$IFSUDO yum reinstall'
+      alias clean='$IFSUDO yum clean'
+    else
+      alias update='$IFSUDO yum check-update'
+      alias upgrade='$IFSUDO yum update'
+      alias instal='$IFSUDO yum install'
+      alias linstall='$IFSUDO yum localinstall'
+      alias afind='$IFSUDO yum search'
+      alias ainfo='$IFSUDO yum info'
+      alias remove='$IFSUDO yum remove'
+      alias reinstall='$IFSUDO yum reinstall'
+    fi
 fi
 
 ###     GLOBAL ALIAS FOR CHANGE DIRECTORY     ###
