@@ -1,5 +1,7 @@
 install:
 	cp .zshrc ~/
+	cp .emacs ~/
+	cp -r .emacs.d
 	cp .zshort ~/
 	cp .zcompletion ~/
 	cp .gitconfig  ~/
