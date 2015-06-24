@@ -34,7 +34,7 @@ fi
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ]; then
     export HOMEBIN="$HOME/bin"
-    export $PATH=$HOMEBIN
+    export $PATH=$HOMEBIN:$PATH
 fi
 
 
