@@ -67,8 +67,22 @@ OS=`cat /etc/issue|head -n 1|awk '{print $1}'`
 DISTRO=`cat /etc/issue|head -n 1|awk '{print $2}'`
 VERSION=`cat /etc/issue|head -n 1|awk '{print $3}'`
 export EDITOR="/usr/bin/vim"
+if [ -f /usr/bin/emacs       ]; then
+    EDITOR=/usr/bin/emacs
+    GIT_EDITOR=/usr/bin/emacs
+fi
 export BROWSER="/usr/bin/firefox"
+if [ -f /opt/firefox/firefox ]; then
+    BROWSER=/opt/firefox/firefox
+fi
+
 export VISOR="/usr/bin/eog"
+if [ -f /usr/local/bin/lximage-qt ]; then
+    VISOR=/usr/local/bin/lximage-qt
+elif [ -f /usr/bin/lximage-qt ]; then
+    VISOR=/usr/bin/lximage-qt
+fi
+
 export PAGER='most -s'
 export LESSHISTFILE='most -s'
 #export ZLS_COLORS=$LS_COLORS
