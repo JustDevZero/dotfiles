@@ -176,11 +176,20 @@ alias -s jpg=$VISOR
 alias -s gif=$VISOR
 alias -s sxw=soffice
 alias -s doc=soffice
+      
+if [ -f /opt/libreoffice4.4/program/soffice ]; then
+   alias -s sxw=/opt/libreoffice4.4/program/soffice
+   alias -s doc=/opt/libreoffice4.4/program/soffice
+fi
 alias -s gz=tar -xzvf
 alias -s bz2=tar -xjvf
 alias -s java=$EDITOR
 alias -s txt=$EDITOR
 alias -s pdf=evince
+if [ -f /usr/bin/atril ]; then
+   alias -s pdf=/usr/bin/atril
+fi
+      
 alias -s xcf="gimp"
 alias -s psd="gimp"
 #alias -s PKGBUILD=$EDITOR

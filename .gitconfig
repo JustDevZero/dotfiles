@@ -6,4 +6,6 @@
 [color]
 	ui = true
 [commit]
-	template = /etc/gittemplate
+	template = ~/gittemplate
+[core]
+        editor =  "if [ -f /usr/bin/emacs ]; then ED='/usr/bin/emacs'; else ED='nano'; fi; $ED"
