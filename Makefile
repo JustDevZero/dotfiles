@@ -9,16 +9,16 @@ install:
 	cp -r .zsh ~/
 	cp .vimrc ~/
 	cp .profile ~/
-	cp .zshrc /root
-	cp .emacs /root
-	cp -r .emacs.d /root
-	cp .zshort /root
-	cp .zcompletion /root
-	cp .gitconfig /root
-	cp .gittemplate /root
-	cp -r .zsh /root
-	cp .vimrc /root
-	cp .profile /root
+	sudo cp .zshrc /root
+	sudo cp .emacs /root
+	sudo cp -r .emacs.d /root
+	sudo cp .zshort /root
+	sudo cp .zcompletion /root
+	sudo cp .gitconfig /root
+	sudo cp .gittemplate /root
+	sudo cp -r .zsh /root
+	sudo cp .vimrc /root
+	sudo cp .profile /root
 
 bash-install:
 	cp .bashrc ~/
@@ -29,13 +29,13 @@ bash-install:
 	cp .gittemplate ~/
 	cp .vimrc ~/
 	cp .profile ~/
-	cp .bashrc /root
-	cp .emacs /root
-	cp -r .emacs.d /root
-	cp .bash_aliases /root
-	cp .gitconfig  /root
-	cp .gittemplate /root
-	cp .vimrc /root
-	cp .profile /root
+	sudo cp .bashrc /root
+	sudo cp .emacs /root
+	sudo cp -r .emacs.d /root
+	sudo cp .bash_aliases /root
+	sudo cp .gitconfig  /root
+	sudo cp .gittemplate /root
+	sudo cp .vimrc /root
+	sudo cp .profile /root
 
 

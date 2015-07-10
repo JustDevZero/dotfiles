@@ -34,8 +34,15 @@ fi
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ]; then
     export HOMEBIN="$HOME/bin"
-    export $PATH=$HOMEBIN:$PATH
+    export PATH=$HOMEBIN:$PATH
 fi
+
+
+if [ -d "/opt/firefox" ]; then
+    export FIREFOXBIN="/opt/firefox"
+    export PATH=$FIREFOXBIN:$PATH
+fi
+
 
 
 # Instructions about how to instal android-sdk on:
@@ -44,7 +51,7 @@ fi
 if [ -d "/opt/android/sdk" ]; then
     export ANDROID_TOOLS="/opt/android/sdk/tools"
     export ANDROID_PLATAFORM_TOOLS="/opt/android/sdk/platform-tools"
-    export $PATH:$ANDROID_TOOLS:$ANDROID_PLATAFORM_TOOLS
+    export PATH=$ANDROID_TOOLS:$ANDROID_PLATAFORM_TOOLS:$PATH
 fi
 
 
@@ -52,12 +59,12 @@ fi
 # http://www.if-not-true-then-false.com/2010/linux-install-eclipse-on-fedora-centos-red-hat-rhel/
 if [ -d "/opt/eclipse" ]; then
     export ECLIPSE="/opt/eclipse"
-    export $PATH=$ECLIPSE:$PATH
+    export PATH=$ECLIPSE:$PATH
 fi
 
 if [ -d "/opt/android/cmake/" ]; then
     export ANDROID_CMAKE="/opt/android/cmake/"
-    export $PATH=$ANDROID_CMAKE:$PATH
+    export PATH=$ANDROID_CMAKE:$PATH
 fi
 
 
