@@ -3,6 +3,9 @@
 	br = branch
 	amend = commit --amend
 	co = checkout
+        comit = commit
+        ps = push
+        dif = diff
 [color]
 	ui = true
 [commit]
