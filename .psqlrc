@@ -1,0 +1,15 @@
+-- basically don't commit things that break mid-transaction
+\set ON_ERROR_ROLLBACK interactive
+
+-- i prefer lower because upper makes my eyes bleed
+\set COMP_KEYWORD_CASE upper
+
+-- sets a history file with the name of our db so i can keep track
+\set HISTFILE ~/.psql/history- :DBNAME
+
+-- this will always use the environment var PAGER, even if the returned set 
+-- would not cause scrolling
+\pset pager always
+
+-- so that nulls are visible and not atrocious
+\pset null '(null)'
