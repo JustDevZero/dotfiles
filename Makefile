@@ -9,6 +9,7 @@ install:
 	cp -r .zsh ~/
 	cp .vimrc ~/
 	cp .profile ~/
+	cp .psqlrc ~/
 	sudo cp .zshrc /root
 	sudo cp .emacs /root
 	sudo cp -r .emacs.d /root
@@ -19,6 +20,7 @@ install:
 	sudo cp -r .zsh /root
 	sudo cp .vimrc /root
 	sudo cp .profile /root
+	sudo cp .psqlrc /root
 
 bash-install:
 	cp .bashrc ~/
@@ -29,6 +31,7 @@ bash-install:
 	cp .gittemplate ~/
 	cp .vimrc ~/
 	cp .profile ~/
+	cp .psqlrc
 	sudo cp .bashrc /root
 	sudo cp .emacs /root
 	sudo cp -r .emacs.d /root
@@ -37,5 +40,6 @@ bash-install:
 	sudo cp .gittemplate /root
 	sudo cp .vimrc /root
 	sudo cp .profile /root
+	sudo cp .psqlrc /root
 
 
