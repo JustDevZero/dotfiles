@@ -108,8 +108,8 @@ elif [ "$OS" = "Fedora" ];then
       alias afind='$IFSUDO dnf search'
       alias ainfo='$IFSUDO dnf info'
       alias remove='$IFSUDO dnf remove'
-      alias reinstall='$IFSUDO yum reinstall'
-      alias clean='$IFSUDO yum clean'
+      alias reinstall='$IFSUDO dnf reinstall'
+      alias clean='$IFSUDO dnf clean'
     else
       alias update='$IFSUDO yum check-update'
       alias upgrade='$IFSUDO yum update'
