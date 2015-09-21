@@ -21,23 +21,21 @@
 #       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #       THE SOFTWARE.
 
-
-# if running bash
-if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-    . "$HOME/.bashrc"
-    fi
+### ALIAS FOR APACHE ###
+if [ "$OS" = "Ubuntu" ] || [ "$OS" = "Debian" ] ;then
+    alias a2stop='$IFSUDO invoke-rc.d apache2 stop'
+    alias a2start='$IFSUDO invoke-rc.d apache2 start'
+    alias a2restart='$IFSUDO invoke-rc.d apache2 restart'
+    alias a2reload='$IFSUDO invoke-rc.d apache2  reload'
+    alias a2force='$IFSUDO invoke-rc.d apache2 force-reload'
+if [ "$OS" = "Fedora" ] || [ "$OS" = "Centos" ] ;then
+    alias a2stop='$IFSUDO service httpd stop'
+    alias a2start='$IFSUDO service httpd start'
+    alias a2restart='$IFSUDO service httpd restart'
+    alias a2reload='$IFSUDO service httpd reload'
+    alias a2force='$IFSUDO service http dforce-reload'
 fi
-
-#if running zsh...
-if [ -n "$ZSH_VERSION" ]; then
-    #include .zshrc
-    if [ -f "$HOME/.zshrc" ]; then
-        . "$HOME/.zshrc"
-    fi
-fi
-
-if [ -f "$HOME/.dotfiles/scripts/_path.sh" ]; then
-    . "$HOME/.dotfiles/scripts/_path.sh"
-fi
+alias a2ensite='$IFSUDO a2ensite'
+alias a2dissite='$IFSUDO a2dissite'
+alias a2enmod='$IFSUDO a2enmod'
+alias a2dismod='$IFSUDO a2dismod'

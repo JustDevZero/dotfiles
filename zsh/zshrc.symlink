@@ -1,0 +1,85 @@
+#
+#       The MIT License
+#
+#       Copyright (c) Daniel Ripoll, <info@danielripoll.es>, <http://danielripoll.es>
+#
+#       Permission is hereby granted, free of charge, to any person obtaining a copy
+#       of this software and associated documentation files (the "Software"), to deal
+#       in the Software without restriction, including without limitation the rights
+#       to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#       copies of the Software, and to permit persons to whom the Software is
+#       furnished to do so, subject to the following conditions:
+#
+#       The above copyright notice and this permission notice shall be included in
+#       all copies or substantial portions of the Software.
+#
+#       THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#       IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#       FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#       AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#       LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#       THE SOFTWARE.
+
+
+# shortcut to this dotfiles path is $ZSH
+export ZSH=$HOME/.dotfiles
+
+# your project folder that we can `c [tab]` to
+export PROJECTS=~/Projects
+
+# Stash your environment variables in ~/.localrc. This means they'll stay out
+# of your main dotfiles repository (which may be public, like this one), but
+# you'll have access to them in your scripts.
+if [[ -a ~/.localrc ]]
+then
+  source ~/.localrc
+fi
+
+if [ $UID -eq 0 ]; then
+    export IFSUDO=""
+else
+    export IFSUDO="sudo"
+fi
+
+# all of our zsh files
+typeset -U config_files
+config_files=($ZSH/**/*.zsh)
+
+# load the path files
+for item in ${(M)config_files:#*/path.zsh}
+do
+  source $item
+done
+
+# load everything but the path and completion files
+for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}
+do
+  source $item
+done
+
+# initialize auto zmv, otherwise functions won't be loaded
+autoload zmv
+
+# initialize autocomplete here, otherwise functions won't be loaded
+autoload -Uz compinit
+compinit
+
+# initialize colors here and enable zrecompile, otherwise won't work
+autoload -U colors zrecompile
+colors
+
+if [ -f ~/.dotfiles/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+    source ~/.dotfiles/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
+# Create cache per host.
+
+zsh_cache=${HOME}/.zsh/cache
+mkdir -p $zsh_cache
+compinit -d $zsh_cache/zcomp-$HOST
+
+for f in ~/.zshrc $zsh_cache/zcomp-$HOST; do
+        zrecompile -p $f && rm -f $f.zwc.old
+done
+

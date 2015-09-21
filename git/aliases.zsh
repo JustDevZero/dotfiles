@@ -21,23 +21,13 @@
 #       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #       THE SOFTWARE.
 
-
-# if running bash
-if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-    . "$HOME/.bashrc"
-    fi
-fi
-
-#if running zsh...
-if [ -n "$ZSH_VERSION" ]; then
-    #include .zshrc
-    if [ -f "$HOME/.zshrc" ]; then
-        . "$HOME/.zshrc"
-    fi
-fi
-
-if [ -f "$HOME/.dotfiles/scripts/_path.sh" ]; then
-    . "$HOME/.dotfiles/scripts/_path.sh"
-fi
+alias gitps="git push origin master"
+alias gitp="git pull"
+alias gitc="git commit -a"
+alias gitb='git branch'
+alias gitad='git add'
+alias gitd='git diff | meld .'
+alias gitm="git commit -m"
+alias giti="git init"
+alias gitst='git status'
+alias gitl='git pull'
