@@ -56,7 +56,7 @@ The .zaliases and .zprograms contains alias and functions, for programs that may
 Programs that are used:
 zsh
 most
-openoffice.org
+libreoffice
 gimp
 gawk
 recode
@@ -64,17 +64,13 @@ manpages-es,manpages-es-extra (You can change to another manpages in .zaliases).
 htop
 nano
 firefox
-evince
-feh
+atril > evince
+lximage-qt > eog -> feh
 git
-rar, unrar, unace, ncompress, bunzip2, gunzip, p7zip-full, lha.
-lame
+rar, unrar, unace, ncompress, bunzip2, gunzip, p7zip, p7zip-plugins, lha.
 mkisofs
-vorbis-tools
-ffmpeg
 scrot
 curl
-normalize-audio
 
 Needed for man2pdf:
 groff

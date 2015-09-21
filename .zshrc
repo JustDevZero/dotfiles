@@ -66,7 +66,7 @@ zmodload zsh/complist
 OS=`cat /etc/issue|head -n 1|awk '{print $1}'`
 DISTRO=`cat /etc/issue|head -n 1|awk '{print $2}'`
 VERSION=`cat /etc/issue|head -n 1|awk '{print $3}'`
-export EDITOR="/usr/bin/vim"
+
 if [ -f /usr/bin/emacs       ]; then
     EDITOR=/usr/bin/emacs
     GIT_EDITOR=/usr/bin/emacs
@@ -76,11 +76,13 @@ if [ -f /opt/firefox/firefox ]; then
     BROWSER=/opt/firefox/firefox
 fi
 
-export VISOR="/usr/bin/eog"
+export VISOR="/usr/bin/lximage-qt"
 if [ -f /usr/local/bin/lximage-qt ]; then
     VISOR=/usr/local/bin/lximage-qt
-elif [ -f /usr/bin/lximage-qt ]; then
-    VISOR=/usr/bin/lximage-qt
+elif [ -f /usr/bin/eog ]; then
+    VISOR=/usr/bin/eog
+elif [ -f /usr/bin/feh ]; then
+    VISOR=/usr/bin/feh
 fi
 
 export PAGER='most -s'
@@ -147,7 +149,6 @@ fi
 
 # The following lines were added by compinstall
 autoload zmv
-# Lines configured by zsh-newuser-install
 
 autoload -Uz compinit
 compinit
@@ -163,15 +164,11 @@ if [ -f ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
     source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
-#~ if [ $UID -eq 0 ]; then
-#~ compinit
-#~ else
 compinit -d $zsh_cache/zcomp-$HOST
 
 for f in ~/.zshrc $zsh_cache/zcomp-$HOST; do
         zrecompile -p $f && rm -f $f.zwc.old
 done
-#~ fi
 
 setopt extended_glob
 #for zshrc_snipplet in ~/.zsh/functions/S[0-9][0-9]*[^~] ; do
