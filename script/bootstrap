@@ -9,7 +9,7 @@ set -e
 
 echo ''
 
-touch ~/.localrc
+touch ~/.local.rc
 
 info () {
   printf "  [ \033[00;34m..\033[0m ] $1"
@@ -58,13 +58,14 @@ setup_gitconfig () {
 setup_android_env () {
     user ' - Do you develop for android?'
     read -e install_android_path
+    info "android"
 
     if [[ "$install_android_path" = "yes" || "$install_android_path" = "y" ]]; then
 
         user ' - Do you use eclipse for dev? If so write path'
         read -e eclipse_path
 
-        if [ -n "$eclipse_path" ]; then
+        if [ "$eclipse_path" = " " ]; then
             echo "export ECLIPSE=$eclipse_path" >> ~/.local.rc
             echo "export PATH=$ECLIPSE" >> ~/.local.rc
         fi
@@ -72,7 +73,7 @@ setup_android_env () {
         user ' - Do you use android-sdk? Write path'
         read -e android_sdk_path
 
-        if [ -n "$android_sdk_path" ]; then
+        if [ "$android_sdk_path" = " " ]; then
             echo "export ANDROID_TOOLS=\"$android_sdk_path/tools\"" >> ~/.local.rc
             echo "export ANDROID_PLATFORM_TOOLS=\"$android_sdk_path/platform-tools\"" >> ~/.local.rc
             echo "export PATH=$ANDROID_TOOLS:$ANDROID_PLATAFORM_TOOLS:$PATH" >> ~/.local.rc
@@ -81,14 +82,16 @@ setup_android_env () {
         user ' - Do you use android-ndk? Write path'
         read -e android_ndk_path
 
-        if [ -n "$android_ndk_path" ]; then
+        if [ "$android_ndk_path" = " " ]; then
             echo "export ANDROID_NDK=\"$android_ndk_path/tools\"" >> ~/.local.rc
         fi
     fi
+    success "android"
 
 }
 
 setup_browser () {
+    info "browser"
     user ' - What your favorite web browser? Please, write path.'
     read -e web_browser
     echo "export BROWSER=\"$web_browser\"" >> ~/.local.rc
@@ -101,9 +104,11 @@ setup_browser () {
     rm ~/.dotfiles/system/_path.temp
     rm ~/.dotfiles/system/_path.temp2
     rm ~/.dotfiles/system/_path.temp3
+    success "browser"
 }
 
 setup_office () {
+    info "office suite"
     user ' - What you use as office suite? Please, write path.'
     read -e office_suite
     echo "export OFFICESUITE=\"$office_suite\"" >> ~/.local.rc
@@ -115,9 +120,11 @@ setup_office () {
     rm ~/.dotfiles/system/_path.temp
     rm ~/.dotfiles/system/_path.temp2
     rm ~/.dotfiles/system/_path.temp3
+    success "office suite"
 }
 
 setup_pdf () {
+    info "pdf viewer"
     user ' - What your favorite PDF viewer? Please, write path.'
     read -e pdf_viewer
     echo "export PDFVIEWER=\"$pdf_viewer\"" >> ~/.local.rc
@@ -129,6 +136,7 @@ setup_pdf () {
     rm ~/.dotfiles/system/_path.temp
     rm ~/.dotfiles/system/_path.temp2
     rm ~/.dotfiles/system/_path.temp3
+    success "pdf viewer"
 }
 
 setup_visor () {
@@ -149,7 +157,7 @@ setup_editor () {
     user ' - What is your text editor for shell (vim, emacs, nano...)?'
     read -e git_editor
 
-    sed -e "s/CHOOSEN_EDITOR/$git_editor/g" ~/.dotfiles/git/gitconfig.symlink >~/.dotfiles/ git/gitconfig.symlink.current
+    sed -e "s/CHOOSEN_EDITOR/$git_editor/g" ~/.dotfiles/git/gitconfig.symlink > ~/.dotfiles/git/gitconfig.symlink.current
     mv ~/.dotfiles/git/gitconfig.symlink.current ~/.dotfiles/git/gitconfig.symlink
     echo "export GIT_EDITOR=$git_editor" >> ~/.local.rc
     echo "export EDITOR=$git_editor" >> ~/.local.rc
@@ -165,10 +173,12 @@ setup_editor () {
 
 setup_gitlasts () {
 
+    info "gitlasts"
+
     user ' - What your commit template should have?'
     read -e git_template
 
-    if [ -n $git_template ]; then
+    if [ $git_template = " "]; then
         echo $git_template > ~/.dotfiles/git/gittemplate.symlink
         git config --global commit.template ~/.gittemplate
     fi
@@ -176,11 +186,14 @@ setup_gitlasts () {
     user ' - What your last 8 digits of your gpg key?'
     read -e git_signing_key
 
-    if [ -n $git_signing_key ]; then
+    if [ $git_signing_key = " "]; then
         git config --global user.signingkey $git_signing_key
     fi
 
+
     echo "MY_GPG_KEY=$git_signing_key" >> ~/.local.rc
+
+    success "gitlasts"
 }
 
 
