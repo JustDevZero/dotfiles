@@ -9,6 +9,8 @@ set -e
 
 echo ''
 
+touch ~/.localrc
+
 info () {
   printf "  [ \033[00;34m..\033[0m ] $1"
 }
@@ -30,6 +32,7 @@ fail () {
 setup_gitconfig () {
   if ! [ -f git/gitconfig.symlink ]
   then
+
     info 'setup gitconfig'
 
     git_credential='cache'
@@ -38,26 +41,146 @@ setup_gitconfig () {
       git_credential='osxkeychain'
     fi
 
-    user ' - What is your github author name?'
+    user ' - What is your git author name?'
     read -e git_authorname
-    user ' - What is your github author email?'
+    user ' - What is your git author email?'
     read -e git_authoremail
+
+    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" ~/.dotfiles/git/gitconfig.symlink.example > ~/.dotfiles/git/gitconfig.symlink
+
+    echo "export GIT_AUTHOR_NAME=$git_authorname" >> ~/.local.rc
+    echo "export GIT_AUTHOR_EMAIL=$git_authoremail" >> ~/.local.rc
+
+    success 'gitconfig'
+  fi
+}
+
+setup_android_env () {
+    user ' - Do you develop for android?'
+    read -e install_android_path
+
+    if [[ "$install_android_path" = "yes" || "$install_android_path" = "y" ]]; then
+
+        user ' - Do you use eclipse for dev? If so write path'
+        read -e eclipse_path
+
+        if [ -n "$eclipse_path" ]; then
+            echo "export ECLIPSE=$eclipse_path" >> ~/.local.rc
+            echo "export PATH=$ECLIPSE" >> ~/.local.rc
+        fi
+
+        user ' - Do you use android-sdk? Write path'
+        read -e android_sdk_path
+
+        if [ -n "$android_sdk_path" ]; then
+            echo "export ANDROID_TOOLS=\"$android_sdk_path/tools\"" >> ~/.local.rc
+            echo "export ANDROID_PLATFORM_TOOLS=\"$android_sdk_path/platform-tools\"" >> ~/.local.rc
+            echo "export PATH=$ANDROID_TOOLS:$ANDROID_PLATAFORM_TOOLS:$PATH" >> ~/.local.rc
+        fi
+
+        user ' - Do you use android-ndk? Write path'
+        read -e android_ndk_path
+
+        if [ -n "$android_ndk_path" ]; then
+            echo "export ANDROID_NDK=\"$android_ndk_path/tools\"" >> ~/.local.rc
+        fi
+    fi
+
+}
+
+setup_browser () {
+    user ' - What your favorite web browser? Please, write path.'
+    read -e web_browser
+    echo "export BROWSER=\"$web_browser\"" >> ~/.local.rc
+    browser_path=$(dirname $web_browser)
+    echo "PATH=$browser_path:$PATH" > ~/.dotfiles/system/_path.temp
+    sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
+    uniq ~/.dotfiles/system/_path.temp2 > ~/.dotfiles/system/_path.temp3
+    sed s'=\n=:='g ~/.dotfiles/system/_path.temp3 > ~/.dotfiles/system/_path.temp4
+    mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
+    rm ~/.dotfiles/system/_path.temp
+    rm ~/.dotfiles/system/_path.temp2
+    rm ~/.dotfiles/system/_path.temp3
+}
+
+setup_office () {
+    user ' - What you use as office suite? Please, write path.'
+    read -e office_suite
+    echo "export OFFICESUITE=\"$office_suite\"" >> ~/.local.rc
+    echo "PATH=$office_suite:$PATH" > ~/.dotfiles/system/_path.temp
+    sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
+    uniq ~/.dotfiles/system/_path.temp2 > ~/.dotfiles/system/_path.temp3
+    sed s'=\n=:='g ~/.dotfiles/system/_path.temp3 > ~/.dotfiles/system/_path.temp4
+    mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
+    rm ~/.dotfiles/system/_path.temp
+    rm ~/.dotfiles/system/_path.temp2
+    rm ~/.dotfiles/system/_path.temp3
+}
+
+setup_pdf () {
+    user ' - What your favorite PDF viewer? Please, write path.'
+    read -e pdf_viewer
+    echo "export PDFVIEWER=\"$pdf_viewer\"" >> ~/.local.rc
+    echo "PATH=$pdf_viewer:$PATH" > ~/.dotfiles/system/_path.temp
+    sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
+    uniq ~/.dotfiles/system/_path.temp2 > ~/.dotfiles/system/_path.temp3
+    sed s'=\n=:='g ~/.dotfiles/system/_path.temp3 > ~/.dotfiles/system/_path.temp4
+    mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
+    rm ~/.dotfiles/system/_path.temp
+    rm ~/.dotfiles/system/_path.temp2
+    rm ~/.dotfiles/system/_path.temp3
+}
+
+setup_visor () {
+    user ' - What your favorite image viewer? Please, write path.'
+    read -e visor
+    echo "export VISOR=\"$visor\"" >> ~/.local.rc
+    echo "PATH=$pdf_viewer:$PATH" > ~/.dotfiles/system/_path.temp
+    sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
+    uniq ~/.dotfiles/system/_path.temp2 > ~/.dotfiles/system/_path.temp3
+    sed s'=\n=:='g ~/.dotfiles/system/_path.temp3 > ~/.dotfiles/system/_path.temp4
+    mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
+    rm ~/.dotfiles/system/_path.temp
+    rm ~/.dotfiles/system/_path.temp2
+    rm ~/.dotfiles/system/_path.temp3
+}
+
+setup_editor () {
+    user ' - What is your text editor for shell (vim, emacs, nano...)?'
+    read -e git_editor
+
+    sed -e "s/CHOOSEN_EDITOR/$git_editor/g" ~/.dotfiles/git/gitconfig.symlink >~/.dotfiles/ git/gitconfig.symlink.current
+    mv ~/.dotfiles/git/gitconfig.symlink.current ~/.dotfiles/git/gitconfig.symlink
+    echo "export GIT_EDITOR=$git_editor" >> ~/.local.rc
+    echo "export EDITOR=$git_editor" >> ~/.local.rc
+    echo "PATH=$git_editor:$PATH" > ~/.dotfiles/system/_path.temp
+    sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
+    uniq ~/.dotfiles/system/_path.temp2 > ~/.dotfiles/system/_path.temp3
+    sed s'=\n=:='g ~/.dotfiles/system/_path.temp3 > ~/.dotfiles/system/_path.temp4
+    mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
+    rm ~/.dotfiles/system/_path.temp
+    rm ~/.dotfiles/system/_path.temp2
+    rm ~/.dotfiles/system/_path.temp3
+}
+
+setup_gitlasts () {
+
     user ' - What your commit template should have?'
     read -e git_template
-    user ' - What your last 8 digits of your developer gpg'
+
+    if [ -n $git_template ]; then
+        echo $git_template > ~/.dotfiles/git/gittemplate.symlink
+        git config --global commit.template ~/.gittemplate
+    fi
+
+    user ' - What your last 8 digits of your gpg key?'
     read -e git_signing_key
 
-    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" git/gitconfig.symlink.example > git/gitconfig.symlink
-    if [ -n $git_template ]; then
-        echo $git_template > git/git_template
-        git config --global commit.template ~/.dotfiles/git/git_template
-    fi
     if [ -n $git_signing_key ]; then
         git config --global user.signingkey $git_signing_key
     fi
 
-    success 'gitconfig'
-  fi
+    echo "MY_GPG_KEY=$git_signing_key" >> ~/.local.rc
 }
 
 
@@ -150,6 +273,13 @@ install_dotfiles () {
 
 setup_gitconfig
 install_dotfiles
+setup_gitlasts
+setup_android_env
+setup_browser
+setup_editor
+setup_visor
+setup_pdf
+setup_office
 
 # If we're on a Mac, let's install and setup homebrew.
 if [ "$(uname -s)" == "Darwin" ]
