@@ -38,6 +38,6 @@ if [ -n "$ZSH_VERSION" ]; then
     fi
 fi
 
-if [ -f "$HOME/.dotfiles/scripts/_path.sh" ]; then
-    . "$HOME/.dotfiles/scripts/_path.sh"
+if [ -f "$HOME/.dotfiles/system/_path.sh" ]; then
+    . "$HOME/.dotfiles/system/_path.sh"
 fi

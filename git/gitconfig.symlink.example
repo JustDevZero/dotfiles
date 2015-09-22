@@ -12,9 +12,9 @@
         branch = auto
         ui = true
 [commit]
-        template = ~/.gittemplate
+        template = ~/.dotfiles/git/.gittemplate
 [core]
-        editor =  "if [ -f /usr/bin/emacs ]; then ED='/usr/bin/emacs'; else ED='nano'; fi; $ED"
+        editor =  "if [ -f CHOOSEN_EDITOR ]; then ED='CHOOSEN_EDITOR'; else ED='nano'; fi; $ED"
         excludesfile = ~/.gitignore
 [user]
         name = AUTHORNAME
