@@ -1,0 +1,4 @@
+emacs/emacs.d.symlink/auto-save-list
+git/gitconfig.symlink
+git/gittemplate.symlink
+system/_path.sh
