@@ -71,8 +71,8 @@ colors
 
 # Create cache per host.
 
-if [ -f "/home/zero/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
-   source "/home/zero/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+if [ -f "$HOME/.dotfiles/zsh/plugins/plugins.zsh" ]; then
+   source "$HOME/.dotfiles/zsh/plugins/plugins.zsh"
 fi
 
 zsh_cache=${HOME}/.zsh/cache
