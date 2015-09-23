@@ -1,6 +1,7 @@
-#!/usr/bin/env bash
 #
 # bootstrap installs things.
+
+
 
 cd "$(dirname "$0")/.."
 DOTFILES_ROOT=$(pwd)
@@ -29,6 +30,10 @@ fail () {
   exit
 }
 
+info "intializing..."
+if ! [ -d ~/.zsh-syntax-highlighting ]; then
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh-syntax-highlighting &>/dev/null
+fi
 setup_gitconfig () {
   if ! [ -f git/gitconfig.symlink ]
   then
@@ -65,7 +70,7 @@ setup_android_env () {
         user ' - Do you use eclipse for dev? If so write path'
         read -e eclipse_path
 
-        if [ "$eclipse_path" = " " ]; then
+        if [[ "$eclipse_path" != "" ]]; then
             echo "export ECLIPSE=$eclipse_path" >> ~/.local.rc
             echo "export PATH=$ECLIPSE" >> ~/.local.rc
         fi
@@ -73,7 +78,7 @@ setup_android_env () {
         user ' - Do you use android-sdk? Write path'
         read -e android_sdk_path
 
-        if [ "$android_sdk_path" = " " ]; then
+        if [[ "$android_sdk_path" != "" ]]; then
             echo "export ANDROID_TOOLS=\"$android_sdk_path/tools\"" >> ~/.local.rc
             echo "export ANDROID_PLATFORM_TOOLS=\"$android_sdk_path/platform-tools\"" >> ~/.local.rc
             echo "export PATH=$ANDROID_TOOLS:$ANDROID_PLATAFORM_TOOLS:$PATH" >> ~/.local.rc
@@ -82,7 +87,7 @@ setup_android_env () {
         user ' - Do you use android-ndk? Write path'
         read -e android_ndk_path
 
-        if [ "$android_ndk_path" = " " ]; then
+        if [[ "$android_ndk_path" != "" ]]; then
             echo "export ANDROID_NDK=\"$android_ndk_path/tools\"" >> ~/.local.rc
         fi
     fi
@@ -91,7 +96,7 @@ setup_android_env () {
 }
 
 setup_browser () {
-    info "browser"
+    info 'browser'
     user ' - What your favorite web browser? Please, write path.'
     read -e web_browser
     echo "export BROWSER=\"$web_browser\"" >> ~/.local.rc
@@ -157,7 +162,7 @@ setup_editor () {
     user ' - What is your text editor for shell (vim, emacs, nano...)?'
     read -e git_editor
 
-    sed -e "s/CHOOSEN_EDITOR/$git_editor/g" ~/.dotfiles/git/gitconfig.symlink > ~/.dotfiles/git/gitconfig.symlink.current
+    sed -e s"/CHOOSEN_EDITOR/$git_editor/"g ~/.dotfiles/git/gitconfig.symlink > ~/.dotfiles/git/gitconfig.symlink.current
     mv ~/.dotfiles/git/gitconfig.symlink.current ~/.dotfiles/git/gitconfig.symlink
     echo "export GIT_EDITOR=$git_editor" >> ~/.local.rc
     echo "export EDITOR=$git_editor" >> ~/.local.rc
@@ -178,21 +183,23 @@ setup_gitlasts () {
     user ' - What your commit template should have?'
     read -e git_template
 
-    if [ $git_template = " "]; then
+    if [[ $git_template != "" ]]; then
         echo $git_template > ~/.dotfiles/git/gittemplate.symlink
         git config --global commit.template ~/.gittemplate
     fi
 
+    echo hastaaqui
+
     user ' - What your last 8 digits of your gpg key?'
     read -e git_signing_key
 
-    if [ $git_signing_key = " "]; then
+echo yaqui
+    if [[ $git_signing_key != "" ]]; then
         git config --global user.signingkey $git_signing_key
+        echo "MY_GPG_KEY=$git_signing_key" >> ~/.local.rc
     fi
 
-
-    echo "MY_GPG_KEY=$git_signing_key" >> ~/.local.rc
-
+echo peroaqui
     success "gitlasts"
 }
 

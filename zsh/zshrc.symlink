@@ -53,7 +53,7 @@ do
 done
 
 # load everything but the path and completion files
-for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}
+for item in ${${config_files:#*/path.zsh}:#*/completion.zsh}
 do
   source $item
 done
@@ -69,11 +69,11 @@ compinit
 autoload -U colors zrecompile
 colors
 
-if [ -f ~/.dotfiles/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
-    source ~/.dotfiles/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-fi
-
 # Create cache per host.
+
+if [ -f "/home/zero/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
+   source "/home/zero/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
 
 zsh_cache=${HOME}/.zsh/cache
 mkdir -p $zsh_cache

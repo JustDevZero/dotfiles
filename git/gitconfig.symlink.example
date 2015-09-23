@@ -11,8 +11,6 @@
         status = auto
         branch = auto
         ui = true
-[commit]
-        template = ~/.dotfiles/git/.gittemplate
 [core]
         editor =  "if [ -f CHOOSEN_EDITOR ]; then ED='CHOOSEN_EDITOR'; else ED='nano'; fi; $ED"
         excludesfile = ~/.gitignore
