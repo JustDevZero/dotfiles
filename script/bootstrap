@@ -10,7 +10,7 @@ set -e
 
 echo ''
 
-touch ~/.local.rc
+touch ~/.localrc
 
 info () {
   printf "  [ \033[00;34m..\033[0m ] $1"
@@ -50,8 +50,8 @@ setup_gitconfig () {
 
     sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" ~/.dotfiles/git/gitconfig.symlink.example > ~/.dotfiles/git/gitconfig.symlink
 
-    echo "export GIT_AUTHOR_NAME=$git_authorname" >> ~/.local.rc
-    echo "export GIT_AUTHOR_EMAIL=$git_authoremail" >> ~/.local.rc
+    echo "export GIT_AUTHOR_NAME=$git_authorname" >> ~/.localrc
+    echo "export GIT_AUTHOR_EMAIL=$git_authoremail" >> ~/.localrc
 
     success 'gitconfig'
   fi
@@ -68,24 +68,24 @@ setup_android_env () {
         read -e eclipse_path
 
         if [[ "$eclipse_path" != "" ]]; then
-            echo "export ECLIPSE=$eclipse_path" >> ~/.local.rc
-            echo "export PATH=$ECLIPSE" >> ~/.local.rc
+            echo "export ECLIPSE=$eclipse_path" >> ~/.localrc
+            echo "export PATH=$ECLIPSE" >> ~/.localrc
         fi
 
         user ' - Do you use android-sdk? Write path'
         read -e android_sdk_path
 
         if [[ "$android_sdk_path" != "" ]]; then
-            echo "export ANDROID_TOOLS=\"$android_sdk_path/tools\"" >> ~/.local.rc
-            echo "export ANDROID_PLATFORM_TOOLS=\"$android_sdk_path/platform-tools\"" >> ~/.local.rc
-            echo "export PATH=$ANDROID_TOOLS:$ANDROID_PLATAFORM_TOOLS:$PATH" >> ~/.local.rc
+            echo "export ANDROID_TOOLS=\"$android_sdk_path/tools\"" >> ~/.localrc
+            echo "export ANDROID_PLATFORM_TOOLS=\"$android_sdk_path/platform-tools\"" >> ~/.localrc
+            echo "export PATH=$ANDROID_TOOLS:$ANDROID_PLATAFORM_TOOLS:$PATH" >> ~/.localrc
         fi
 
         user ' - Do you use android-ndk? Write path'
         read -e android_ndk_path
 
         if [[ "$android_ndk_path" != "" ]]; then
-            echo "export ANDROID_NDK=\"$android_ndk_path/tools\"" >> ~/.local.rc
+            echo "export ANDROID_NDK=\"$android_ndk_path/tools\"" >> ~/.localrc
         fi
     fi
     success "android"
@@ -96,12 +96,12 @@ setup_browser () {
     info 'browser'
     user ' - What your favorite web browser? Please, write path.'
     read -e web_browser
-    echo "export BROWSER=\"$web_browser\"" >> ~/.local.rc
+    echo "export BROWSER=\"$web_browser\"" >> ~/.localrc
     browser_path=$(dirname $web_browser)
-    echo "PATH=$browser_path:$PATH" > ~/.dotfiles/system/_path.temp
+    echo "$browser_path:$PATH" > ~/.dotfiles/system/_path.temp
     sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
-    uniq ~/.dotfiles/system/_path.temp2 > ~/.dotfiles/system/_path.temp3
-    sed s'=\n=:='g ~/.dotfiles/system/_path.temp3 > ~/.dotfiles/system/_path.temp4
+    sort -n ~/.dotfiles/system/_path.temp2 | uniq > ~/.dotfiles/system/_path.temp3
+    echo PATH=$(cat ~/.dotfiles/system/_path.temp3) |sed s'= =:='g|sed s'=^P=export P=' > ~/.dotfiles/system/_path.temp4
     mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
     rm ~/.dotfiles/system/_path.temp
     rm ~/.dotfiles/system/_path.temp2
@@ -113,11 +113,12 @@ setup_office () {
     info "office"
     user ' - What you use as office suite? Please, write path.'
     read -e office_suite
-    echo "export OFFICESUITE=\"$office_suite\"" >> ~/.local.rc
-    echo "PATH=$office_suite:$PATH" > ~/.dotfiles/system/_path.temp
+    echo "export OFFICESUITE=\"$office_suite\"" >> ~/.localrc
+    office_path=$(dirname $office_suite)
+    echo "$office_path:$PATH" > ~/.dotfiles/system/_path.temp
     sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
-    uniq ~/.dotfiles/system/_path.temp2 > ~/.dotfiles/system/_path.temp3
-    sed s'=\n=:='g ~/.dotfiles/system/_path.temp3 > ~/.dotfiles/system/_path.temp4
+    sort -n ~/.dotfiles/system/_path.temp2 | uniq > ~/.dotfiles/system/_path.temp3
+    echo PATH=$(cat ~/.dotfiles/system/_path.temp3) |sed s'= =:='g|sed s'=^P=export P=' > ~/.dotfiles/system/_path.temp4
     mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
     rm ~/.dotfiles/system/_path.temp
     rm ~/.dotfiles/system/_path.temp2
@@ -129,11 +130,12 @@ setup_pdf () {
     info "pdf"
     user ' - What your favorite PDF viewer? Please, write path.'
     read -e pdf_viewer
-    echo "export PDFVIEWER=\"$pdf_viewer\"" >> ~/.local.rc
-    echo "PATH=$pdf_viewer:$PATH" > ~/.dotfiles/system/_path.temp
+    echo "export PDFVIEWER=\"$pdf_viewer\"" >> ~/.localrc
+    pdf_path=$(dirname $pdf_viewer)
+    echo "$pdf_path:$PATH" > ~/.dotfiles/system/_path.temp
     sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
-    uniq ~/.dotfiles/system/_path.temp2 > ~/.dotfiles/system/_path.temp3
-    sed s'=\n=:='g ~/.dotfiles/system/_path.temp3 > ~/.dotfiles/system/_path.temp4
+    sort -n ~/.dotfiles/system/_path.temp2 | uniq > ~/.dotfiles/system/_path.temp3
+    echo PATH=$(cat ~/.dotfiles/system/_path.temp3) |sed s'= =:='g|sed s'=^P=export P=' > ~/.dotfiles/system/_path.temp4
     mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
     rm ~/.dotfiles/system/_path.temp
     rm ~/.dotfiles/system/_path.temp2
@@ -144,11 +146,12 @@ setup_pdf () {
 setup_visor () {
     user ' - What your favorite image viewer? Please, write path.'
     read -e visor
-    echo "export VISOR=\"$visor\"" >> ~/.local.rc
-    echo "PATH=$pdf_viewer:$PATH" > ~/.dotfiles/system/_path.temp
+    echo "export VISOR=\"$visor\"" >> ~/.localrc
+    visor_path=$(dirname $visor)
+    echo "$visor_path:$PATH" > ~/.dotfiles/system/_path.temp
     sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
-    uniq ~/.dotfiles/system/_path.temp2 > ~/.dotfiles/system/_path.temp3
-    sed s'=\n=:='g ~/.dotfiles/system/_path.temp3 > ~/.dotfiles/system/_path.temp4
+    sort -n ~/.dotfiles/system/_path.temp2 | uniq > ~/.dotfiles/system/_path.temp3
+    echo PATH=$(cat ~/.dotfiles/system/_path.temp3) |sed s'= =:='g|sed s'=^P=export P=' > ~/.dotfiles/system/_path.temp4
     mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
     rm ~/.dotfiles/system/_path.temp
     rm ~/.dotfiles/system/_path.temp2
@@ -161,12 +164,13 @@ setup_editor () {
 
     sed -e "s=CHOOSEN_EDITOR=$git_editor=g" ~/.dotfiles/git/gitconfig.symlink > ~/.dotfiles/git/gitconfig.symlink.current
     mv ~/.dotfiles/git/gitconfig.symlink.current ~/.dotfiles/git/gitconfig.symlink
-    echo "export GIT_EDITOR=$git_editor" >> ~/.local.rc
-    echo "export EDITOR=$git_editor" >> ~/.local.rc
-    echo "PATH=$git_editor:$PATH" > ~/.dotfiles/system/_path.temp
+    echo "export GIT_EDITOR=$git_editor" >> ~/.localrc
+    echo "export EDITOR=$git_editor" >> ~/.localrc
+    editor_path=$(dirname $git_editor)
+    echo "$git_editor:$PATH" > ~/.dotfiles/system/_path.temp
     sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
-    uniq ~/.dotfiles/system/_path.temp2 > ~/.dotfiles/system/_path.temp3
-    sed s'=\n=:='g ~/.dotfiles/system/_path.temp3 > ~/.dotfiles/system/_path.temp4
+    sort -n ~/.dotfiles/system/_path.temp2 | uniq > ~/.dotfiles/system/_path.temp3
+    echo PATH=$(cat ~/.dotfiles/system/_path.temp3) |sed s'= =:='g|sed s'=^P=export P=' > ~/.dotfiles/system/_path.temp4
     mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
     rm ~/.dotfiles/system/_path.temp
     rm ~/.dotfiles/system/_path.temp2
@@ -190,7 +194,7 @@ setup_gitlasts () {
 
     if [[ $git_signing_key != "" ]]; then
         git config --global user.signingkey $git_signing_key
-        echo "MY_GPG_KEY=$git_signing_key" >> ~/.local.rc
+        echo "export MY_GPG_KEY=$git_signing_key" >> ~/.localrc
     fi
 
     success "gitlasts"
