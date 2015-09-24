@@ -24,9 +24,42 @@
 
 # shortcut to this dotfiles path is $ZSH
 export ZSH=$HOME/.dotfiles
+export DOTFILES_VERSION=$(cat $ZSH/VERSION)
 
 # your project folder that we can `c [tab]` to
 export PROJECTS=~/Projects
+
+function check_dotfiles_version () {
+    remote_version=$(wget -q https://github.com/JustDevZero/dotfiles.git/VERSION -O -)
+    if [[ $remote_version != "" ]]; then
+        if (( $remote_version > $DOTFILES_VERSION )); then
+            echo "Ey, there is a new dotfiles version, check it out. at\n https://github.com/justdevzero/dotfiles.git"
+        fi
+    fi
+    unset remote_version
+}
+
+
+if [ -f /usr/bin/wget ];then
+   if [ -f ~/.dotfiles_lastcheck ]; then
+     curr_date=$(date +%Y%m%d%H%M)
+     last_date=$(cat ~/.dotfiles_lastcheck)
+     difference_date=$(($curr_date - $last_date))
+
+     if (($difference_date > 120 )); then
+        check_dotfiles_version
+        rm -rf ~/.dotfiles_lastcheck
+        echo $(date +%Y%m%d%H%M) > ~/.dotfiles_lastcheck
+     fi
+    else
+     check_dotfiles_version
+     echo $(date +%Y%m%d%H%M) > ~/.dotfiles_lastcheck
+     unset curr_date
+     unset last_date
+     unset difference_date
+   fi
+fi
+
 
 # Stash your environment variables in ~/.localrc. This means they'll stay out
 # of your main dotfiles repository (which may be public, like this one), but
@@ -42,9 +75,11 @@ else
     export IFSUDO="sudo"
 fi
 
+setopt extended_glob
+
 # all of our zsh files
 typeset -U config_files
-config_files=($ZSH/**/*.zsh)
+config_files=($ZSH/*^plugins/*.zsh)
 
 # load the path files
 for item in ${(M)config_files:#*/path.zsh}
