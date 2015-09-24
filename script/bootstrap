@@ -30,15 +30,12 @@ fail () {
   exit
 }
 
-info "intializing..."
-if ! [ -d ~/.zsh-syntax-highlighting ]; then
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh-syntax-highlighting &>/dev/null
-fi
+
 setup_gitconfig () {
   if ! [ -f git/gitconfig.symlink ]
   then
 
-    info 'setup gitconfig'
+    info 'gitconfig'
 
     git_credential='cache'
     if [ "$(uname -s)" == "Darwin" ]
@@ -46,9 +43,9 @@ setup_gitconfig () {
       git_credential='osxkeychain'
     fi
 
-    user ' - What is your git author name?'
+    user ' - What is your git author name? '
     read -e git_authorname
-    user ' - What is your git author email?'
+    user ' - What is your git author email? '
     read -e git_authoremail
 
     sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" ~/.dotfiles/git/gitconfig.symlink.example > ~/.dotfiles/git/gitconfig.symlink
@@ -113,7 +110,7 @@ setup_browser () {
 }
 
 setup_office () {
-    info "office suite"
+    info "office"
     user ' - What you use as office suite? Please, write path.'
     read -e office_suite
     echo "export OFFICESUITE=\"$office_suite\"" >> ~/.local.rc
@@ -125,11 +122,11 @@ setup_office () {
     rm ~/.dotfiles/system/_path.temp
     rm ~/.dotfiles/system/_path.temp2
     rm ~/.dotfiles/system/_path.temp3
-    success "office suite"
+    success "office"
 }
 
 setup_pdf () {
-    info "pdf viewer"
+    info "pdf"
     user ' - What your favorite PDF viewer? Please, write path.'
     read -e pdf_viewer
     echo "export PDFVIEWER=\"$pdf_viewer\"" >> ~/.local.rc
@@ -141,7 +138,7 @@ setup_pdf () {
     rm ~/.dotfiles/system/_path.temp
     rm ~/.dotfiles/system/_path.temp2
     rm ~/.dotfiles/system/_path.temp3
-    success "pdf viewer"
+    success "pdf"
 }
 
 setup_visor () {
@@ -162,7 +159,7 @@ setup_editor () {
     user ' - What is your text editor for shell (vim, emacs, nano...)?'
     read -e git_editor
 
-    sed -e s"/CHOOSEN_EDITOR/$git_editor/"g ~/.dotfiles/git/gitconfig.symlink > ~/.dotfiles/git/gitconfig.symlink.current
+    sed -e "s=CHOOSEN_EDITOR=$git_editor=g" ~/.dotfiles/git/gitconfig.symlink > ~/.dotfiles/git/gitconfig.symlink.current
     mv ~/.dotfiles/git/gitconfig.symlink.current ~/.dotfiles/git/gitconfig.symlink
     echo "export GIT_EDITOR=$git_editor" >> ~/.local.rc
     echo "export EDITOR=$git_editor" >> ~/.local.rc
@@ -188,18 +185,14 @@ setup_gitlasts () {
         git config --global commit.template ~/.gittemplate
     fi
 
-    echo hastaaqui
-
     user ' - What your last 8 digits of your gpg key?'
     read -e git_signing_key
 
-echo yaqui
     if [[ $git_signing_key != "" ]]; then
         git config --global user.signingkey $git_signing_key
         echo "MY_GPG_KEY=$git_signing_key" >> ~/.local.rc
     fi
 
-echo peroaqui
     success "gitlasts"
 }
 
