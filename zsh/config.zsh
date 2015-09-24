@@ -44,9 +44,9 @@ NC='\e[0m'              # No Color
 
 if [[ -n $SSH_CONNECTION ]]; then
     if [ $UID -eq 0 ]; then
-        export PS1="$(print '%{\e[0;34m%}%n@m%{\e[0m%}'):$(print '%{\e[0;31m%}% \%~ %{\e[0;32m%}\n#%{\e[0m%}') "
+        export PS1="$(print '%{\e[0;34m%}%n@%m%{\e[0m%}'):$(print '%{\e[0;31m%}% \%~ %{\e[0;32m%}\n#%{\e[0m%}') "
     else
-        export PS1="$(print '%{\e[0;34m%}%n@m%{\e[0m%}'):$(print '%{\e[0;31m%}% \%~ %{\e[0;32m%}\n$%{\e[0m%}') "
+        export PS1="$(print '%{\e[0;34m%}%n@%m%{\e[0m%}'):$(print '%{\e[0;31m%}% \%~ %{\e[0;32m%}\n$%{\e[0m%}') "
     fi
 else
     if [ $UID -eq 0 ]; then
