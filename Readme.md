@@ -52,10 +52,11 @@ Go to your $HOME with your favorite terminal/tty.
 
  * Added ogg2mp3 script, compatible with bash.
 
-This repository is used for puting my config files, or little scripts, you can use this files with the terms indicated about.
+This repository is used for puting my config files, with a few scripts, you can use this files with the terms indicated about.
 If a file uses some other license, will be specified in the begining of it.
 
-The .zaliases and .zprograms contains alias and functions, for programs that maybe are not installed by default.
+The aliases.zsh and programs.zsh contains alias and functions, for programs that maybe are not installed by default. Please take in mind to read them as I can always forget to write it here..
+
 Programs that are used:
 zsh
 most
@@ -63,12 +64,8 @@ libreoffice
 gimp
 gawk
 recode
-manpages-es,manpages-es-extra (You can change to another manpages in .zaliases).
 htop
 nano
-firefox
-atril > evince
-lximage-qt > eog -> feh
 git
 rar, unrar, unace, ncompress, bunzip2, gunzip, p7zip, p7zip-plugins, lha.
 mkisofs
