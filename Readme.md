@@ -9,8 +9,8 @@ it under the terms of the MIT Licence, checkout [License.md](https://github.com/
 
 Go to your $HOME with your favorite terminal/tty.
 
-1. git clone https://github.com/justdevzero/dotfiles.git .dotfiles
-2. cd .dotfiles/scripts
+1. git clone --recursive https://github.com/justdevzero/dotfiles.git .dotfiles
+2. cd .dotfiles/script
 3. ./bootstrap
 4. enjoy
 5. report bugs if you detect something weird. KTHX
