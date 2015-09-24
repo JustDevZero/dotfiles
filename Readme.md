@@ -16,11 +16,25 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, get a copy on http://www.gnu.org/licenses/gpl.txt
 
 
-Changelog:
+# How to install
+
+Go to your $HOME with your favorite terminal/tty.
+
+1. git clone https://github.com/justdevzero/dotfiles.git .dotfiles
+2. cd .dotfiles/scripts
+3. ./bootstrap
+4. enjoy
+5. report bugs if you detect something weird. KTHX
+
+
+# Changelog:
+
+2015-09-24 Daniel Ripoll <info@danielripoll.es>
+ * Changed the way of the installation of this dotfiles in a MORE clever way.
 
 2015-05:11 Daniel Ripoll  <info@danielripol.es>
 
-  * Deleted ogg converters, and conky config to https://github.com/JustDevZero/deprecated-scripts
+ * Deleted ogg converters, and conky config to https://github.com/JustDevZero/deprecated-scripts
 
 2012-11-24  Daniel Ripoll  <info@danielripol.es>
 
