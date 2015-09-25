@@ -5,6 +5,7 @@
 
 cd "$(dirname "$0")/.."
 DOTFILES_ROOT=$(pwd)
+PATH=$HOME/.local/bin:$PATH:$DOTFILES_ROOT/bin
 
 set -e
 
@@ -65,11 +66,12 @@ setup_android_env () {
     if [[ "$install_android_path" = "yes" || "$install_android_path" = "y" ]]; then
 
         user ' - Do you use eclipse for dev? If so write path'
-        read -e eclipse_path
+        read -e eclipse_use
 
-        if [[ "$eclipse_path" != "" ]]; then
-            echo "export ECLIPSE=$eclipse_path" >> ~/.localrc
-            echo "export PATH=$ECLIPSE" >> ~/.localrc
+        if [[ "$eclipse_use" != "" ]]; then
+            echo "export ECLIPSE=$eclipse_use" >> ~/.localrc
+            eclipse_path=$(dirname $eclipse_use)
+            echo "export PATH=$eclipse_path:$PATH" >> ~/.localrc
         fi
 
         user ' - Do you use android-sdk? Write path'
