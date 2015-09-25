@@ -26,6 +26,7 @@
 export ZSH=$HOME/.dotfiles
 export DOTFILES_VERSION=$(cat $ZSH/VERSION)
 
+
 # your project folder that we can `c [tab]` to
 export PROJECTS=~/Projects
 
@@ -81,6 +82,12 @@ setopt extended_glob
 typeset -U config_files
 config_files=($ZSH/*^plugins/*.zsh)
 
+# load the path found on .dotfiles/system/_path.sh, dunno why, in some isos is not loaded if found on .profile... :(
+if [ -f "$HOME/.dotfiles/system/_path.sh" ]; then
+    source "$HOME/.dotfiles/system/_path.sh"
+fi
+
+
 # load the path files
 for item in ${(M)config_files:#*/path.zsh}
 do
@@ -105,7 +112,7 @@ for file in ${(M)config_files:#*/completion.zsh}
 do
   source $file
 done
-  
+
 
 # initialize colors here and enable zrecompile, otherwise won't work
 autoload -U colors zrecompile
@@ -124,4 +131,3 @@ compinit -d $zsh_cache/zcomp-$HOST
 for f in ~/.zshrc $zsh_cache/zcomp-$HOST; do
         zrecompile -p $f && rm -f $f.zwc.old
 done
-
