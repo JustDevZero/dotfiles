@@ -1,0 +1,1 @@
+export PATH=$PATH:$ZSH/git/git-semantic-commits
