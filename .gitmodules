@@ -1,3 +1,6 @@
 [submodule "zsh/plugins/zsh-syntax-highlighting"]
 	path = zsh/plugins/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
+[submodule "git/git-semantic-commits"]
+	path = git/git-semantic-commits
+	url = https://github.com/fteem/git-semantic-commits.git
