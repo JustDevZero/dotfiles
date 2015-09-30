@@ -81,8 +81,8 @@ alias count='(ls -1 /$(pwd) | wc -l)'
 
 
 ###      ALIAS FOR APTITUDE AND APT-GET, and YUM     ###
-OS=`grep '^NAME' /etc/os-release|sed s'?=? ?'|awk '{print $2}'`
-VERSION=`grep '^VERSION_ID' /etc/os-release |sed s'?=? ?'|awk '{print $2}'`
+OS=`grep '^NAME' /etc/os-release|sed s'?=? ?'|sed s'?"??'g|awk '{print $2}'`
+VERSION=`grep '^VERSION_ID' /etc/os-release |sed s'?=? ?'|sed s'?"??'g|awk '{print $2}'`
 if [ "$OS" = "Ubuntu" ] || [ "$OS" = "Debian" ] ;then
     alias update='$IFSUDO apt-get update'
     alias instal='$IFSUDO apt-get install'
