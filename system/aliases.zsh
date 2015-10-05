@@ -81,9 +81,9 @@ alias count='(ls -1 /$(pwd) | wc -l)'
 
 
 ###      ALIAS FOR APTITUDE AND APT-GET, and YUM     ###
-OS=`grep '^NAME' /etc/os-release|sed s'?=? ?'|sed s'?"??'g|awk '{print $2}'`
+DISTRO=`grep '^NAME' /etc/os-release|sed s'?=? ?'|sed s'?"??'g|awk '{print $2}'`
 VERSION=`grep '^VERSION_ID' /etc/os-release |sed s'?=? ?'|sed s'?"??'g|awk '{print $2}'`
-if [ "$OS" = "Ubuntu" ] || [ "$OS" = "Debian" ] ;then
+if [ "$DISTRO" = "Ubuntu" ] || [ "$DISTRO" = "Debian" ] || [ "$DISTRO" = "Raspbian" ];then
     alias update='$IFSUDO apt-get update'
     alias instal='$IFSUDO apt-get install'
     alias insta='$IFSUDO aptitude install'
@@ -95,7 +95,7 @@ if [ "$OS" = "Ubuntu" ] || [ "$OS" = "Debian" ] ;then
     alias linstall='$IFSUDO dpkg -i'
     alias uninstall='$IFSUDO apt-get remove'
     alias purge='$IFSUDO apt-get purge'
-elif [ "$OS" = "Fedora" ];then
+elif [ "$DISTRO" = "Fedora" ]; then
     if [ "$VERSION" = "22" ]; then
       alias update='$IFSUDO dnf check-update'
       alias upgrade='$IFSUDO dnf update'

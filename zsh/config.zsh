@@ -130,8 +130,7 @@ zmodload zsh/complist
 
 #Defining exports and usefull variables
 OS=`uname`
-DISTRO=`cat /etc/os-release |grep "^NAME"|sed s'?=? ?'g |awk '{print $2}'`
-VERSION=`cat /etc/os-release |grep "^VERSION_ID"|sed s'?=? ?'g |awk '{print $2}'`
-
+DISTRO=`grep '^NAME' /etc/os-release|sed s'?=? ?'|sed s'?"??'g|awk '{print $2}'`
+VERSION=`grep '^VERSION_ID' /etc/os-release |sed s'?=? ?'|sed s'?"??'g|awk '{print $2}'`
 export PAGER='most -s'
 export LESSHISTFILE='most -s'
