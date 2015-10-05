@@ -1,4 +1,4 @@
-#
+ye#
 #       The MIT License
 #
 #       Copyright (c) Daniel Ripoll, <info@danielripoll.es>, <http://danielripoll.es>
@@ -45,7 +45,7 @@ if [ -f /usr/bin/wget ];then
    if [ -f ~/.dotfiles_lastcheck ]; then
      curr_date=$(date +%Y%m%d%H%M)
      last_date=$(cat ~/.dotfiles_lastcheck)
-     difference_date=$(($curr_date - $last_date))
+     difference_date=$(( $curr_date - $last_date ))
 
      if (($difference_date > 120 )); then
         check_dotfiles_version
