@@ -224,7 +224,3 @@ rationalise-dot() {
 }
 zle -N rationalise-dot
 bindkey . rationalise-dot
-
-
-### FUNNY PROGRAMS ###
-function reverse { echo "${(j::)${(@Oa)${(s::):-$1}}}" }
