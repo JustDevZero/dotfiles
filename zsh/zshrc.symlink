@@ -28,7 +28,7 @@ export DOTFILES_VERSION=$(cat $ZSH/VERSION)
 
 
 # your project folder that we can `c [tab]` to
-export PROJECTS=~/Projects
+export PROJECTS=~/Code
 
 function check_dotfiles_version () {
     remote_version=$(wget -q https://raw.githubusercontent.com/JustDevZero/dotfiles/master/VERSION  -O -)
