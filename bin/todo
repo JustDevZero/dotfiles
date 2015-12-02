@@ -16,6 +16,5 @@
 set -e
 
 # Run our new web 2.0 todo list application and raise millions of VC dollars.
-LANG_PART=$(echo $LANG|cut -d '_' -f 1)
-PLACE=$(grep XDG_DESKTOP_DIR ~/.config/user-dirs.dirs|cut -d '=' -f 2|sed s'="=='g|cut -d '/' -f 2)
-touch ~/$PLACE/"$*"
+PLACE=$(xdg-user-dir DESKTOP)
+touch $PLACE/"$*"
