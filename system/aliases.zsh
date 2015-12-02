@@ -25,7 +25,7 @@
 alias mkdir='nocorrect mkdir' # no spelling correction on mkdir
 alias nano='nano -w -B'
 alias home='cd ~'
-alias desk='cd ~/Desktop'
+alias desk='cd `xdg-user-dir DESKTOP`'
 alias hist="grep '$1' ~/.zsh_history"
 alias less='less -M'
 alias grep='grep --color=auto'
