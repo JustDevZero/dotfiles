@@ -180,8 +180,9 @@ if ! which scrot &>/dev/null; then
 echo "${FUNCNAME[0]}(): First you must install 'scrot'"
 return 1
 fi
-
-scrot "$HOME/Images/Screenshots/screenshot_`date +%d%m%y%H%M%S`.png"
+XDG_PICTURES_DIR=$(xdg-user-dir PICTURES)
+mkdir -p "$XDG_PICTURES_DIR/Screenshots"
+scrot "$XDG_PICTURES_DIR/Screenshots/screenshot_`date +%d%m%y%H%M%S`.png"
 }
 
 ###      PROGRAM FOR AUTOMATING PROCESS     ###
@@ -202,10 +203,10 @@ function battery {  upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep
 # Check new ip and whatch if changed.
 function myip {
     if [ ! -f "$HOME/.lastip" ]; then
-        wget http://quinaeslamevaip.info/txt/ > "$HOME/.lastip"
+        wget -q http://quinaeslamevaip.info/txt/ -O "$HOME/.lastip"
     else
-        lastip=`cat "$HOME/.lastip"`
-        newip=`wget http://quinaeslamevaip.info/txt/ -q -O -`
+        lastip=$(cat "$HOME/.lastip")
+        newip=$(wget http://quinaeslamevaip.info/txt/ -q -O -)
         if [ "$lastip" != "$newip"  ]; then
             echo "Your ip has changed from $lastip to:"
             sed s"=$lastip=$newip="g -i $HOME/.lastip
