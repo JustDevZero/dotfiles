@@ -1,9 +1,0 @@
-rm -rf ~/.emacs*
-rm -rf ~/.psqlrc
-rm -rf ~/.htoprc
-rm -rf ~/.vimrc
-rm -rf ~/.profile
-rm -rf ~/.bash*
-rm -rf ~/.z*
-rm -rf ~/.local.rc
-rm -rf ../git/gitconfig.symlink

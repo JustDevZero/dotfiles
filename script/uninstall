@@ -1,0 +1,17 @@
+# unbootstrap uninstalls things.
+
+cd "$(dirname "$0")/.."
+DOTFILES_ROOT=$(pwd)
+
+uninstaller () {
+    echo 'uninstalling dotfiles'
+    
+    for src in $(find "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink')
+    do
+        dst="$HOME/.$(basename "${src%.*}")"
+        echo "Removing $dst"
+        rm "$dst"
+    done
+}
+
+uninstaller
