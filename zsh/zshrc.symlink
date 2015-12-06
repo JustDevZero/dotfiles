@@ -31,7 +31,7 @@ export DOTFILES_VERSION=$(cat $ZSH/VERSION)
 export PROJECTS=~/Code
 
 function check_dotfiles_version () {
-    remote_version=$(wget -q https://raw.githubusercontent.com/JustDevZero/dotfiles/master/VERSION  -O -)
+    remote_version=$(wget -q -t 1 --timeout 5 https://raw.githubusercontent.com/JustDevZero/dotfiles/master/VERSION  -O -)
     if [[ $remote_version != "" ]]; then
         if (( $remote_version > $DOTFILES_VERSION )); then
             echo "Ey, there is a new dotfiles version, check it out. at\n https://github.com/justdevzero/dotfiles.git"
