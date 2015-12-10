@@ -96,14 +96,14 @@ if [ "$DISTRO" = "Ubuntu" ] || [ "$DISTRO" = "Debian" ] || [ "$DISTRO" = "Raspbi
     alias uninstall='$IFSUDO apt-get remove'
     alias purge='$IFSUDO apt-get purge'
 elif [ "$DISTRO" = "Fedora" ]; then
-    if [ "$VERSION" = "22" ]; then
+    if [ "$VERSION" -gt "21" ]; then
       alias update='$IFSUDO dnf check-update'
       alias upgrade='$IFSUDO dnf update'
       alias instal='$IFSUDO dnf install'
       alias afind='$IFSUDO dnf search'
       alias ainfo='$IFSUDO dnf info'
-      alias remove='$IFSUDO dnf remove'
-      alias uninstall='$IFSUDO dnf reinstall'
+      alias uninstall='$IFSUDO dnf remove'
+      alias reinstall='$IFSUDO dnf reinstall'
       alias clean='$IFSUDO dnf clean'
     else
       alias update='$IFSUDO yum check-update'
