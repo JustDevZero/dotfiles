@@ -47,13 +47,13 @@ setup_gitconfig () {
     user ' - What is your git author name? '
     read -e git_authorname
 
-    if [ $git_authorname == "" ]; then
+    if [ $"git_authorname" == "" ]; then
         git_authorname=$(whoami)
     fi
     user ' - What is your git author email? '
     read -e git_authoremail
 
-    if [[ $git_authoremail == "" ]]; then
+    if [ "$git_authoremail" == "" ]; then
         git_authoremail="$(whoami)@localhost"
     fi
     

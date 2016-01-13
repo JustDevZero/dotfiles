@@ -203,7 +203,7 @@ function battery {  upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep
 # Check new ip and whatch if changed.
 function myip {
     if [ ! -f "$HOME/.lastip" ]; then
-        wget -q http://quinaeslamevaip.info/txt/ -O "$HOME/.lastip"
+        wget -q https://quinaeslamevaip.info/txt/ -O "$HOME/.lastip"
     else
         lastip=$(cat "$HOME/.lastip")
         newip=$(wget http://quinaeslamevaip.info/txt/ -q -O -)
