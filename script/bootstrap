@@ -31,6 +31,19 @@ fail () {
   exit
 }
 
+pathmunge () {
+    case ":${PATH}:" in
+        *:"$1":*)
+            ;;
+        *)
+            if [ "$2" = "after" ] ; then
+                PATH=$PATH:$1
+            else
+                PATH=$1:$PATH
+            fi
+    esac
+}
+
 
 setup_gitconfig () {
   if ! [ -f git/gitconfig.symlink ]
@@ -56,7 +69,7 @@ setup_gitconfig () {
     if [ "$git_authoremail" == "" ]; then
         git_authoremail="$(whoami)@localhost"
     fi
-    
+
     sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" ~/.dotfiles/git/gitconfig.symlink.example > ~/.dotfiles/git/gitconfig.symlink
 
     echo "export GIT_AUTHOR_NAME=$git_authorname" >> ~/.localrc
@@ -79,7 +92,7 @@ setup_android_env () {
         if [[ "$eclipse_use" != "" ]]; then
             echo "export ECLIPSE=$eclipse_use" >> ~/.localrc
             eclipse_path=$(dirname $eclipse_use)
-            echo "export PATH=$eclipse_path:$PATH" >> ~/.localrc
+            pathmunge $eclipse_path
         fi
 
         user ' - Do you use android-sdk? Write path or leavy empty'
@@ -88,7 +101,8 @@ setup_android_env () {
         if [[ "$android_sdk_path" != "" ]]; then
             echo "export ANDROID_TOOLS=\"$android_sdk_path/tools\"" >> ~/.localrc
             echo "export ANDROID_PLATFORM_TOOLS=\"$android_sdk_path/platform-tools\"" >> ~/.localrc
-            echo "export PATH=$ANDROID_TOOLS:$ANDROID_PLATAFORM_TOOLS:$PATH" >> ~/.localrc
+            pathmunge $ANDROID_TOOLS
+            pathmunge $ANDROID_PLATFORM_TOOLS
         fi
 
         user ' - Do you use android-ndk? Write path or leavy empty.'
@@ -98,7 +112,7 @@ setup_android_env () {
             echo "export ANDROID_NDK=\"$android_ndk_path/tools\"" >> ~/.localrc
         fi
     fi
-    
+
     success "android"
 
 }
@@ -111,16 +125,9 @@ setup_browser () {
     if [ $web_browser != "" ]; then
         echo "export BROWSER=\"$web_browser\"" >> ~/.localrc
         browser_path=$(dirname $web_browser)
-        echo "$browser_path:$PATH" > ~/.dotfiles/system/_path.temp
-        sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
-        sort -n ~/.dotfiles/system/_path.temp2 | uniq > ~/.dotfiles/system/_path.temp3
-        echo PATH=$(cat ~/.dotfiles/system/_path.temp3) |sed s'= =:='g|sed s'=^P=export P=' > ~/.dotfiles/system/_path.temp4
-        mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
-        rm ~/.dotfiles/system/_path.temp
-        rm ~/.dotfiles/system/_path.temp2
-        rm ~/.dotfiles/system/_path.temp3
+        pathmunge $browser_path
     fi
-    
+
     success "browser"
 }
 
@@ -132,14 +139,7 @@ setup_office () {
     if [ $office_suite != "" ]; then
         echo "export OFFICESUITE=\"$office_suite\"" >> ~/.localrc
         office_path=$(dirname $office_suite)
-        echo "$office_path:$PATH" > ~/.dotfiles/system/_path.temp
-        sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
-        sort -n ~/.dotfiles/system/_path.temp2 | uniq > ~/.dotfiles/system/_path.temp3
-        echo PATH=$(cat ~/.dotfiles/system/_path.temp3) |sed s'= =:='g|sed s'=^P=export P=' > ~/.dotfiles/system/_path.temp4
-        mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
-        rm ~/.dotfiles/system/_path.temp
-        rm ~/.dotfiles/system/_path.temp2
-        rm ~/.dotfiles/system/_path.temp3
+        pathmunge $office_path
     fi
 
     success "office"
@@ -153,14 +153,7 @@ setup_pdf () {
     if [ $pdf_viewer != "" ]; then
         echo "export PDFVIEWER=\"$pdf_viewer\"" >> ~/.localrc
         pdf_path=$(dirname $pdf_viewer)
-        echo "$pdf_path:$PATH" > ~/.dotfiles/system/_path.temp
-        sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
-        sort -n ~/.dotfiles/system/_path.temp2 | uniq > ~/.dotfiles/system/_path.temp3
-        echo PATH=$(cat ~/.dotfiles/system/_path.temp3) |sed s'= =:='g|sed s'=^P=export P=' > ~/.dotfiles/system/_path.temp4
-        mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
-        rm ~/.dotfiles/system/_path.temp
-        rm ~/.dotfiles/system/_path.temp2
-        rm ~/.dotfiles/system/_path.temp3
+        pathmunge $pdf_path
     fi
 
     success "pdf"
@@ -173,14 +166,7 @@ setup_visor () {
     if [ $visor != "" ]; then
         echo "export VISOR=\"$visor\"" >> ~/.localrc
         visor_path=$(dirname $visor)
-        echo "$visor_path:$PATH" > ~/.dotfiles/system/_path.temp
-        sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
-        sort -n ~/.dotfiles/system/_path.temp2 | uniq > ~/.dotfiles/system/_path.temp3
-        echo PATH=$(cat ~/.dotfiles/system/_path.temp3) |sed s'= =:='g|sed s'=^P=export P=' > ~/.dotfiles/system/_path.temp4
-        mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
-        rm ~/.dotfiles/system/_path.temp
-        rm ~/.dotfiles/system/_path.temp2
-        rm ~/.dotfiles/system/_path.temp3
+        pathmunge $visor_path
     fi
 
     success "visor"
@@ -197,14 +183,7 @@ setup_editor () {
         echo "export GIT_EDITOR=$git_editor" >> ~/.localrc
         echo "export EDITOR=$git_editor" >> ~/.localrc
         editor_path=$(dirname $git_editor)
-        echo "$git_editor:$PATH" > ~/.dotfiles/system/_path.temp
-        sed s'=:=\n='g ~/.dotfiles/system/_path.temp  > ~/.dotfiles/system/_path.temp2
-        sort -n ~/.dotfiles/system/_path.temp2 | uniq > ~/.dotfiles/system/_path.temp3
-        echo PATH=$(cat ~/.dotfiles/system/_path.temp3) |sed s'= =:='g|sed s'=^P=export P=' > ~/.dotfiles/system/_path.temp4
-        mv ~/.dotfiles/system/_path.temp4 ~/.dotfiles/system/_path.sh
-        rm ~/.dotfiles/system/_path.temp
-        rm ~/.dotfiles/system/_path.temp2
-        rm ~/.dotfiles/system/_path.temp3
+        pathmunge $editor_path
     fi
     success "editor"
 }
@@ -230,6 +209,10 @@ setup_gitlasts () {
     fi
 
     success "gitlasts"
+}
+
+clear_path() {
+  export PATH=$PATH|sed s'=:=\n='g|grep -v "qt-3.3" | sort -n|sed s"=\n=:="g|uniq | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/:/g' > ~/.dotfiles/system/_path.sh
 }
 
 
@@ -329,6 +312,7 @@ setup_editor
 setup_visor
 setup_pdf
 setup_office
+clear_path
 
 # If we're on a Mac, let's install and setup homebrew.
 if [ "$(uname -s)" == "Darwin" ]
