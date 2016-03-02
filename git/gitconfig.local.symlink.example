@@ -1,0 +1,7 @@
+[user]
+        name = AUTHORNAME
+        email = AUTHOREMAIL
+[credential]
+        helper = GIT_CREDENTIAL_HELPER
+[core]
+        editor =  "if [ -f CHOOSEN_EDITOR ]; then ED='CHOOSEN_EDITOR'; else ED='nano'; fi; $ED"

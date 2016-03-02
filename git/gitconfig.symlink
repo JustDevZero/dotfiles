@@ -1,3 +1,6 @@
+# Local/private config goes in the include
+[include]
+        path = ~/.gitconfig.local
 [alias]
         st = status
         br = branch
@@ -12,11 +15,7 @@
         branch = auto
         ui = true
 [core]
-        editor =  "if [ -f CHOOSEN_EDITOR ]; then ED='CHOOSEN_EDITOR'; else ED='nano'; fi; $ED"
         excludesfile = ~/.gitignore
-[user]
-        name = AUTHORNAME
-        email = AUTHOREMAIL
 [help]
         autocorrect = 1
 [push]

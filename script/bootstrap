@@ -70,7 +70,7 @@ setup_gitconfig () {
         git_authoremail="$(whoami)@localhost"
     fi
 
-    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" ~/.dotfiles/git/gitconfig.symlink.example > ~/.dotfiles/git/gitconfig.symlink
+    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" ~/.dotfiles/git/gitconfig.local.symlink.example > ~/.dotfiles/git/gitconfig.local.symlink
 
     echo "export GIT_AUTHOR_NAME=$git_authorname" >> ~/.localrc
     echo "export GIT_AUTHOR_EMAIL=$git_authoremail" >> ~/.localrc
@@ -88,6 +88,12 @@ setup_android_env () {
 
         user ' - Do you use eclipse for dev? If so write path or leavy empty'
         read -e eclipse_use
+        eclipse_use=$(which $eclipse_use)&>/dev/null
+        if [ "$eclipse_use" = "" ]; then
+          user 'Please, write path:'
+          read -e eclipse_use
+        fi
+
 
         if [[ "$eclipse_use" != "" ]]; then
             echo "export ECLIPSE=$eclipse_use" >> ~/.localrc
@@ -97,6 +103,11 @@ setup_android_env () {
 
         user ' - Do you use android-sdk? Write path or leavy empty'
         read -e android_sdk_path
+        android_sdk_path=$(which $android_sdk_path)&>/dev/null
+        if [ "$android_sdk_path" = "" ]; then
+          user 'Please, write path:'
+          read -e android_sdk_path
+        fi
 
         if [[ "$android_sdk_path" != "" ]]; then
             echo "export ANDROID_TOOLS=\"$android_sdk_path/tools\"" >> ~/.localrc
@@ -107,6 +118,11 @@ setup_android_env () {
 
         user ' - Do you use android-ndk? Write path or leavy empty.'
         read -e android_ndk_path
+        android_ndk_path=$(which $android_ndk_path)&>/dev/null
+        if [ "$android_ndk_path" = "" ]; then
+          user 'Please, write path:'
+          read -e android_ndk_path
+        fi
 
         if [[ "$android_ndk_path" != "" ]]; then
             echo "export ANDROID_NDK=\"$android_ndk_path/tools\"" >> ~/.localrc
@@ -121,8 +137,13 @@ setup_browser () {
     info 'browser'
     user ' - What your favorite web browser? Please, write path or leavy empty'
     read -e web_browser
+    web_browser=$(which $web_browser)&>/dev/null
+    if [ "$web_browser" = "" ]; then
+      user 'Please, write path:'
+      read -e web_browser
+    fi
 
-    if [ $web_browser != "" ]; then
+    if [ "$web_browser" != "" ]; then
         echo "export BROWSER=\"$web_browser\"" >> ~/.localrc
         browser_path=$(dirname $web_browser)
         pathmunge $browser_path
@@ -135,8 +156,13 @@ setup_office () {
     info "office"
     user ' - What you use as office suite? Please, write path.'
     read -e office_suite
+    office_suite=$(which $office_suite)&>/dev/null
+    if [ "$office_suite" = "" ]; then
+      user 'Please, write path:'
+      read -e office_suite
+    fi
 
-    if [ $office_suite != "" ]; then
+    if [ "$office_suite" != "" ]; then
         echo "export OFFICESUITE=\"$office_suite\"" >> ~/.localrc
         office_path=$(dirname $office_suite)
         pathmunge $office_path
@@ -149,6 +175,11 @@ setup_pdf () {
     info "pdf"
     user ' - What your favorite PDF viewer? Please, write path or leavy empty.'
     read -e pdf_viewer
+    pdf_viewer=$(which $pdf_viewer)&>/dev/null
+    if [ "$pdf_viewer" = "" ]; then
+      user 'Please, write path:'
+      read -e pdf_viewer
+    fi
 
     if [ $pdf_viewer != "" ]; then
         echo "export PDFVIEWER=\"$pdf_viewer\"" >> ~/.localrc
@@ -163,7 +194,13 @@ setup_visor () {
     info "visor"
     user ' - What your favorite image viewer? Please, write path or leave empty.'
     read -e visor
-    if [ $visor != "" ]; then
+    visor=$(which $visor)&>/dev/null
+    if [ "$visor" = "" ]; then
+      user 'Please, write path:'
+      read -e visor
+    fi
+
+    if [ "$visor" != "" ]; then
         echo "export VISOR=\"$visor\"" >> ~/.localrc
         visor_path=$(dirname $visor)
         pathmunge $visor_path
@@ -174,10 +211,15 @@ setup_visor () {
 
 setup_editor () {
     info "editor"
-    user ' - What is your text editor for shell (vim, emacs, nano...)? Please write path or leavy empty'
+    user ' - What is your text editor for shell (vim, emacs, nano...)?'
     read -e git_editor
+    git_editor=$(which $git_editor)&>/dev/null
+    if [ "$git_editor" = "" ]; then
+      user 'Please, write path:'
+      read -e git_editor
+    fi
 
-    if [ $git_editor != "" ]; then
+    if [ "$git_editor" != "" ]; then
         sed -e "s=CHOOSEN_EDITOR=$git_editor=g" ~/.dotfiles/git/gitconfig.symlink > ~/.dotfiles/git/gitconfig.symlink.current
         mv ~/.dotfiles/git/gitconfig.symlink.current ~/.dotfiles/git/gitconfig.symlink
         echo "export GIT_EDITOR=$git_editor" >> ~/.localrc
