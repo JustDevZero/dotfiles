@@ -44,6 +44,6 @@
                                                               (setq emmet-use-css-transform t)
                                                             (setq emmet-use-css-transform nil)))))
 
-(add-to-list 'load-path "/home/zero/.emacs.d/plugins/neotree")
+(add-to-list 'load-path "~/.emacs.d/plugins/neotree")
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
