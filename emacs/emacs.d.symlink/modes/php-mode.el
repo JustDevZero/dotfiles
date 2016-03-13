@@ -200,7 +200,7 @@ can be used to match against definitions for that classlike."
     "^\\s-*function\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*(" 1))
  "Imenu generic expression for PHP Mode. See `imenu-generic-expression'.")
 
-(defcustom php-manual-url "http://www.php.net/manual/en/"
+(defcustom php-manual-url "http://www.php.net/manual/es/"
   "URL at which to find PHP manual.
 You can replace \"en\" with your ISO language code."
   :type 'string
