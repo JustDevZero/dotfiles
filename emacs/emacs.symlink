@@ -44,6 +44,17 @@
                                                               (setq emmet-use-css-transform t)
                                                             (setq emmet-use-css-transform nil)))))
 
-(add-to-list 'load-path "/home/zero/.emacs.d/plugins/neotree")
+(add-to-list 'load-path "~/.emacs.d/plugins/neotree")
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
+
+(if (< emacs-major-version 24)
+    (progn
+      (add-to-list 'load-path "~/.emacs.d/themes/emacs-color-theme-solarized")
+      (require 'color-theme-solarized)
+      (set-frame-parameter nil 'background-mode 'dark)
+      (color-theme-solarized))
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/emacs-color-theme-solarized")
+  (load-theme 'solarized t))
+       
+(add-to-list 'default-frame-alist '(background-color . "black"))

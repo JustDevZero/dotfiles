@@ -4,3 +4,6 @@
 [submodule "git/git-semantic-commits"]
 	path = git/git-semantic-commits
 	url = https://github.com/fteem/git-semantic-commits.git
+[submodule "emacs/emacs.d.symlink/themes/emacs-color-theme-solarized"]
+	path = emacs/emacs.d.symlink/themes/emacs-color-theme-solarized
+	url = https://github.com/sellout/emacs-color-theme-solarized.git
