@@ -82,6 +82,29 @@ function comprimir() { # compress a file or folder
     esac
 }
 
+function afk() {
+    message="AFK: $@"
+    pid=$(pidof -s cinnamon-screensaver)
+    if [ -n "$pid" ]; then
+        screensaver=$(which cinnamon-screensaver-command 2&>/dev/null)
+        if [ -n "$screensaver" ]; then
+            cinnamon-screensaver-command -l -m "$message"
+        else
+            echo "cinnamon-screensaver-command not installed"
+        fi
+    fi
+    
+    pid=$(pidof -s gnome-screensaver)
+    if [ -n "$pid" ]; then
+        screensaver=$(which gnome-screensaver-command 2&>/dev/null)
+        if [ -n "$screensaver" ]; then
+            gnome-screensaver-command -l -m "$message"
+        else
+            echo "gnome-screensaver-command not installed"
+        fi
+    fi
+}
+
 function listar() { # list content of archive but don't unpack
     if [ -f "$1" ]; then
         case "$1" in
