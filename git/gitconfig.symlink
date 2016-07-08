@@ -16,6 +16,7 @@
         ui = true
 [core]
         excludesfile = ~/.gitignore
+        autocrlf = input
 [help]
         autocorrect = 1
 [push]
