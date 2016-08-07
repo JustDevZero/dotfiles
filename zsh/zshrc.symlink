@@ -131,3 +131,5 @@ compinit -d $zsh_cache/zcomp-$HOST
 for f in ~/.zshrc $zsh_cache/zcomp-$HOST; do
         zrecompile -p $f && rm -f $f.zwc.old
 done
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
