@@ -29,7 +29,7 @@ function reverse { echo "${(j::)${(@Oa)${(s::):-$1}}}" }
 function excuse {
     curlize=$(which curl)
     if [ $curlize != ""  ]; then
-        $curlize -s http://zero9f9.com/api/bofh &>/dev/null|tail -n1
+        $curlize -s http://pages.cs.wisc.edu/%7Eballard/bofh/excuses &>/dev/null|shuf -n 1 -
     else
         echo "You must have curl installed to get an excuse"
     fi
