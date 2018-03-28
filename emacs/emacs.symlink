@@ -17,8 +17,8 @@
 (autoload 'php-mode "php-mode" "Major mode for editing php code." t)
 (autoload 'web-mode "web-mode" "Major mode for editing web code." t)
 (autoload 'd-mode "d-mode" "Major mode for d-lang." t)
-
-(autoload 'jade-mode "jade-mode" "Major mode for diet-lang." t) 
+(autoload 'jade-mode "jade-mode" "Major mode for diet-lang." t)
+(autoload 'yaml-mode "yaml-mode" "Major mode for yaml." t)
 
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
@@ -27,6 +27,8 @@
 (add-to-list 'auto-mode-alist '("\\.d$" . d-mode))
 (add-to-list 'auto-mode-alist '("\\.dt$" . jade-mode))
 (add-to-list 'auto-mode-alist '("\\.erb$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 
 (setq web-mode-ac-sources-alist
       '(("php" . (ac-source-yasnippet ac-source-php-auto-yasnippets))
@@ -46,14 +48,7 @@
 
 (if (< emacs-major-version 24)
     (progn
-      (add-to-list 'load-path "~/.emacs.d/plugins/neotree")
-      (require 'neotree)
-      (global-set-key [f8] 'neotree-toggle)
-      (add-to-list 'load-path "~/.emacs.d/themes/emacs-color-theme-solarized")
-      (require 'color-theme-solarized)
       (set-frame-parameter nil 'background-mode 'dark)
-      (color-theme-solarized))
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/emacs-color-theme-solarized")
-  (load-theme 'solarized t))
+      (color-theme-solarized)))
        
 (add-to-list 'default-frame-alist '(background-color . "black"))
