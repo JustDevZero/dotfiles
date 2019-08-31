@@ -221,9 +221,10 @@ function lower { zmv '(*)' '${(L)1}'  }
 function uper { zmv '(*)' '${(U)1}' }
 function watchssh { watch -n 1 'ps aux | grep ssh | grep -v grep' }
 #function capitalize { zmv '(**/)(*).(#i)mp3' '$1$2.mp3'  && zmv '* *' '$f:gs/ /_'} #capitalize all mp3 files, need to be improved for use with any extension
-function battery {  upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E "state|to\ full|percentage"|grep percentage|awk '{print $2}' }
+#function battery {  upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E "state|to\ full|percentage"|grep percentage|awk '{print $2}' }
+function battery { acpi|sed -E s'=^.*ing, =='g - }
 
-# Check new ip and whatch if changed.
+# check new ip and whatch if changed.
 function myip {
     if [ ! -f "$HOME/.lastip" ]; then
         wget -q https://quinaeslamevaip.info/txt/ -O "$HOME/.lastip"
