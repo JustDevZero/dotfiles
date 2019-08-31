@@ -2,13 +2,14 @@
 [include]
         path = ~/.gitconfig.local
 [alias]
-        st = status
+	st = status
         br = branch
         amend = commit --amend
-        co = checkout
-        comit = commit
+	co = checkout
+        comit = commit -S 
         ps = push
         count = shortlog -sn
+	ci = commit -S 
 [color]
         diff = auto
         status = auto
@@ -17,6 +18,7 @@
 [core]
         excludesfile = ~/.gitignore
         autocrlf = input
+	pager = less -+F -+X -R
 [help]
         autocorrect = 1
 [push]
@@ -25,3 +27,12 @@
         #
         # Setting to git 2.0 default to suppress warning message
         default = simple
+[commit]
+	template = /home/zero/.gittemplate
+	gpgsign = true
+[user]
+	email = info@danielripoll.es
+	name = Daniel Ripoll
+	signingkey = F040EA4D
+[pager]
+	branch = false
