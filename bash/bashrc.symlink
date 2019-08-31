@@ -155,3 +155,7 @@ $(tput sgr0)"
 retropie_welcome
 
 # RETROPIE PROFILE END
+
+if [ -f "/usr/bin/virtualenvwrapper.sh" ]; then
+   source /usr/bin/virtualenvwrapper.sh
+fi
