@@ -28,7 +28,7 @@ export DOTFILES_VERSION=$(cat $ZSH/VERSION)
 
 
 # your project folder that we can `c [tab]` to
-export PROJECTS=~/Code
+export PROJECTS=~/Projects
 
 function check_dotfiles_version () {
     remote_version=$(wget -q -t 1 --timeout 5 https://raw.githubusercontent.com/JustDevZero/dotfiles/master/VERSION  -O -)
@@ -39,27 +39,6 @@ function check_dotfiles_version () {
     fi
     unset remote_version
 }
-
-
-if [ -f /usr/bin/wget ];then
-   if [ -f ~/.dotfiles_lastcheck ]; then
-     curr_date=$(date +%Y%m%d%H%M)
-     last_date=$(cat ~/.dotfiles_lastcheck)
-     difference_date=$(( $curr_date - $last_date ))
-
-     if (($difference_date > 120 )); then
-        check_dotfiles_version
-        rm -rf ~/.dotfiles_lastcheck
-        echo $(date +%Y%m%d%H%M) > ~/.dotfiles_lastcheck
-     fi
-    else
-     check_dotfiles_version
-     echo $(date +%Y%m%d%H%M) > ~/.dotfiles_lastcheck
-     unset curr_date
-     unset last_date
-     unset difference_date
-   fi
-fi
 
 
 # Stash your environment variables in ~/.localrc. This means they'll stay out
@@ -133,3 +112,19 @@ for f in ~/.zshrc $zsh_cache/zcomp-$HOST; do
 done
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+# Refresh gpg-agent tty in case user switches into an X session
+gpg-connect-agent updatestartuptty /bye >/dev/null
+
+PATH="/home/dripoll/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/dripoll/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/dripoll/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/dripoll/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/dripoll/perl5"; export PERL_MM_OPT;
+export GDK_CORE_DEVICE_EVENTS=1
+
+#VIRTUAL_ENV_DISABLE_PROMPT=1
+#VIRTUAL_ENV_HOME=$HOME/VirtualEnvs/popeye
+#source $VIRTUAL_ENV_HOME/bin/activate
+
+export WORKON_HOME=~/.env
+source /usr/bin/virtualenvwrapper.sh

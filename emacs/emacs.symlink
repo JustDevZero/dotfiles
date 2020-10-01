@@ -19,6 +19,7 @@
 (autoload 'd-mode "d-mode" "Major mode for d-lang." t)
 (autoload 'jade-mode "jade-mode" "Major mode for diet-lang." t)
 (autoload 'yaml-mode "yaml-mode" "Major mode for yaml." t)
+(autoload 'autotetris-mode "autotetris-mode" "autotetris-mode" t)
 
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
@@ -51,4 +52,4 @@
       (set-frame-parameter nil 'background-mode 'dark)
       (color-theme-solarized)))
        
-(add-to-list 'default-frame-alist '(background-color . "black"))
+(add-to-list 'default-frame-alist '(background-color . "white"))

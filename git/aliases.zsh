@@ -21,7 +21,7 @@
 #       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #       THE SOFTWARE.
 
-alias gitps="git push origin master"
+alias gitps="git push"
 alias gitp="git pull"
 alias gitc="git commit -a"
 alias gitb='git branch'

@@ -10,6 +10,13 @@
         ps = push
         count = shortlog -sn
 	ci = commit -S 
+	ci = commit -S
+	branches = "!export GIT_PAGER=''; git branch"
+	br = "!export GIT_PAGER; git branch|grep '*' --color=always"
+	last = log -1 HEAD
+	unstage = reset HEAD --
+	glog = log --graph --oneline --pretty --decorate --all
+
 [color]
         diff = auto
         status = auto
@@ -27,12 +34,23 @@
         #
         # Setting to git 2.0 default to suppress warning message
         default = simple
+
 [commit]
 	template = /home/zero/.gittemplate
 	gpgsign = true
+
 [user]
 	email = info@danielripoll.es
 	name = Daniel Ripoll
 	signingkey = F040EA4D
+
 [pager]
 	branch = false
+        
+[user]
+	email = d.ripoll@andromedant.com
+	name = Daniel Ripoll
+	signingkey = 10FA37F7
+
+[init]
+	templatedir = ~/.git-templates

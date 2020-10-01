@@ -1,0 +1,14 @@
+#!/bin/bash
+# based on http://www.snip2code.com/Snippet/165926/Check-for-ipdb-breakpoints-git-hook
+
+pdb_check=$(git grep -E -n '[ ;]i?pdb|debugger')
+if [ ${#pdb_check} -gt 0 ]
+then
+        echo "COMMIT REJECTED: commit contains code with break points. Please remove before commiting."
+        echo $pdb_check
+        exit 1
+else
+        echo "Code contains no break points"
+fi
+
+exit 0

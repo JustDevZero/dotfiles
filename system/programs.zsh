@@ -103,6 +103,25 @@ function afk() {
             echo "gnome-screensaver-command not installed"
         fi
     fi
+    pid=$(pidof -s dde-session-daemon)
+    if [ -n "$pid" ]; then
+        screensaver=$(which dde-lock 2&>/dev/null)
+        if [ -n "$screensaver" ]; then
+            dde-lock
+        else
+            echo "dde-lock not installed, or using other system"
+        fi
+    fi
+
+    pid=$(pidof -s dde-fluxbox)
+    if [ -n "$pid" ]; then
+        screensaver=$(which i3lock-fancy 2&>/dev/null)
+        if [ -n "$screensaver" ]; then
+            i3lock-fancy
+        else
+            echo "dde-lock not installed, or using other system"
+        fi
+    fi
 }
 
 function listar() { # list content of archive but don't unpack
@@ -246,6 +265,16 @@ rationalise-dot() {
   else
     LBUFFER+=.
   fi
+}
+
+function ngrok_http {
+    if [[ !  -z  $(echo $1)  ]];
+    then
+        port=$1
+    else
+        port=80
+    fi
+    ngrok http $port -region eu
 }
 zle -N rationalise-dot
 bindkey . rationalise-dot

@@ -40,6 +40,7 @@ alias pget='http_proxy=127.0.0.1:8118 wget' #wget behind proxy
 alias myproxy="http_proxy=127.0.0.1:8118 http://quinaeslamevaip.info/txt/" #Used for knowing the ip
 alias ban='iptables -I INPUT -j DROP -s'
 alias unban='iptables -D INPUT -j DROP -s'
+alias git='nocorrect git'
 
 ###     ALIAS FOR CHECKSUMS           ###
 alias md5='md5sum'

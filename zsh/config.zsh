@@ -133,4 +133,6 @@ OS=`uname`
 DISTRO=`grep '^NAME' /etc/os-release|sed s'?=? ?'|sed s'?"??'g|awk '{print $2}'`
 VERSION=`grep '^VERSION_ID' /etc/os-release |sed s'?=? ?'|sed s'?"??'g|awk '{print $2}'`
 export PAGER='most -s'
+#export GIT_PAGER="cat git diff"
 export LESSHISTFILE='most -s'
+export LESS='-F -X $LESS'
