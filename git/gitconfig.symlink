@@ -1,21 +1,30 @@
 # Local/private config goes in the include
+
 [include]
-        path = ~/.gitconfig.local
+    path = ~/.gitconfig.local
+
+[user]
+    email = d.ripoll@andromedant.com
+    name = Daniel Ripoll
+    signingkey = 10FA37F7
+
+[init]
+    templatedir = ~/.git-templates
+
 [alias]
-	st = status
+    st = status
         br = branch
         amend = commit --amend
-	co = checkout
-        comit = commit -S 
+        co = checkout
+        comit = commit -S
         ps = push
         count = shortlog -sn
-	ci = commit -S 
-	ci = commit -S
-	branches = "!export GIT_PAGER=''; git branch"
-	br = "!export GIT_PAGER; git branch|grep '*' --color=always"
-	last = log -1 HEAD
-	unstage = reset HEAD --
-	glog = log --graph --oneline --pretty --decorate --all
+        ci = commit -S
+        branches = "!export GIT_PAGER=''; git branch"
+        br = "!export GIT_PAGER; git branch|grep '*' --color=always"
+        last = log -1 HEAD
+        unstage = reset HEAD --
+        glog = log --graph --oneline --pretty --decorate --all
 
 [color]
         diff = auto
@@ -25,7 +34,8 @@
 [core]
         excludesfile = ~/.gitignore
         autocrlf = input
-	pager = less -+F -+X -R
+        pager = less -+F -+X -R
+
 [help]
         autocorrect = 1
 [push]
@@ -36,21 +46,9 @@
         default = simple
 
 [commit]
-	template = /home/zero/.gittemplate
-	gpgsign = true
-
-[user]
-	email = info@danielripoll.es
-	name = Daniel Ripoll
-	signingkey = F040EA4D
+    template = /home/daniel/.gittemplate
+    gpgsign = true
 
 [pager]
-	branch = false
-        
-[user]
-	email = d.ripoll@andromedant.com
-	name = Daniel Ripoll
-	signingkey = 10FA37F7
+    branch = false
 
-[init]
-	templatedir = ~/.git-templates

@@ -52,4 +52,4 @@
       (set-frame-parameter nil 'background-mode 'dark)
       (color-theme-solarized)))
        
-(add-to-list 'default-frame-alist '(background-color . "white"))
+;(add-to-list 'default-frame-alist '(background-color . "white"))
