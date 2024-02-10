@@ -5,6 +5,7 @@
 
 [init]
     templatedir = ~/.git-templates
+    defaultBranch = main
 
 [alias]
     st = status
