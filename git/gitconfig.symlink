@@ -41,7 +41,7 @@
         default = simple
 
 [commit]
-    template = /home/daniel/.gittemplate
+    template = /home/zero/.gittemplate
     gpgsign = true
 
 [pager]
