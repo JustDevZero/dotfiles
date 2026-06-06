@@ -1,3 +1,5 @@
-if [ -f ~/.dotfiles/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
-    source ~/.dotfiles/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+_zsh_syntax="${DOTFILES:-$HOME/.dotfiles}/zsh/plugins/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+if [[ -f "$_zsh_syntax" ]]; then
+    source "$_zsh_syntax"
 fi
+unset _zsh_syntax

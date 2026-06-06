@@ -57,15 +57,15 @@ else
 fi
 
 export PS2="$(print '%{\e[0;34m%}>%{\e[0m%}')"
-eval `dircolors -b`
+if (( $+commands[dircolors] )); then
+  eval "$(dircolors -b)"
+fi
 export CLICOLOR=true
 
 # autoload functions only if they exist.
-if [ -d $ZSH/functions ]; then
-   if [[ "$(ls -A $ZSH 2> /dev/null)" != '' ]]; then
-       fpath=($ZSH/functions $fpath)
-       autoload -U $ZSH/functions/*(:t)
-   fi
+if [[ -d "$ZSH/functions" ]]; then
+   fpath=("$ZSH/functions" $fpath)
+   autoload -U "$ZSH"/functions/*(.N:t)
 fi
 
 # set history to 50.000 commands, for better stadistics and don't loose commands.
@@ -105,13 +105,15 @@ setopt extendedglob # treat #, ~, and ^ as part of patterns for filename generat
 setopt alwaystoend # pretty obvious
 
 # History
-setopt histreduceblanks # Pretty obvious. Right?
-setopt hist_ignore_space  # If a line starts with a space, don't save it.
+setopt extended_history       # store timestamp + elapsed seconds in history file
+setopt histreduceblanks
+setopt hist_ignore_space      # If a line starts with a space, don't save it.
 setopt hist_ignore_all_dups
 setopt shwordsplit # By default, zsh does not separate word in a var "word 1 word2", shwordsplit gives compatibility with it.
 unsetopt banghist # we don't want the default ! behavior
 setopt noclobber  # Keep echo "station" > station from clobbering station
 unsetopt appendhistory #We don't want histories from others tty to be appended, only our main.
+alias history='fc -l -t "%F %T" 1'
 
 # Autocorrectionn:
 setopt CORRECT
@@ -129,10 +131,20 @@ zmodload zsh/complist
 
 
 #Defining exports and usefull variables
-OS=`uname`
-DISTRO=`grep '^NAME' /etc/os-release|sed s'?=? ?'|sed s'?"??'g|awk '{print $2}'`
-VERSION=`grep '^VERSION_ID' /etc/os-release |sed s'?=? ?'|sed s'?"??'g|awk '{print $2}'`
-export PAGER='most -s'
+OS="$(uname -s)"
+if [[ -r /etc/os-release ]]; then
+  DISTRO="$(. /etc/os-release && printf '%s' "${NAME:-}")"
+  VERSION="$(. /etc/os-release && printf '%s' "${VERSION_ID:-}")"
+else
+  DISTRO="$OS"
+  VERSION=""
+fi
+
+if (( $+commands[most] )); then
+  export PAGER='most -s'
+else
+  export PAGER="${PAGER:-less}"
+fi
 #export GIT_PAGER="cat git diff"
-export LESSHISTFILE='most -s'
-export LESS='-F -X $LESS'
+export LESSHISTFILE="${LESSHISTFILE:-$HOME/.lesshst}"
+export LESS="${LESS:--F -X}"

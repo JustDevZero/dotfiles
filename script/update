@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+info() {
+  printf '  [ \033[00;34m..\033[0m ] %s\n' "$1"
+}
+
+success() {
+  printf '  [ \033[00;32mOK\033[0m ] %s\n' "$1"
+}
+
+warn() {
+  printf '  [ \033[0;33m!!\033[0m ] %s\n' "$1"
+}
+
+update_dotfiles() {
+  info "updating dotfiles repo..."
+  if git pull --rebase origin master 2>/dev/null; then
+    success "dotfiles up to date"
+  else
+    warn "dotfiles update failed — skipping"
+  fi
+}
+
+update_submodules() {
+  info "updating submodules..."
+  if git submodule update --remote --merge; then
+    success "submodules up to date"
+  else
+    warn "submodule update failed — skipping"
+  fi
+}
+
+update_uv() {
+  if ! command -v uv &>/dev/null; then
+    warn "uv not installed, skipping"
+    return
+  fi
+  info "updating uv..."
+  if uv self update 2>/dev/null; then
+    success "uv updated ($(uv --version))"
+  else
+    warn "uv update failed — skipping"
+  fi
+}
+
+update_mise() {
+  if ! command -v mise &>/dev/null; then
+    warn "mise not installed, skipping"
+    return
+  fi
+  info "updating mise..."
+  if mise self-update --yes 2>/dev/null; then
+    success "mise updated ($(mise --version))"
+  else
+    warn "mise update failed — skipping"
+  fi
+}
+
+update_starship() {
+  if ! command -v starship &>/dev/null; then
+    warn "starship not installed, skipping"
+    return
+  fi
+  info "updating starship..."
+  if curl -sS https://starship.rs/install.sh | sh -s -- --yes --bin-dir "$HOME/.local/bin" 2>/dev/null; then
+    success "starship updated ($(starship --version | head -1))"
+  else
+    warn "starship update failed — skipping"
+  fi
+}
+
+update_bofh_excuses() {
+  local dest="$HOME/.bofh-excuses"
+  if [ ! -d "$dest" ]; then
+    warn "bofh-excuses not installed, skipping"
+    return
+  fi
+  info "updating bofh-excuses..."
+  if git -C "$dest" pull --rebase origin master 2>/dev/null; then
+    success "bofh-excuses up to date"
+  else
+    warn "bofh-excuses update failed — skipping"
+  fi
+}
+
+echo ''
+info "updating dotfiles and tools..."
+echo ''
+
+update_dotfiles
+update_submodules
+update_uv
+update_mise
+update_starship
+update_bofh_excuses
+
+echo ''
+success "update complete"

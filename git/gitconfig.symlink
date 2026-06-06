@@ -9,15 +9,14 @@
 
 [alias]
     st = status
-        br = branch
+        br = "!export GIT_PAGER; git branch|grep '*' --color=always"
+        branches = "!export GIT_PAGER=''; git branch"
         amend = commit --amend
         co = checkout
         comit = commit -S
         ps = push
         count = shortlog -sn
         ci = commit -S
-        branches = "!export GIT_PAGER=''; git branch"
-        br = "!export GIT_PAGER; git branch|grep '*' --color=always"
         last = log -1 HEAD
         unstage = reset HEAD --
         glog = log --graph --oneline --pretty --decorate --all
@@ -42,8 +41,16 @@
         default = simple
 
 [commit]
-    template = /home/zero/.gittemplate
     gpgsign = true
+
+[diff]
+    tool = meld
+
+[difftool "meld"]
+    cmd = meld "$LOCAL" "$REMOTE"
+
+[difftool]
+    prompt = false
 
 [pager]
     branch = false

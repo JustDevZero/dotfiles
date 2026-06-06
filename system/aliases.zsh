@@ -1,172 +1,121 @@
-#
-#       The MIT License
-#
-#       Copyright (c) Daniel Ripoll, <info@danielripoll.es>, <http://danielripoll.es>
-#
-#       Permission is hereby granted, free of charge, to any person obtaining a copy
-#       of this software and associated documentation files (the "Software"), to deal
-#       in the Software without restriction, including without limitation the rights
-#       to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#       copies of the Software, and to permit persons to whom the Software is
-#       furnished to do so, subject to the following conditions:
-#
-#       The above copyright notice and this permission notice shall be included in
-#       all copies or substantial portions of the Software.
-#
-#       THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#       IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#       FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#       AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#       LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-#       THE SOFTWARE.
-
-###      GENERAL ALIAS     ###
-alias mkdir='nocorrect mkdir' # no spelling correction on mkdir
+###      GENERAL ALIASES     ###
+alias mkdir='nocorrect mkdir'
 alias nano='nano -w -B'
 alias home='cd ~'
-alias desk='cd `xdg-user-dir DESKTOP`'
-alias hist="grep '$1' ~/.zsh_history"
+alias desk='cd $(xdg-user-dir DESKTOP 2>/dev/null || echo ~)'
 alias less='less -M'
 alias grep='grep --color=auto'
-alias nestat='$IFSUDO netstat -tpav'
-alias unix2dos='recode lat1..ibmpc'
-alias dos2unix='recode ibmpc..lat1'
+alias git='nocorrect git'
 alias ls='ls -FX --format=across --color=auto'
 alias l='ls'
-alias hgg='fc -l 0|grep'  # Very often I want to see a bunch of history entries instead of simply searching back
 alias diffc='colordiff'
-alias pget='http_proxy=127.0.0.1:8118 wget' #wget behind proxy
-alias myproxy="http_proxy=127.0.0.1:8118 http://quinaeslamevaip.info/txt/" #Used for knowing the ip
-alias ban='iptables -I INPUT -j DROP -s'
-alias unban='iptables -D INPUT -j DROP -s'
-alias git='nocorrect git'
 
-###     ALIAS FOR CHECKSUMS           ###
+# history search — show entries matching a pattern with timestamps
+alias hgg='fc -l -t "%F %T" 0 | grep'
+
+# netstat with sudo if needed
+alias netst="${IFSUDO:-sudo} netstat -tpav"
+
+# encoding conversion
+alias unix2dos='iconv -f UTF-8 -t UTF-16'
+alias dos2unix='iconv -f UTF-16 -t UTF-8'
+
+# tor-aware wget (requires torsocks installed)
+if command -v torsocks &>/dev/null; then
+    alias tget='torsocks wget'
+fi
+
+# firewall shortcuts
+alias ban="${IFSUDO:-sudo} iptables -I INPUT -j DROP -s"
+alias unban="${IFSUDO:-sudo} iptables -D INPUT -j DROP -s"
+
+###     CHECKSUMS           ###
 alias md5='md5sum'
 alias sha1='sha1sum'
-alias ha224='sha224sum'
+alias sha224='sha224sum'
 alias sha256='sha256sum'
 alias sha384='sha384sum'
 alias sha512='sha512sum'
 
-###      ALIAS FOR OWNER LAZYNESS     ###
+###      LAZINESS     ###
 alias md='mkdir'
 alias rd='rmdir'
 alias cls='clear'
-alias se='$IFSUDO $EDITOR'
+alias se="${IFSUDO:-sudo} $EDITOR"
 alias top='htop'
 alias mytop='htop -u $USER'
-alias fecha='date "+%A %d, %B, %Y %l:%M %p %Z"' #date in spanish format
-alias p="cd .."
+alias fecha='date "+%A %d, %B, %Y %l:%M %p %Z"'
+alias p='cd ..'
 
-###      ALIAS FOR SECURITY     ###
-#alias rm='rm -i'
-#alias mv='mv -i'
+###      SECURITY     ###
 alias ln='ln -i'
 
-###      ALIAS FOR PROCESS SNAPSHOT     ###
+###      PROCESSES     ###
 alias psa='ps auxf'
-alias psg='ps aux | grep --color=auto $1'  #It requires an argument
+alias psg='ps aux | grep --color=auto'
 
-###      ALIAS FOR SPACE USAGE     ###
+###      DISK SPACE     ###
 alias dhu='du -sh'
 alias dul='du -h | less'
 alias dfh='df -h'
 
-
-###      ALIAS FOR LISTING     ###
+###      LISTING     ###
 alias ll='ls -lF --color=tty --sort=size'
 alias la='ls -laF --color=tty --sort=size'
-alias count='(ls -1 /$(pwd) | wc -l)'
+alias count='ls -1 | wc -l'
 
+###      PACKAGE MANAGER     ###
+_distro=$(grep '^ID=' /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"')
+_version=$(grep '^VERSION_ID=' /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"')
 
-###      ALIAS FOR APTITUDE AND APT-GET, and YUM     ###
-DISTRO=`grep '^NAME' /etc/os-release|sed s'?=? ?'|sed s'?"??'g|awk '{print $2}'`
-VERSION=`grep '^VERSION_ID' /etc/os-release |sed s'?=? ?'|sed s'?"??'g|awk '{print $2}'`
-if [ "$DISTRO" = "Ubuntu" ] || [ "$DISTRO" = "Debian" ] || [ "$DISTRO" = "Raspbian" ];then
-    alias update='$IFSUDO apt-get update'
-    alias instal='$IFSUDO apt-get install'
-    alias insta='$IFSUDO aptitude install'
-    alias upgrade='$IFSUDO apt-get upgrade'
-    alias reinstall='$IFSUDO aptitude reinstall'
-    alias afind='$IFSUDO aptitude search'
-    alias afile='dpkg-query -S'
-    alias ainfo='$IFSUDO apt-cache show'
-    alias linstall='$IFSUDO dpkg -i'
-    alias uninstall='$IFSUDO apt-get remove'
-    alias purge='$IFSUDO apt-get purge'
-elif [ "$DISTRO" = "Fedora" ]; then
-    if [ "$VERSION" -gt "21" ]; then
-      alias update='$IFSUDO dnf check-update'
-      alias upgrade='$IFSUDO dnf update'
-      alias instal='$IFSUDO dnf install'
-      alias afind='$IFSUDO dnf search'
-      alias ainfo='$IFSUDO dnf info'
-      alias uninstall='$IFSUDO dnf remove'
-      alias reinstall='$IFSUDO dnf reinstall'
-      alias clean='$IFSUDO dnf clean'
-    else
-      alias update='$IFSUDO yum check-update'
-      alias upgrade='$IFSUDO yum update'
-      alias instal='$IFSUDO yum install'
-      alias linstall='$IFSUDO yum localinstall'
-      alias afind='$IFSUDO yum search'
-      alias ainfo='$IFSUDO yum info'
-      alias uninstall='$IFSUDO yum remove'
-      alias reinstall='$IFSUDO yum reinstall'
-    fi
-fi
+case "$_distro" in
+    ubuntu|debian|raspbian)
+        alias update="${IFSUDO:-sudo} apt-get update"
+        alias instal="${IFSUDO:-sudo} apt-get install"
+        alias upgrade="${IFSUDO:-sudo} apt-get upgrade"
+        alias reinstall="${IFSUDO:-sudo} apt-get install --reinstall"
+        alias afind='apt-cache search'
+        alias afile='dpkg-query -S'
+        alias ainfo='apt-cache show'
+        alias linstall="${IFSUDO:-sudo} dpkg -i"
+        alias uninstall="${IFSUDO:-sudo} apt-get remove"
+        alias purge="${IFSUDO:-sudo} apt-get purge"
+        ;;
+    fedora)
+        if [ "${_version:-0}" -gt 21 ] 2>/dev/null; then
+            alias update="${IFSUDO:-sudo} dnf check-update"
+            alias upgrade="${IFSUDO:-sudo} dnf update"
+            alias instal="${IFSUDO:-sudo} dnf install"
+            alias afind="${IFSUDO:-sudo} dnf search"
+            alias ainfo="${IFSUDO:-sudo} dnf info"
+            alias uninstall="${IFSUDO:-sudo} dnf remove"
+            alias reinstall="${IFSUDO:-sudo} dnf reinstall"
+            alias clean="${IFSUDO:-sudo} dnf clean all"
+        else
+            alias update="${IFSUDO:-sudo} yum check-update"
+            alias upgrade="${IFSUDO:-sudo} yum update"
+            alias instal="${IFSUDO:-sudo} yum install"
+            alias linstall="${IFSUDO:-sudo} yum localinstall"
+            alias afind="${IFSUDO:-sudo} yum search"
+            alias ainfo="${IFSUDO:-sudo} yum info"
+            alias uninstall="${IFSUDO:-sudo} yum remove"
+            alias reinstall="${IFSUDO:-sudo} yum reinstall"
+        fi
+        ;;
+esac
+unset _distro _version
 
-###      SET UP AUTO EXTENSION STUFF    ###
-alias -s gz=tar -xzvf
-alias -s bz2=tar -xjvf
+###      FILE EXTENSION ASSOCIATIONS (zsh only)    ###
+if [[ -n "$ZSH_VERSION" ]]; then
+    alias -s {gz,tgz}='tar -xzvf'
+    alias -s bz2='tar -xjvf'
+    alias -s xz='tar -xJvf'
 
-if [ -n "$BROWSER" ]; then
-    alias -s html=$BROWSER
-    alias -s org=$BROWSER
-    alias -s php=$BROWSER
-    alias -s com=$BROWSER
-    alias -s net=$BROWSER
-fi
-
-if [ -n "$VISOR" ]; then
-    alias -s png=$VISOR
-    alias -s pnm=$VISOR
-    alias -s bmp=$VISOR
-    alias -s jpg=$VISOR
-    alias -s gif=$VISOR
-fi
-
-if [ -n "$OFFICESUITE" ]; then
-   alias -s sxw=$OFFICESUITE
-   alias -s doc=$OFFICESUITE
-   alias -s odt=$OFFICESUITE
-   alias -s ods=$OFFICESUITE
-   alias -s odp=$OFFICESUITE
-   alias -s xls=$OFFICESUITE
-   alias -s xlsx=$OFFICESUITE
-fi
-
-if [ -n "$EDITOR" ]; then
-    alias -s txt=$EDITOR
-fi
-
-if [ -n "$PDFVIEWER" ]; then
-    alias -s pdf=$PDFVIEWER
-fi
-
-if [ -n "$GIMP" ]; then
-    alias -s xcf=$GIMP
-    alias -s psd=$GIMP
-fi
-
-
-if [ -n "$GIMP" ]; then
-    alias -s xcf=$GIMP
-    alias -s psd=$GIMP
-fi
-
-if [ "$OS" = "Arch" ];then
-    alias -s PKGBUILD=$EDITOR
+    [[ -n "$BROWSER" ]]     && alias -s {html,org,php,com,net}="$BROWSER"
+    [[ -n "$VISOR" ]]       && alias -s {png,pnm,bmp,jpg,jpeg,gif,webp}="$VISOR"
+    [[ -n "$OFFICESUITE" ]] && alias -s {doc,docx,odt,ods,odp,xls,xlsx}="$OFFICESUITE"
+    [[ -n "$EDITOR" ]]      && alias -s txt="$EDITOR"
+    [[ -n "$PDFVIEWER" ]]   && alias -s pdf="$PDFVIEWER"
+    [[ -n "$GIMP" ]]        && alias -s {xcf,psd}="$GIMP"
+    [[ "$_distro" = "arch" ]] && alias -s PKGBUILD="$EDITOR"
 fi

@@ -1,55 +1,65 @@
+;; Bootstrap use-package
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
 
-(setq cua-enable-cua-keys nil)
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+;;; General behaviour
 (cua-mode t)
-(setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
-(transient-mark-mode 1) ;; No region when it is not highlighted
-(setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
+(setq cua-enable-cua-keys nil)
+(setq cua-auto-tabify-rectangles nil)
+(setq cua-keep-region-after-copy t)
+(transient-mark-mode 1)
 (show-paren-mode t)
 
-(require 'tramp)
-(setq tramp-default-method "scp")
+;;; Indentation
 (setq-default indent-tabs-mode nil)
-(setq c-basic-indent 2)
 (setq tab-width 4)
+(setq c-basic-indent 2)
 
-(add-to-list 'load-path "~/.emacs.d/modes/")
+;;; Tramp — edición remota vía SSH
+(require 'tramp)
+(setq tramp-default-method "ssh")
 
-(autoload 'php-mode "php-mode" "Major mode for editing php code." t)
-(autoload 'web-mode "web-mode" "Major mode for editing web code." t)
-(autoload 'd-mode "d-mode" "Major mode for d-lang." t)
-(autoload 'jade-mode "jade-mode" "Major mode for diet-lang." t)
-(autoload 'yaml-mode "yaml-mode" "Major mode for yaml." t)
-(autoload 'autotetris-mode "autotetris-mode" "autotetris-mode" t)
+;;; Theme — solarized dark
+(use-package solarized-theme
+  :config
+  (load-theme 'solarized-dark t))
 
-(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
-(add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
-(add-to-list 'auto-mode-alist '("\\.css$" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.d$" . d-mode))
-(add-to-list 'auto-mode-alist '("\\.dt$" . jade-mode))
-(add-to-list 'auto-mode-alist '("\\.erb$" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+;;; Completion — corfu (moderno, nativo)
+(use-package corfu
+  :custom
+  (corfu-auto t)
+  (corfu-auto-delay 0.2)
+  (corfu-auto-prefix 2)
+  :init
+  (global-corfu-mode))
 
-(setq web-mode-ac-sources-alist
-      '(("php" . (ac-source-yasnippet ac-source-php-auto-yasnippets))
-        ("inc" . (ac-source-yasnippet ac-source-php-auto-yasnippets))
-        ("html" . (ac-source-emmet-html-aliases ac-source-emmet-html-snippets))
-        ("css" . (ac-source-css-property ac-source-emmet-css-snippets))))
+;;; File tree — neotree
+(use-package neotree
+  :bind ([f8] . neotree-toggle))
 
-(add-hook 'web-mode-before-auto-complete-hooks '(
-                                                 lambda ()
-                                                        (let ((web-mode-cur-language (web-mode-language-at-pos)))
-                                                          (if (string= web-mode-cur-language "php")
-                                                              (yas-activate-extra-mode 'php-mode)
-                                                            (yas-deactivate-extra-mode 'php-mode))
-                                                          (if (string= web-mode-cur-language "css")
-                                                              (setq emmet-use-css-transform t)
-                                                            (setq emmet-use-css-transform nil)))))
+;;; Modes
+(use-package yaml-mode
+  :mode ("\\.yml\\'" "\\.yaml\\'"))
 
-(if (< emacs-major-version 24)
-    (progn
-      (set-frame-parameter nil 'background-mode 'dark)
-      (color-theme-solarized)))
-       
-;(add-to-list 'default-frame-alist '(background-color . "white"))
+(use-package web-mode
+  :mode ("\\.html\\'" "\\.css\\'" "\\.erb\\'")
+  :custom
+  (web-mode-markup-indent-offset 2)
+  (web-mode-css-indent-offset 2)
+  (web-mode-code-indent-offset 4))
+
+(use-package php-mode
+  :mode ("\\.php\\'" "\\.inc\\'"))
+
+;;; Fun
+(use-package autotetris-mode)

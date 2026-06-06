@@ -21,244 +21,334 @@
 #       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #       THE SOFTWARE.
 
-
-#####      PROGRAMS     #####
-
-###    PROGRAM FOR EXTRACTING COMPRESSED ARCHIVES   ###
-function extraer() { # decompress archive (to directory $2 if wished for and possible)
-   if [ -f "$1" ] ; then
-    case "$1" in
-        *.tar.bz2|*.tbz2|*.tbz) mkdir -v "$2" 2>/dev/null ; tar xvjf "$1" -C "$2" ;;
-        *.tar.gz | *.tgz) mkdir -v "$2" 2>/dev/null ; tar xvzf "$1" -C "$2" ;;
-        *.tar.xz) mkdir -v "$2" 2>/dev/null ; tar xvJf "$1" ;;
-        *.tar) mkdir -v "$2" 2>/dev/null ; tar xvf "$1" -C "$2" ;;
-        *.rar) mkdir -v "$2" 2>/dev/null ; 7z x "$1" "$2" ;;
-        *.zip) mkdir -v "$2" 2>/dev/null ; unzip "$1" -d "$2" ;;
-        *.7z) mkdir -v "$2" 2>/dev/null ; 7z x "$1" -o"$2" ;;
-        *.lzo) mkdir -v "$2" 2>/dev/null ; lzop -d "$1" -p"$2" ;;
-        *.gz) gunzip "$1" ;;
-        *.bz2) bunzip2 "$1" ;;
-        *.Z) uncompress "$1" ;;
-        *.ace)                 unace x $1    ;;
-        *.lha)                 lha e $1    ;;
-        *.lz)                  lzip -dk $1 ;;
-        *.xz|*.txz|*.lzma|*.tlz) xz -d "$1" ;;
-        *) echo ""${1}" format not recognized." ;;
-        esac
-   else
-    echo "Sorry, '$2' could not be decompressed."
-    echo "Usage: ad <archive> <destination>"
-    echo "Example: ad PKGBUILD.tar.bz2 ."
-    echo "Valid archive types are:"
-    echo "tar.bz2, tar.gz, tar.xz, tar, bz2,"
-    echo "gz, tbz2, tbz, tgz, lzo, lha, ace, Z"
-    echo "rar, zip, 7z, xz and lzma"
-   fi
-}
-function comprimir() { # compress a file or folder
-    case "$1" in
-        tar.bz2|.tar.bz2) tar cvjf "${2%%/}.tar.bz2" "${2%%/}/" ;;
-        tbz2|.tbz2) tar cvjf "${2%%/}.tbz2" "${2%%/}/" ;;
-        tbz|.tbz) tar cvjf "${2%%/}.tbz" "${2%%/}/" ;;
-        tar.xz) tar cvJf "${2%%/}.tar.gz" "${2%%/}/" ;;
-        tar.gz|.tar.gz) tar cvzf "${2%%/}.tar.gz" "${2%%/}/" ;;
-        tgz|.tgz) tar cvjf "${2%%/}.tgz" "${2%%/}/" ;;
-        tar|.tar) tar cvf "${2%%/}.tar" "${2%%/}/" ;;
-        rar|.rar) rar a "${2}.rar" "$2" ;;
-        zip|.zip) zip -9 "${2}.zip" "$2" ;;
-        7z|.7z) 7z a "${2}.7z" "$2" ;;
-        lzo|.lzo) lzop -v "$2" ;;
-        gz|.gz) gzip -v "$2" ;;
-        bz2|.bz2) bzip2 -v "$2" ;;
-        xz|.xz) xz -v "$2" ;;
-        lzma|.lzma) lzma -v "$2" ;;
-        *)  echo "ac(): compress a file or directory."
-            echo "Usage: ac <archive type> <filename>"
-            echo "Example: ac tar.bz2 PKGBUILD"
-            echo "Please specify archive type and source."
-            echo "Valid archive types are:"
-            echo "tar.bz2, tar.gz, tar.gz, tar, bz2, gz, tbz2, tbz,"
-            echo "tgz, lzo, rar, zip, 7z, xz and lzma." ;;
-    esac
+dotfiles_has() {
+  command -v "$1" >/dev/null 2>&1
 }
 
-function afk() {
-    message="AFK: $@"
-    pid=$(pidof -s cinnamon-screensaver)
-    if [ -n "$pid" ]; then
-        screensaver=$(which cinnamon-screensaver-command 2&>/dev/null)
-        if [ -n "$screensaver" ]; then
-            cinnamon-screensaver-command -l -m "$message"
-        else
-            echo "cinnamon-screensaver-command not installed"
-        fi
+dotfiles_require() {
+  local command_name
+  for command_name in "$@"; do
+    if ! dotfiles_has "$command_name"; then
+      printf '%s: command not found\n' "$command_name" >&2
+      return 1
     fi
-    
-    pid=$(pidof -s gnome-screensaver)
-    if [ -n "$pid" ]; then
-        screensaver=$(which gnome-screensaver-command 2&>/dev/null)
-        if [ -n "$screensaver" ]; then
-            gnome-screensaver-command -l -m "$message"
-        else
-            echo "gnome-screensaver-command not installed"
-        fi
-    fi
-    pid=$(pidof -s dde-session-daemon)
-    if [ -n "$pid" ]; then
-        screensaver=$(which dde-lock 2&>/dev/null)
-        if [ -n "$screensaver" ]; then
-            dde-lock
-        else
-            echo "dde-lock not installed, or using other system"
-        fi
-    fi
-
-    pid=$(pidof -s dde-fluxbox)
-    if [ -n "$pid" ]; then
-        screensaver=$(which i3lock-fancy 2&>/dev/null)
-        if [ -n "$screensaver" ]; then
-            i3lock-fancy
-        else
-            echo "dde-lock not installed, or using other system"
-        fi
-    fi
+  done
 }
 
-function listar() { # list content of archive but don't unpack
-    if [ -f "$1" ]; then
-        case "$1" in
-            *.tar.bz2|*.tbz2|*.tbz) tar -jtf "$1" ;;
-            *.tar.gz) tar -ztf "$1" ;;
-            *.tar|*.tgz|*.tar.xz) tar -tf "$1" ;;
-            *.gz) gzip -l "$1" ;;
-            *.rar) rar vb "$1" ;;
-            *.zip) unzip -l "$1" ;;
-            *.7z) 7z l "$1" ;;
-            *.lzo) lzop -l "$1" ;;
-            *.ace) unace l $1    ;;
-            *.xz|*.txz|*.lzma|*.tlz) xz -l "$1" ;;
-         esac
-    else
-        echo "Sorry, '$1' is not a valid archive."
-        echo "Valid archive types are:"
-        echo "tar.bz2, tar.gz, tar.xz, tar, gz,"
-        echo "tbz2, tbz, tgz, lzo, rar, ace"
-        echo "zip, 7z, xz and lzma"
-    fi
-}
-# Show some status info
-function state() {
-    print
-    print "Date..: "$(date "+%Y-%m-%d %H:%M:%S")
-    print "Shell.: Zsh $ZSH_VERSION (PID = $$, $SHLVL nests)"
-    print "Term..: $TTY ($TERM), ${BAUD:+$BAUD bauds, }$COLUMNS x $LINES chars"
-    print "Login.: $LOGNAME (UID = $EUID) on $HOST"
-    print "System: $(cat /etc/[A-Za-z]*[_-][rv]e[lr]*)"
-    print "Uptime:$(uptime)"
-    print
-}
+extraer() {
+  local archive=$1
+  local destination=${2:-.}
 
+  if [[ -z "$archive" || ! -f "$archive" ]]; then
+    printf 'Usage: extraer <archive> [destination]\n' >&2
+    return 1
+  fi
 
-###    PROGRAM FOR VIEW MANPAGES IN PDF   ###
-function man2pdf() {
-    if [ -z $1 ]; then
-        echo "USAGE: man2pdf [manpage]"
-    else
-        if [ `find /usr/share/man -name $1\* | wc -l` -gt 0 ]; then
-        out=/tmp/$1.pdf
-        if [ ! -e $out ]; then
-            man -t $1 | ps2pdf - > $out
-        fi
-        if [ -e $out ]; then
-            /usr/bin/evince $out
-        fi
-    else
-        echo "There is no manual entry for $1."
-    fi
-    fi
+  mkdir -p "$destination"
+
+  case "$archive" in
+    *.tar.bz2|*.tbz2|*.tbz) dotfiles_require tar && tar xjf "$archive" -C "$destination" ;;
+    *.tar.gz|*.tgz) dotfiles_require tar && tar xzf "$archive" -C "$destination" ;;
+    *.tar.xz|*.txz) dotfiles_require tar && tar xJf "$archive" -C "$destination" ;;
+    *.tar) dotfiles_require tar && tar xf "$archive" -C "$destination" ;;
+    *.rar) dotfiles_require 7z && 7z x "$archive" -o"$destination" ;;
+    *.zip) dotfiles_require unzip && unzip "$archive" -d "$destination" ;;
+    *.7z) dotfiles_require 7z && 7z x "$archive" -o"$destination" ;;
+    *.lzo) dotfiles_require lzop && lzop -d "$archive" -p"$destination" ;;
+    *.gz) dotfiles_require gunzip && gunzip "$archive" ;;
+    *.bz2) dotfiles_require bunzip2 && bunzip2 "$archive" ;;
+    *.Z) dotfiles_require uncompress && uncompress "$archive" ;;
+    *.ace) dotfiles_require unace && unace x "$archive" ;;
+    *.lha) dotfiles_require lha && lha e "$archive" ;;
+    *.lz) dotfiles_require lzip && lzip -dk "$archive" ;;
+    *.xz|*.lzma|*.tlz) dotfiles_require xz && xz -d "$archive" ;;
+    *)
+      printf 'extraer: unsupported archive type: %s\n' "$archive" >&2
+      return 1
+      ;;
+  esac
 }
 
+comprimir() {
+  local format=$1
+  local source=$2
+  local base
 
-###    PROGRAM FOR MOUNTING ISO IMAGES ON /media   ###
-miso () {
-    [ ! -f "$1" ] && { echo "Provide a valid iso file"; return 1; }
-    mountpoint="/media/${1//.iso}"
-    $IFSUDO mkdir -p "$mountpoint"
-    $IFSUDO mount -o loop "$1" "$mountpoint"
+  if [[ -z "$format" || -z "$source" ]]; then
+    printf 'Usage: comprimir <format> <file-or-directory>\n' >&2
+    return 1
+  fi
 
+  base="${source%%/}"
+
+  case "$format" in
+    tar.bz2|.tar.bz2) dotfiles_require tar && tar cjf "$base.tar.bz2" "$base" ;;
+    tbz2|.tbz2) dotfiles_require tar && tar cjf "$base.tbz2" "$base" ;;
+    tbz|.tbz) dotfiles_require tar && tar cjf "$base.tbz" "$base" ;;
+    tar.xz|.tar.xz) dotfiles_require tar && tar cJf "$base.tar.xz" "$base" ;;
+    tar.gz|.tar.gz) dotfiles_require tar && tar czf "$base.tar.gz" "$base" ;;
+    tgz|.tgz) dotfiles_require tar && tar czf "$base.tgz" "$base" ;;
+    tar|.tar) dotfiles_require tar && tar cf "$base.tar" "$base" ;;
+    rar|.rar) dotfiles_require rar && rar a "$base.rar" "$base" ;;
+    zip|.zip) dotfiles_require zip && zip -r "$base.zip" "$base" ;;
+    7z|.7z) dotfiles_require 7z && 7z a "$base.7z" "$base" ;;
+    lzo|.lzo) dotfiles_require lzop && lzop -v "$base" ;;
+    gz|.gz) dotfiles_require gzip && gzip -v "$base" ;;
+    bz2|.bz2) dotfiles_require bzip2 && bzip2 -v "$base" ;;
+    xz|.xz) dotfiles_require xz && xz -v "$base" ;;
+    lzma|.lzma) dotfiles_require lzma && lzma -v "$base" ;;
+    *)
+      printf 'comprimir: unsupported format: %s\n' "$format" >&2
+      return 1
+      ;;
+  esac
 }
 
-###    PROGRAM FOR UMOUNTING ISO IMAGES ON /media   ###
-umiso () {
-    mountpoint="/media/${1//.iso}"
-    [ ! -d "$mountpoint" ] && { echo "Not a valid mount point"; return 1; }
-    $IFSUDO umount "$mountpoint"
-    $IFSUDO rm -ir "$mountpoint"
+afk() {
+  local message="AFK: $*"
 
+  if dotfiles_has cinnamon-screensaver-command && pidof -s cinnamon-screensaver >/dev/null 2>&1; then
+    cinnamon-screensaver-command -l -m "$message"
+    return
+  fi
+
+  if dotfiles_has gnome-screensaver-command && pidof -s gnome-screensaver >/dev/null 2>&1; then
+    gnome-screensaver-command -l -m "$message"
+    return
+  fi
+
+  if dotfiles_has dde-lock && pidof -s dde-session-daemon >/dev/null 2>&1; then
+    dde-lock
+    return
+  fi
+
+  if dotfiles_has i3lock-fancy; then
+    i3lock-fancy
+    return
+  fi
+
+  printf 'afk: no supported screen locker found\n' >&2
+  return 1
 }
 
+listar() {
+  local archive=$1
 
-###      PROGRAM FOR CREATE ARCHIVES OF DIRECTORY     ###
-mktar() { tar cvf "${1%%/}.tar" "${1%%/}/"; }
-mktgz() { tar cvzf "${1%%/}.tar.gz" "${1%%/}/"; }
-mktbz() { tar cvjf "${1%%/}.tar.bz2" "${1%%/}/"; }
-mkrar() { rar a "${1%%/}.rar" "${1%%/}/"; }
-mkzip() { zip -r "${1%%/}.zip" "${1%%/}/"; }
-mk7zp() { 7z a "${1%%/}.7z" "${1%%/}/"; }
-mkiso() { mkisofs -r $1>$1.iso; }
-mklz() { lzip -k9 $1 }
-mkrzip() { rzip -k9 $1 }
+  if [[ -z "$archive" || ! -f "$archive" ]]; then
+    printf 'Usage: listar <archive>\n' >&2
+    return 1
+  fi
 
+  case "$archive" in
+    *.tar.bz2|*.tbz2|*.tbz) dotfiles_require tar && tar -jtf "$archive" ;;
+    *.tar.gz|*.tgz) dotfiles_require tar && tar -ztf "$archive" ;;
+    *.tar|*.tar.xz|*.txz) dotfiles_require tar && tar -tf "$archive" ;;
+    *.gz) dotfiles_require gzip && gzip -l "$archive" ;;
+    *.rar) dotfiles_require rar && rar vb "$archive" ;;
+    *.zip) dotfiles_require unzip && unzip -l "$archive" ;;
+    *.7z) dotfiles_require 7z && 7z l "$archive" ;;
+    *.lzo) dotfiles_require lzop && lzop -l "$archive" ;;
+    *.ace) dotfiles_require unace && unace l "$archive" ;;
+    *.xz|*.lzma|*.tlz) dotfiles_require xz && xz -l "$archive" ;;
+    *)
+      printf 'listar: unsupported archive type: %s\n' "$archive" >&2
+      return 1
+      ;;
+  esac
+}
 
-###      VERSION OF THE MOST USED COMMAND MEME BY CHOMS    ###
-most-used-command () {
-    hist|awk '1 { if ( $1=="$IFSUDO") { print $1,$2 } else { print $1 } }'|sort|uniq -c|sort -rn|head -10
-    }
+state() {
+  printf '\n'
+  printf 'Date..: %s\n' "$(date '+%Y-%m-%d %H:%M:%S')"
+  printf 'Shell.: Zsh %s (PID = %s, %s nests)\n' "$ZSH_VERSION" "$$" "$SHLVL"
+  printf 'Term..: %s (%s), %s x %s chars\n' "${TTY:-unknown}" "${TERM:-unknown}" "${COLUMNS:-?}" "${LINES:-?}"
+  printf 'Login.: %s (UID = %s) on %s\n' "${LOGNAME:-unknown}" "$EUID" "${HOST:-$(hostname)}"
+  if [[ -r /etc/os-release ]]; then
+    printf 'System: %s\n' "$(. /etc/os-release && printf '%s %s' "${NAME:-Linux}" "${VERSION_ID:-}")"
+  else
+    printf 'System: %s\n' "$(uname -sr)"
+  fi
+  printf 'Uptime:%s\n' "$(uptime)"
+  printf '\n'
+}
 
+man2pdf() {
+  local page=$1
+  local out
 
-###      PROGRAM FOR SCREENSHOTING WITH TIMESTAMP     ###
+  if [[ -z "$page" ]]; then
+    printf 'Usage: man2pdf <manpage>\n' >&2
+    return 1
+  fi
+
+  dotfiles_require man ps2pdf || return 1
+
+  out="/tmp/${page}.pdf"
+  if [[ ! -e "$out" ]]; then
+    man -t "$page" | ps2pdf - "$out" || return 1
+  fi
+
+  if dotfiles_has xdg-open; then
+    xdg-open "$out" >/dev/null 2>&1
+  elif dotfiles_has evince; then
+    evince "$out" >/dev/null 2>&1
+  else
+    printf '%s\n' "$out"
+  fi
+}
+
+miso() {
+  local iso=$1
+  local mountpoint
+
+  [[ -f "$iso" ]] || { printf 'Usage: miso <iso-file>\n' >&2; return 1; }
+  mountpoint="/media/${${iso:t}%.iso}"
+  ${IFSUDO:-sudo} mkdir -p "$mountpoint"
+  ${IFSUDO:-sudo} mount -o loop "$iso" "$mountpoint"
+}
+
+umiso() {
+  local iso=$1
+  local mountpoint="/media/${${iso:t}%.iso}"
+
+  [[ -d "$mountpoint" ]] || { printf 'umiso: not a valid mount point: %s\n' "$mountpoint" >&2; return 1; }
+  ${IFSUDO:-sudo} umount "$mountpoint"
+  ${IFSUDO:-sudo} rmdir "$mountpoint"
+}
+
+mktar() { dotfiles_require tar && tar cf "${1%%/}.tar" "${1%%/}/"; }
+mktgz() { dotfiles_require tar && tar czf "${1%%/}.tar.gz" "${1%%/}/"; }
+mktbz() { dotfiles_require tar && tar cjf "${1%%/}.tar.bz2" "${1%%/}/"; }
+mkrar() { dotfiles_require rar && rar a "${1%%/}.rar" "${1%%/}/"; }
+mkzip() { dotfiles_require zip && zip -r "${1%%/}.zip" "${1%%/}/"; }
+mk7zp() { dotfiles_require 7z && 7z a "${1%%/}.7z" "${1%%/}/"; }
+mkiso() { dotfiles_require mkisofs && mkisofs -r "$1" >"$1.iso"; }
+mklz() { dotfiles_require lzip && lzip -k9 "$1"; }
+mkrzip() { dotfiles_require rzip && rzip -k9 "$1"; }
+
+most-used-command() {
+  fc -l 1 2>/dev/null | awk '{print $2}' | sort | uniq -c | sort -rn | head -10
+}
+
 screenshot() {
-if ! which scrot &>/dev/null; then
-echo "${FUNCNAME[0]}(): First you must install 'scrot'"
-return 1
-fi
-XDG_PICTURES_DIR=$(xdg-user-dir PICTURES)
-mkdir -p "$XDG_PICTURES_DIR/Screenshots"
-scrot "$XDG_PICTURES_DIR/Screenshots/screenshot_`date +%d%m%y%H%M%S`.png"
+  local pictures_dir
+  local screenshots_dir
+
+  dotfiles_require scrot || return 1
+
+  if dotfiles_has xdg-user-dir; then
+    pictures_dir="$(xdg-user-dir PICTURES)"
+  else
+    pictures_dir="$HOME/Pictures"
+  fi
+
+  screenshots_dir="$pictures_dir/Screenshots"
+  mkdir -p "$screenshots_dir"
+  scrot "$screenshots_dir/screenshot_$(date +%Y%m%d%H%M%S).png"
 }
 
-###      PROGRAM FOR AUTOMATING PROCESS     ###
-function cdl { cd "$@" && ls; } #Go to the directory, and list it.
-function ndir { ls -ld *(/om[1]) } #List the newest directory.
-function nfile { ls *(.om[1]) } #List the newest file
-function rmtype { rm -i *.$1(.) } #Remove files in specified format in a directory
-function iprivate { print Your private IP is: ${${$(LC_ALL=C /sbin/ifconfig eth0)[7]}:gs/addr://} } #Gives your private ip, with nice format, change to your interface if needed.
-function lenght { print -rl $HOME/${(l:$1::?:)~:-}* } # List files with lenght superior than specified.
-function age { ls -tald **/*(m-$1) } # List files with age younger than specified.
-function rmspace { for a in ./**/*\ *(Dod); do mv $a ${a:h}/${a:t:gs/ /_}; done }
-function lower { zmv '(*)' '${(L)1}'  }
-function uper { zmv '(*)' '${(U)1}' }
-function watchssh { watch -n 1 'ps aux | grep ssh | grep -v grep' }
-#function capitalize { zmv '(**/)(*).(#i)mp3' '$1$2.mp3'  && zmv '* *' '$f:gs/ /_'} #capitalize all mp3 files, need to be improved for use with any extension
-#function battery {  upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E "state|to\ full|percentage"|grep percentage|awk '{print $2}' }
-function battery { acpi|sed -E s'=^.*ing, =='g - }
+cdl() { cd "$@" && ls; }
+ndir() { ls -ld *(/om[1]); }
+nfile() { ls *(.om[1]); }
+rmtype() { [[ -n "$1" ]] && rm -i *."$1"(.); }
+iprivate() {
+  local ip_addr=""
 
-# check new ip and whatch if changed.
-function myip {
-    if [ ! -f "$HOME/.lastip" ]; then
-        wget -q https://quinaeslamevaip.info/txt/ -O "$HOME/.lastip"
-    else
-        lastip=$(cat "$HOME/.lastip")
-        newip=$(wget http://quinaeslamevaip.info/txt/ -q -O -)
-        if [ "$lastip" != "$newip"  ]; then
-            echo "Your ip has changed from $lastip to:"
-            sed s"=$lastip=$newip="g -i $HOME/.lastip
-        fi
+  if dotfiles_has ip; then
+    ip_addr="$(ip -o -4 addr show scope global 2>/dev/null | awk '
+      $2 !~ /^(lo|docker|br-|virbr|veth|tailscale|zt)/ {
+        sub(/\/.*/, "", $4)
+        print $4
+        exit
+      }
+    ')"
+  fi
+
+  if [[ -z "$ip_addr" ]] && dotfiles_has hostname; then
+    ip_addr="$(hostname -I 2>/dev/null | awk '{print $1}')"
+  fi
+
+  if [[ -n "$ip_addr" ]]; then
+    printf 'Your private IP is: %s\n' "$ip_addr"
+  else
+    printf 'iprivate: could not determine private IP\n' >&2
+    return 1
+  fi
+}
+lenght() { printf '%s\n' "$HOME"/${(l:$1::?:)~:-}*; }
+age() { ls -tald **/*(m-"$1"); }
+rmspace() { for a in ./**/*\ *(Dod); do mv -- "$a" "${a:h}/${a:t:gs/ /_}"; done; }
+lower() { autoload -Uz zmv && zmv '(*)' '${(L)1}'; }
+uper() { autoload -Uz zmv && zmv '(*)' '${(U)1}'; }
+watchssh() { dotfiles_require watch && watch -n 1 'ps aux | grep ssh | grep -v grep'; }
+
+battery() {
+  local battery_device
+  local capacity_file
+  local status_file
+  local capacity
+  local battery_status
+
+  if dotfiles_has acpi; then
+    acpi | sed -E 's/^.*ing, //'
+  elif dotfiles_has upower; then
+    battery_device="$(upower -e 2>/dev/null | grep '/battery_' | head -n 1)"
+    if [[ -n "$battery_device" ]]; then
+      upower -i "$battery_device" 2>/dev/null | awk '
+        /state:/ { state = $2 }
+        /percentage:/ { percentage = $2 }
+        END {
+          if (percentage != "") {
+            if (state != "") printf "%s, %s\n", state, percentage
+            else print percentage
+          }
+        }
+      '
+      return
     fi
-    cat $HOME/.lastip
+  fi
+
+  for capacity_file in /sys/class/power_supply/BAT*/capacity; do
+    [[ -r "$capacity_file" ]] || continue
+    status_file="${capacity_file%/capacity}/status"
+    capacity="$(<"$capacity_file")"
+    battery_status=""
+    [[ -r "$status_file" ]] && battery_status="$(<"$status_file")"
+    if [[ -n "$battery_status" ]]; then
+      printf '%s, %s%%\n' "$battery_status" "$capacity"
+    else
+      printf '%s%%\n' "$capacity"
+    fi
+    return
+  done
+
+  printf 'battery: no battery information found\n' >&2
+  return 1
 }
 
-### This write the backward on the LBUFFER automagically
+myip() {
+  local cache_file="${HOME}/.lastip"
+  local newip
+
+  dotfiles_require curl || return 1
+
+  newip="$(curl -fsS --max-time 5 https://api.ipify.org 2>/dev/null)" || {
+    [[ -r "$cache_file" ]] && cat "$cache_file"
+    return 1
+  }
+
+  if [[ -r "$cache_file" ]]; then
+    local lastip
+    lastip="$(<"$cache_file")"
+    if [[ "$lastip" != "$newip" ]]; then
+      printf 'Your ip has changed from %s to:\n' "$lastip"
+    fi
+  fi
+
+  printf '%s\n' "$newip"
+  printf '%s\n' "$newip" >"$cache_file"
+}
+
 rationalise-dot() {
   if [[ $LBUFFER = *.. ]]; then
     LBUFFER+=/..
@@ -267,14 +357,14 @@ rationalise-dot() {
   fi
 }
 
-function ngrok_http {
-    if [[ !  -z  $(echo $1)  ]];
-    then
-        port=$1
-    else
-        port=80
-    fi
-    ngrok http $port -region eu
+ngrok_http() {
+  local port=${1:-80}
+
+  dotfiles_require ngrok || return 1
+  ngrok http "$port" --region eu
 }
-zle -N rationalise-dot
-bindkey . rationalise-dot
+
+if [[ -o interactive ]]; then
+  zle -N rationalise-dot
+  bindkey . rationalise-dot
+fi

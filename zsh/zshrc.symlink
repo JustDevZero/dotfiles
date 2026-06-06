@@ -1,130 +1,69 @@
+# Modern zsh entrypoint for these dotfiles.
 #
-#       The MIT License
-#
-#       Copyright (c) Daniel Ripoll, <info@danielripoll.es>, <http://danielripoll.es>
-#
-#       Permission is hereby granted, free of charge, to any person obtaining a copy
-#       of this software and associated documentation files (the "Software"), to deal
-#       in the Software without restriction, including without limitation the rights
-#       to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#       copies of the Software, and to permit persons to whom the Software is
-#       furnished to do so, subject to the following conditions:
-#
-#       The above copyright notice and this permission notice shall be included in
-#       all copies or substantial portions of the Software.
-#
-#       THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#       IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#       FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#       AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#       LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-#       THE SOFTWARE.
+# Keep this file cheap and deterministic: no network access, no installs and no
+# generated PATH rewrites during shell startup.
 
+export DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+export ZSH="${ZSH:-$DOTFILES}"
 
-# shortcut to this dotfiles path is $ZSH
-export ZSH=$HOME/.dotfiles
-export DOTFILES_VERSION=$(cat $ZSH/VERSION)
-
-
-# your project folder that we can `c [tab]` to
-export PROJECTS=~/Projects
-
-function check_dotfiles_version () {
-    remote_version=$(wget -q -t 1 --timeout 5 https://raw.githubusercontent.com/JustDevZero/dotfiles/master/VERSION  -O -)
-    if [[ $remote_version != "" ]]; then
-        if (( $remote_version > $DOTFILES_VERSION )); then
-            echo "Ey, there is a new dotfiles version, check it out. at\n https://github.com/justdevzero/dotfiles.git"
-        fi
-    fi
-    unset remote_version
-}
-
-
-# Stash your environment variables in ~/.localrc. This means they'll stay out
-# of your main dotfiles repository (which may be public, like this one), but
-# you'll have access to them in your scripts.
-if [[ -a ~/.localrc ]]
-then
-  source ~/.localrc
+if [[ -r "$DOTFILES/VERSION" ]]; then
+  export DOTFILES_VERSION="$(<"$DOTFILES/VERSION")"
 fi
 
-if [ $UID -eq 0 ]; then
-    export IFSUDO=""
+export PROJECTS="${PROJECTS:-$HOME/Projects}"
+
+[[ -r "$HOME/.localrc" ]] && source "$HOME/.localrc"
+
+if [[ $EUID -eq 0 ]]; then
+  export IFSUDO=""
 else
-    export IFSUDO="sudo"
+  export IFSUDO="${IFSUDO:-sudo}"
 fi
+
+[[ -o interactive ]] || return 0
 
 setopt extended_glob
 
-# all of our zsh files
 typeset -U config_files
-config_files=($ZSH/*^plugins/*.zsh)
+config_files=("$DOTFILES"/*/*.zsh)
+config_files=(${config_files:#*/plugins/*})
 
-# load the path found on .dotfiles/system/_path.sh, dunno why, in some isos is not loaded if found on .profile... :(
-if [ -f "$HOME/.dotfiles/system/_path.sh" ]; then
-    source "$HOME/.dotfiles/system/_path.sh"
-fi
+dotfiles_source_readable() {
+  local file
+  for file in "$@"; do
+    [[ -r "$file" ]] && source "$file"
+  done
+}
 
+# PATH fragments first, then regular modules, then completion styles.
+dotfiles_source_readable ${(M)config_files:#*/path.zsh}
+dotfiles_source_readable ${${config_files:#*/path.zsh}:#*/completion.zsh}
 
-# load the path files
-for item in ${(M)config_files:#*/path.zsh}
-do
-  source $item
-done
-
-# load everything but the path and completion files
-for item in ${${config_files:#*/path.zsh}:#*/completion.zsh}
-do
-  source $item
-done
-
-# initialize auto zmv, otherwise functions won't be loaded
-autoload zmv
-
-# initialize autocomplete here, otherwise functions won't be loaded
-autoload -Uz compinit
-compinit
-
-# load every completion after autocomplete loads
-for file in ${(M)config_files:#*/completion.zsh}
-do
-  source $file
-done
-
-
-# initialize colors here and enable zrecompile, otherwise won't work
-autoload -U colors zrecompile
+autoload -Uz colors zmv
 colors
 
-# Create cache per host.
+autoload -Uz compinit
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion::complete:*' cache-path "$HOME/.cache/zsh"
 
-if [ -f "$HOME/.dotfiles/zsh/plugins/plugins.zsh" ]; then
-   source "$HOME/.dotfiles/zsh/plugins/plugins.zsh"
+zsh_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+mkdir -p "$zsh_cache"
+compinit -d "$zsh_cache/zcompdump-${HOST:-host}"
+
+dotfiles_source_readable ${(M)config_files:#*/completion.zsh}
+
+dotfiles_source_readable "$DOTFILES/zsh/plugins/plugins.zsh"
+
+if [[ ${DOTFILES_SHOW_LOGO:-0} == 1 ]]; then
+  if [[ -r "$HOME/logo.sh" ]]; then
+    source "$HOME/logo.sh"
+  else
+    dotfiles_source_readable "$DOTFILES/shell/logo.sh.symlink"
+  fi
 fi
 
-zsh_cache=${HOME}/.zsh/cache
-mkdir -p $zsh_cache
-compinit -d $zsh_cache/zcomp-$HOST
+if (( $+commands[gpg-connect-agent] )); then
+  gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
+fi
 
-for f in ~/.zshrc $zsh_cache/zcomp-$HOST; do
-        zrecompile -p $f && rm -f $f.zwc.old
-done
-
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-# Refresh gpg-agent tty in case user switches into an X session
-gpg-connect-agent updatestartuptty /bye >/dev/null
-
-PATH="/home/dripoll/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PERL5LIB="/home/dripoll/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="/home/dripoll/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"/home/dripoll/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/home/dripoll/perl5"; export PERL_MM_OPT;
-export GDK_CORE_DEVICE_EVENTS=1
-
-#VIRTUAL_ENV_DISABLE_PROMPT=1
-#VIRTUAL_ENV_HOME=$HOME/VirtualEnvs/popeye
-#source $VIRTUAL_ENV_HOME/bin/activate
-
-export WORKON_HOME=~/.env
-source /usr/bin/virtualenvwrapper.sh
+unset -f dotfiles_source_readable

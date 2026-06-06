@@ -1,50 +1,9 @@
-#
-#       The MIT License
-#
-#       Copyright (c) Daniel Ripoll, <info@danielripoll.es>, <http://danielripoll.es>
-#
-#       Permission is hereby granted, free of charge, to any person obtaining a copy
-#       of this software and associated documentation files (the "Software"), to deal
-#       in the Software without restriction, including without limitation the rights
-#       to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#       copies of the Software, and to permit persons to whom the Software is
-#       furnished to do so, subject to the following conditions:
-#
-#       The above copyright notice and this permission notice shall be included in
-#       all copies or substantial portions of the Software.
-#
-#       THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#       IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#       FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#       AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#       LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-#       THE SOFTWARE.
-
-
 # if running bash
-if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
+if [ -n "$BASH_VERSION" ] && [ -f "$HOME/.bashrc" ]; then
     . "$HOME/.bashrc"
-    fi
 fi
 
-#if running zsh...
-if [ -n "$ZSH_VERSION" ]; then
-    #include .zshrc
-    if [ -f "$HOME/.zshrc" ]; then
-        . "$HOME/.zshrc"
-    fi
+# if running zsh
+if [ -n "$ZSH_VERSION" ] && [ -f "$HOME/.zshrc" ]; then
+    . "$HOME/.zshrc"
 fi
-
-if [ -f "$HOME/.dotfiles/system/_path.sh" ]; then
-    . "$HOME/.dotfiles/system/_path.sh"
-fi
-
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-export GDK_CORE_DEVICE_EVENTS=1
-
-export PGHOST='localhost'

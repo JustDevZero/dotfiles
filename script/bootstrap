@@ -1,372 +1,304 @@
-#
-# bootstrap installs things.
+#!/usr/bin/env bash
 
-
+set -euo pipefail
 
 cd "$(dirname "$0")/.."
-DOTFILES_ROOT=$(pwd -P)
-PATH=$HOME/.local/bin:$PATH:$DOTFILES_ROOT/bin
+DOTFILES_ROOT="$(pwd -P)"
 
-set -e
+overwrite_all=false
+backup_all=false
+skip_existing=false
+dry_run=false
 
-echo ''
-
-touch ~/.localrc
-
-info () {
-  printf "\r  [ \033[00;34m..\033[0m ] $1\n"
+info() {
+  printf '  [ \033[00;34m..\033[0m ] %s\n' "$1"
 }
 
-user () {
-  printf "\r  [ \033[0;33m??\033[0m ] $1\n"
+success() {
+  printf '  [ \033[00;32mOK\033[0m ] %s\n' "$1"
 }
 
-success () {
-  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+fail() {
+  printf '  [\033[0;31mFAIL\033[0m] %s\n' "$1"
+  exit 1
 }
 
-fail () {
-  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
-  echo ''
-  exit
+usage() {
+  cat <<EOF
+Usage: script/bootstrap [options]
+
+Options:
+  --force          Replace existing files instead of prompting.
+  --backup         Move existing files to <name>.backup instead of prompting.
+  --skip-existing  Keep existing files instead of prompting.
+  --dry-run        Show what would be linked without changing files.
+  -h, --help       Show this help.
+EOF
 }
 
-pathmunge () {
-    case ":${PATH}:" in
-        *:"$1":*)
-            ;;
-        *)
-            if [ "$2" = "after" ] ; then
-                PATH=$PATH:$1
-            else
-                PATH=$1:$PATH
-            fi
-    esac
-}
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --force)
+      overwrite_all=true
+      ;;
+    --backup)
+      backup_all=true
+      ;;
+    --skip-existing)
+      skip_existing=true
+      ;;
+    --dry-run)
+      dry_run=true
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      fail "unknown option: $1"
+      ;;
+  esac
+  shift
+done
 
-
-setup_gitconfig () {
-  if ! [ -f git/gitconfig.symlink ]
-  then
-
-    info 'gitconfig'
-
-    git_credential='cache'
-    if [ "$(uname -s)" == "Darwin" ]
-    then
-      git_credential='osxkeychain'
-    fi
-
-    user ' - What is your git author name? '
-    read -e git_authorname
-
-    if [ $"git_authorname" == "" ]; then
-        git_authorname=$(whoami)
-    fi
-    user ' - What is your git author email? '
-    read -e git_authoremail
-
-    if [ "$git_authoremail" == "" ]; then
-        git_authoremail="$(whoami)@localhost"
-    fi
-
-    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" ~/.dotfiles/git/gitconfig.local.symlink.example > ~/.dotfiles/git/gitconfig.local.symlink
-
-    echo "export GIT_AUTHOR_NAME=$git_authorname" >> ~/.localrc
-    echo "export GIT_AUTHOR_EMAIL=$git_authoremail" >> ~/.localrc
-
-    success 'gitconfig'
-  fi
-}
-
-setup_android_env () {
-    info "android"
-    user ' - Do you develop for android?'
-    read -e install_android_path
-
-    if [[ "$install_android_path" = "yes" || "$install_android_path" = "y" ]]; then
-
-        user ' - Do you use eclipse for dev? If so write path or leavy empty'
-        read -e eclipse_use
-        eclipse_use=$(which $eclipse_use)&>/dev/null
-        if [ "$eclipse_use" = "" ]; then
-          user 'Please, write path:'
-          read -e eclipse_use
-        fi
-
-
-        if [[ "$eclipse_use" != "" ]]; then
-            echo "export ECLIPSE=$eclipse_use" >> ~/.localrc
-            eclipse_path=$(dirname $eclipse_use)
-            pathmunge $eclipse_path
-        fi
-
-        user ' - Do you use android-sdk? Write path or leavy empty'
-        read -e android_sdk_path
-        android_sdk_path=$(which $android_sdk_path)&>/dev/null
-        if [ "$android_sdk_path" = "" ]; then
-          user 'Please, write path:'
-          read -e android_sdk_path
-        fi
-
-        if [[ "$android_sdk_path" != "" ]]; then
-            echo "export ANDROID_TOOLS=\"$android_sdk_path/tools\"" >> ~/.localrc
-            echo "export ANDROID_PLATFORM_TOOLS=\"$android_sdk_path/platform-tools\"" >> ~/.localrc
-            pathmunge $ANDROID_TOOLS
-            pathmunge $ANDROID_PLATFORM_TOOLS
-        fi
-
-        user ' - Do you use android-ndk? Write path or leavy empty.'
-        read -e android_ndk_path
-        android_ndk_path=$(which $android_ndk_path)&>/dev/null
-        if [ "$android_ndk_path" = "" ]; then
-          user 'Please, write path:'
-          read -e android_ndk_path
-        fi
-
-        if [[ "$android_ndk_path" != "" ]]; then
-            echo "export ANDROID_NDK=\"$android_ndk_path/tools\"" >> ~/.localrc
-        fi
-    fi
-
-    success "android"
-
-}
-
-setup_browser () {
-    info 'browser'
-    user ' - What your favorite web browser? Please, write path or leavy empty'
-    read -e web_browser
-    web_browser=$(which $web_browser)&>/dev/null
-    if [ "$web_browser" = "" ]; then
-      user 'Please, write path:'
-      read -e web_browser
-    fi
-
-    if [ "$web_browser" != "" ]; then
-        echo "export BROWSER=\"$web_browser\"" >> ~/.localrc
-        browser_path=$(dirname $web_browser)
-        pathmunge $browser_path
-    fi
-
-    success "browser"
-}
-
-setup_office () {
-    info "office"
-    user ' - What you use as office suite? Please, write path.'
-    read -e office_suite
-    office_suite=$(which $office_suite)&>/dev/null
-    if [ "$office_suite" = "" ]; then
-      user 'Please, write path:'
-      read -e office_suite
-    fi
-
-    if [ "$office_suite" != "" ]; then
-        echo "export OFFICESUITE=\"$office_suite\"" >> ~/.localrc
-        office_path=$(dirname $office_suite)
-        pathmunge $office_path
-    fi
-
-    success "office"
-}
-
-setup_pdf () {
-    info "pdf"
-    user ' - What your favorite PDF viewer? Please, write path or leavy empty.'
-    read -e pdf_viewer
-    pdf_viewer=$(which $pdf_viewer)&>/dev/null
-    if [ "$pdf_viewer" = "" ]; then
-      user 'Please, write path:'
-      read -e pdf_viewer
-    fi
-
-    if [ $pdf_viewer != "" ]; then
-        echo "export PDFVIEWER=\"$pdf_viewer\"" >> ~/.localrc
-        pdf_path=$(dirname $pdf_viewer)
-        pathmunge $pdf_path
-    fi
-
-    success "pdf"
-}
-
-setup_visor () {
-    info "visor"
-    user ' - What your favorite image viewer? Please, write path or leave empty.'
-    read -e visor
-    visor=$(which $visor)&>/dev/null
-    if [ "$visor" = "" ]; then
-      user 'Please, write path:'
-      read -e visor
-    fi
-
-    if [ "$visor" != "" ]; then
-        echo "export VISOR=\"$visor\"" >> ~/.localrc
-        visor_path=$(dirname $visor)
-        pathmunge $visor_path
-    fi
-
-    success "visor"
-}
-
-setup_editor () {
-    info "editor"
-    user ' - What is your text editor for shell (vim, emacs, nano...)?'
-    read -e git_editor
-    git_editor=$(which $git_editor)&>/dev/null
-    if [ "$git_editor" = "" ]; then
-      user 'Please, write path:'
-      read -e git_editor
-    fi
-
-    if [ "$git_editor" != "" ]; then
-        sed -e "s=CHOOSEN_EDITOR=$git_editor=g" ~/.dotfiles/git/gitconfig.symlink > ~/.dotfiles/git/gitconfig.symlink.current
-        mv ~/.dotfiles/git/gitconfig.symlink.current ~/.dotfiles/git/gitconfig.symlink
-        echo "export GIT_EDITOR=$git_editor" >> ~/.localrc
-        echo "export EDITOR=$git_editor" >> ~/.localrc
-        editor_path=$(dirname $git_editor)
-        pathmunge $editor_path
-    fi
-    success "editor"
-}
-
-setup_gitlasts () {
-
-    info "gitlasts"
-
-    user ' - What your commit template should have?'
-    read -e git_template
-
-    if [[ $git_template != "" ]]; then
-        echo $git_template > ~/.dotfiles/git/gittemplate.symlink
-        git config --global commit.template ~/.gittemplate
-    fi
-
-    user ' - What your last 8 digits of your gpg key?'
-    read -e git_signing_key
-
-    if [[ $git_signing_key != "" ]]; then
-        git config --global user.signingkey $git_signing_key
-        echo "export MY_GPG_KEY=$git_signing_key" >> ~/.localrc
-    fi
-
-    success "gitlasts"
-}
-
-clear_path() {
-  export PATH=$PATH|sed s'=:=\n='g|grep -v "qt-3.3" | sort -n|sed s"=\n=:="g|uniq | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/:/g' > ~/.dotfiles/system/_path.sh
-}
-
-
-link_file () {
-  local src=$1 dst=$2
-
-  local overwrite= backup= skip=
-  local action=
-
-  if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]
-  then
-
-    if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ]
-    then
-
-      local currentSrc="$(readlink $dst)"
-
-      if [ "$currentSrc" == "$src" ]
-      then
-
-        skip=true;
-
-      else
-
-        user "File already exists: $dst ($(basename "$src")), what do you want to do?\n\
-        [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
-        read -n 1 action
-
-        case "$action" in
-          o )
-            overwrite=true;;
-          O )
-            overwrite_all=true;;
-          b )
-            backup=true;;
-          B )
-            backup_all=true;;
-          s )
-            skip=true;;
-          S )
-            skip_all=true;;
-          * )
-            ;;
-        esac
-
-      fi
-
-    fi
-
-    overwrite=${overwrite:-$overwrite_all}
-    backup=${backup:-$backup_all}
-    skip=${skip:-$skip_all}
-
-    if [ "$overwrite" == "true" ]
-    then
-      rm -rf "$dst"
-      success "removed $dst"
-    fi
-
-    if [ "$backup" == "true" ]
-    then
-      mv "$dst" "${dst}.backup"
-      success "moved $dst to ${dst}.backup"
-    fi
-
-    if [ "$skip" == "true" ]
-    then
-      success "skipped $src"
-    fi
+ensure_localrc() {
+  if [ "$dry_run" = true ]; then
+    info "would ensure $HOME/.localrc exists"
+    return
   fi
 
-  if [ "$skip" != "true" ]  # "false" or empty
-  then
-    ln -s "$1" "$2"
-    success "linked $1 to $2"
-  fi
+  touch "$HOME/.localrc"
+  success "ensured $HOME/.localrc"
 }
 
-install_dotfiles () {
-  info 'installing dotfiles'
+same_link_target() {
+  [ -L "$2" ] && [ "$(readlink "$2")" = "$1" ]
+}
 
-  local overwrite_all=false backup_all=false skip_all=false
+backup_path_for() {
+  local dst=$1
+  local candidate="${dst}.backup"
+  local index=1
 
-  for src in $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink' -not -path '*.git*')
-  do
-    dst="$HOME/.$(basename "${src%.*}")"
-    link_file "$src" "$dst"
+  while [ -e "$candidate" ] || [ -L "$candidate" ]; do
+    candidate="${dst}.backup.${index}"
+    index=$((index + 1))
   done
+
+  printf '%s' "$candidate"
 }
 
-setup_gitconfig
-install_dotfiles
-setup_gitlasts
-setup_android_env
-setup_browser
-setup_editor
-setup_visor
-setup_pdf
-setup_office
-clear_path
+choose_action() {
+  local src=$1
+  local dst=$2
+  local action
 
-# If we're on a Mac, let's install and setup homebrew.
-if [ "$(uname -s)" == "Darwin" ]
-then
-  info "installing dependencies"
-  if source bin/dot > /tmp/dotfiles-dot 2>&1
-  then
-    success "dependencies installed"
-  else
-    fail "error installing dependencies"
+  if [ "$overwrite_all" = true ]; then
+    printf '%s' overwrite
+    return
   fi
-fi
+
+  if [ "$backup_all" = true ]; then
+    printf '%s' backup
+    return
+  fi
+
+  if [ "$skip_existing" = true ]; then
+    printf '%s' skip
+    return
+  fi
+
+  printf '  [ \033[0;33m??\033[0m ] File exists: %s (%s)\n' "$dst" "$(basename "$src")" >&2
+  printf '      [s]kip, [o]verwrite, [b]ackup? ' >&2
+  read -r -n 1 action
+  printf '\n' >&2
+
+  case "$action" in
+    o|O) printf '%s' overwrite ;;
+    b|B) printf '%s' backup ;;
+    *) printf '%s' skip ;;
+  esac
+}
+
+link_file() {
+  local src=$1
+  local dst=$2
+  local action
+  local backup_dst
+
+  if same_link_target "$src" "$dst"; then
+    success "already linked $dst"
+    return
+  fi
+
+  if [ -e "$dst" ] || [ -L "$dst" ]; then
+    action="$(choose_action "$src" "$dst")"
+
+    case "$action" in
+      overwrite)
+        if [ "$dry_run" = true ]; then
+          info "would replace $dst"
+        else
+          rm -rf "$dst"
+          success "removed $dst"
+        fi
+        ;;
+      backup)
+        backup_dst="$(backup_path_for "$dst")"
+        if [ "$dry_run" = true ]; then
+          info "would move $dst to $backup_dst"
+        else
+          mv "$dst" "$backup_dst"
+          success "moved $dst to $backup_dst"
+        fi
+        ;;
+      skip)
+        success "skipped $dst"
+        return
+        ;;
+    esac
+  fi
+
+  if [ "$dry_run" = true ]; then
+    info "would link $dst -> $src"
+    return
+  fi
+
+  ln -s "$src" "$dst"
+  success "linked $dst -> $src"
+}
+
+install_dotfiles() {
+  local src
+  local dst
+
+  info "installing dotfile symlinks"
+
+  while IFS= read -r src; do
+    case "$(basename "$src")" in
+      logo.sh.symlink)
+        dst="$HOME/logo.sh" ;;
+      starship.toml.symlink)
+        mkdir -p "$HOME/.config/starship"
+        dst="$HOME/.config/starship.toml" ;;
+      *)
+        dst="$HOME/.$(basename "${src%.*}")" ;;
+    esac
+    link_file "$src" "$dst"
+  done < <(find -H "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink' -not -path '*/.git/*' | sort)
+}
+
+install_uv() {
+  if command -v uv &>/dev/null; then
+    success "uv already installed ($(uv --version))"
+    return
+  fi
+
+  if [ "$dry_run" = true ]; then
+    info "would install uv"
+    return
+  fi
+
+  info "installing uv..."
+  if curl -LsSf https://astral.sh/uv/install.sh | sh; then
+    success "uv installed"
+  else
+    fail "uv installation failed"
+  fi
+}
+
+install_mise() {
+  if command -v mise &>/dev/null; then
+    success "mise already installed ($(mise --version))"
+    return
+  fi
+
+  if [ "$dry_run" = true ]; then
+    info "would install mise"
+    return
+  fi
+
+  info "installing mise..."
+  if curl -LsSf https://mise.run | sh; then
+    success "mise installed"
+  else
+    fail "mise installation failed"
+  fi
+}
+
+install_bofh_excuses() {
+  local dest="$HOME/.bofh-excuses"
+  if [ -d "$dest" ]; then
+    success "bofh-excuses already present"
+    return
+  fi
+
+  if [ "$dry_run" = true ]; then
+    info "would clone bofh-devops-excuses to $dest"
+    return
+  fi
+
+  info "cloning bofh-devops-excuses..."
+  if git clone --depth=1 https://github.com/JustDevZero/bofh-devops-excuses.git "$dest"; then
+    success "bofh-excuses installed"
+  else
+    fail "bofh-excuses clone failed"
+  fi
+}
+
+install_starship() {
+  if command -v starship &>/dev/null; then
+    success "starship already installed ($(starship --version | head -1))"
+    return
+  fi
+
+  if [ "$dry_run" = true ]; then
+    info "would install starship"
+    return
+  fi
+
+  info "installing starship..."
+  if curl -sS https://starship.rs/install.sh | sh -s -- --yes --bin-dir "$HOME/.local/bin"; then
+    success "starship installed"
+  else
+    fail "starship installation failed"
+  fi
+}
+
+install_emacs_packages() {
+  if ! command -v emacs &>/dev/null; then
+    info "emacs not installed, skipping package bootstrap"
+    return
+  fi
+
+  if [ "$dry_run" = true ]; then
+    info "would bootstrap emacs packages"
+    return
+  fi
+
+  info "bootstrapping emacs packages..."
+  if emacs --batch \
+      --load "$HOME/.emacs" \
+      --eval "(package-refresh-contents)" \
+      --eval "(package-install-selected-packages)" \
+      2>/dev/null; then
+    success "emacs packages bootstrapped"
+  else
+    fail "emacs package bootstrap failed"
+  fi
+}
+
+ensure_localrc
+install_uv
+install_mise
+install_starship
+install_bofh_excuses
+install_dotfiles
+install_emacs_packages
 
 echo ''
-echo '  All installed!'
+info "running update to sync everything..."
+"$(dirname "$0")/update"
+
+echo ''
+success "bootstrap complete"

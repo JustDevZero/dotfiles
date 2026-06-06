@@ -1,0 +1,134 @@
+#!/usr/bin/env sh
+
+dotfiles_logo_color() {
+    if command -v tput >/dev/null 2>&1 && [ "${TERM:-dumb}" != dumb ]; then
+        tput "$@" 2>/dev/null || true
+    fi
+}
+
+dotfiles_logo_temp_lm_sensors() {
+    command -v sensors >/dev/null 2>&1 || return 1
+
+    sensors 2>/dev/null | awk '
+        BEGIN { count = 0 }
+        /^[[:alnum:]_. -]+:/ && index($0, "C") {
+            label = $0
+            sub(/:.*/, "", label)
+            if (label ~ /^(Core [0-9]+|Sensor [0-9]+|temp[0-9]+)$/) {
+                next
+            }
+            if (match($0, /[+-][0-9]+(\.[0-9]+)?[^[:space:]]*C/)) {
+                temp = substr($0, RSTART, RLENGTH)
+                gsub(/^[[:space:]]+|[[:space:]]+$/, "", temp)
+                printf "%s %s", label, temp
+                count++
+                if (count == 2) {
+                    exit
+                }
+                printf " | "
+            }
+        }
+        END { if (count == 0) exit 1 }
+    '
+}
+
+dotfiles_logo_temp_raspberry_pi() {
+    cpu_temp=""
+    gpu_temp=""
+
+    if [ -r /sys/class/thermal/thermal_zone0/temp ]; then
+        cpu_raw="$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null || printf '')"
+        if [ "$cpu_raw" != "" ]; then
+            cpu_temp="$((cpu_raw / 1000))C"
+        fi
+    fi
+
+    # vcgencmd: firmware moderno en /usr/bin, antiguo en /opt/vc/bin
+    _vcgencmd=""
+    if [ -x /usr/bin/vcgencmd ]; then
+        _vcgencmd=/usr/bin/vcgencmd
+    elif [ -x /opt/vc/bin/vcgencmd ]; then
+        _vcgencmd=/opt/vc/bin/vcgencmd
+    fi
+    if [ -n "$_vcgencmd" ]; then
+        gpu_temp="$($_vcgencmd measure_temp 2>/dev/null | sed 's/^temp=//; s/'\''C//g')C"
+    fi
+    unset _vcgencmd
+
+    if [ "$cpu_temp$gpu_temp" = "" ]; then
+        return 1
+    fi
+
+    printf 'CPU %s' "${cpu_temp:-?}"
+    if [ "$gpu_temp" != "" ]; then
+        printf ' | GPU %s' "$gpu_temp"
+    fi
+}
+
+dotfiles_logo_temperature() {
+    dotfiles_logo_temp_lm_sensors || dotfiles_logo_temp_raspberry_pi || printf 'n/a'
+}
+
+dotfiles_logo_memory() {
+    awk '
+        /MemTotal:/ { total = $2 }
+        /MemAvailable:/ { available = $2 }
+        END {
+            if (total > 0 && available > 0) {
+                used = total - available
+                printf "%.1fG/%.1fG", used / 1048576, total / 1048576
+            } else {
+                printf "n/a"
+            }
+        }
+    ' /proc/meminfo 2>/dev/null
+}
+
+dotfiles_logo_uptime() {
+    if command -v uptime >/dev/null 2>&1; then
+        uptime -p 2>/dev/null | sed 's/^up //'
+    else
+        printf 'n/a'
+    fi
+}
+
+dotfiles_logo_ip() {
+    if command -v ip >/dev/null 2>&1; then
+        ip route get 8.8.8.8 2>/dev/null | awk 'NR == 1 {print $7}'
+    fi
+}
+
+dotfiles_logo() {
+    logo_host="$(hostname 2>/dev/null || printf unknown)"
+    logo_kernel="$(uname -sr 2>/dev/null || printf unknown)"
+    logo_temp="$(dotfiles_logo_temperature)"
+    logo_mem="$(dotfiles_logo_memory)"
+    logo_uptime="$(dotfiles_logo_uptime)"
+    logo_ip="$(dotfiles_logo_ip)"
+
+    logo_green="$(dotfiles_logo_color setaf 2)"
+    logo_blue="$(dotfiles_logo_color setaf 4)"
+    logo_reset="$(dotfiles_logo_color sgr0)"
+
+    printf '%s' "$logo_green"
+    printf '   ███████████████   %s%s%s\n' "$logo_blue" "$logo_host" "$logo_green"
+    printf ' ██               ██  %s\n' "$logo_kernel"
+    printf '██   ██\     /██   ██ temp: %s\n' "$logo_temp"
+    printf '██     ██\ /██     ██ mem:  %s\n' "$logo_mem"
+    printf '██      █████      ██ up:   %s\n' "$logo_uptime"
+    printf '██     ██/ \██     ██\n'
+    printf '██   ██/     \██   ██\n'
+    printf ' ██               ██\n'
+    printf '   ███████████████\n'
+    if [ "$logo_ip" != "" ]; then
+        printf '            ip:   %s\n' "$logo_ip"
+    fi
+    printf '%s' "$logo_reset"
+
+    unset logo_host logo_kernel logo_temp logo_mem logo_uptime logo_ip
+    unset logo_green logo_blue logo_reset
+}
+
+if [ "${DOTFILES_LOGO_NO_AUTO:-0}" != 1 ]; then
+    dotfiles_logo
+fi
