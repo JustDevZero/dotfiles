@@ -123,15 +123,10 @@ Source: https://github.com/JustDevZero/bofh-devops-excuses
 
 ## macOS
 
-On macOS, `script/bootstrap` applies the defaults automatically. To run manually:
-
-```sh
-bash ~/.dotfiles/macos/set-defaults.sh
-```
-
-Configures Sequoia defaults: tap-to-click, fast key repeat, hidden files visible,
-file extensions always shown, Dock auto-hide, screenshots to Desktop, TextEdit
-in plain text mode, no autocorrect or auto-capitalisation.
+Configures Sequoia defaults automatically on bootstrap: tap-to-click, fast key
+repeat, hidden files visible, file extensions always shown, Dock auto-hide,
+screenshots to Desktop, TextEdit in plain text mode, no autocorrect or
+auto-capitalisation.
 
 ---
 
