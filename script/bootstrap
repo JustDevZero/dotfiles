@@ -288,6 +288,24 @@ install_emacs_packages() {
   fi
 }
 
+install_macos_defaults() {
+  if [ "$(uname -s)" != "Darwin" ]; then
+    return
+  fi
+
+  if [ "$dry_run" = true ]; then
+    info "would apply macOS defaults"
+    return
+  fi
+
+  info "applying macOS defaults..."
+  if bash "$DOTFILES_ROOT/macos/set-defaults.sh"; then
+    success "macOS defaults applied"
+  else
+    fail "macOS defaults failed"
+  fi
+}
+
 ensure_localrc
 install_uv
 install_mise
@@ -295,6 +313,7 @@ install_starship
 install_bofh_excuses
 install_dotfiles
 install_emacs_packages
+install_macos_defaults
 
 echo ''
 info "running update to sync everything..."
