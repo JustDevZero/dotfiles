@@ -19,7 +19,8 @@ The bootstrap script installs the following tools if not present:
 - **Starship** — cross-shell prompt
 - **bofh-devops-excuses** — cloned to `~/.bofh-excuses`
 
-Then links all `*.symlink` files to `$HOME` and bootstraps Emacs packages.
+Then links all `*.symlink` files to `$HOME`, bootstraps Emacs packages, and on
+macOS automatically applies the defaults from `macos/set-defaults.sh`.
 
 ### Bootstrap options
 
@@ -122,7 +123,7 @@ Source: https://github.com/JustDevZero/bofh-devops-excuses
 
 ## macOS
 
-Run once after a fresh install:
+On macOS, `script/bootstrap` applies the defaults automatically. To run manually:
 
 ```sh
 bash ~/.dotfiles/macos/set-defaults.sh
