@@ -299,7 +299,7 @@ install_macos_defaults() {
   fi
 
   info "applying macOS defaults..."
-  if bash "$DOTFILES_ROOT/macos/set-defaults.sh"; then
+  if zsh "$DOTFILES_ROOT/macos/set-defaults.sh"; then
     success "macOS defaults applied"
   else
     fail "macOS defaults failed"

@@ -1,10 +1,9 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # macOS Sequoia defaults
-# Run once after a fresh install: bash ~/.dotfiles/macos/set-defaults.sh
 
-set -euo pipefail
+setopt errexit
 
-echo "› Applying macOS defaults..."
+print '› Applying macOS defaults...'
 
 ###############################################################################
 # General / Input
@@ -76,7 +75,7 @@ defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
 # Mostrar ~/Library
 chflags nohidden ~/Library
 
-# No crear ficheros .DS_Store en volumes de red o USB
+# No crear ficheros .DS_Store en volúmenes de red o USB
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
@@ -103,9 +102,6 @@ defaults write com.apple.dock mineffect -string "scale"
 
 # No animar las apps al abrirlas
 defaults write com.apple.dock launchanim -bool false
-
-# Mostrar solo apps abiertas (sin apps fijas que no uses)
-# defaults write com.apple.dock static-only -bool true  # descomenta si lo prefieres
 
 # No reagrupar espacios según app más reciente
 defaults write com.apple.dock mru-spaces -bool false
@@ -138,9 +134,9 @@ defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
 # Aplicar cambios
 ###############################################################################
 
-echo "› Reiniciando apps afectadas..."
-for app in "Finder" "Dock" "SystemUIServer"; do
+print '› Reiniciando apps afectadas...'
+for app in Finder Dock SystemUIServer; do
     killall "$app" &>/dev/null || true
 done
 
-echo "✓ Hecho. Algunos cambios requieren cerrar sesión para aplicarse."
+print '✓ Hecho. Algunos cambios requieren cerrar sesión para aplicarse.'
