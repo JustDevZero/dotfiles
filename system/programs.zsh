@@ -1,7 +1,7 @@
 #
 #       The MIT License
 #
-#       Copyright (c) Mephiston <meph.snake@gmail.com>
+#       Copyright (c) Daniel Ripoll <daniel@andronautic.com>
 #
 #       Permission is hereby granted, free of charge, to any person obtaining a copy
 #       of this software and associated documentation files (the "Software"), to deal
@@ -105,15 +105,25 @@ comprimir() {
 }
 
 afk() {
-  local message="AFK: $*"
+  # macOS
+  if [[ "$(uname -s)" = "Darwin" ]]; then
+    pmset displaysleepnow
+    return
+  fi
+
+  # systemd (moderno)
+  if dotfiles_has loginctl; then
+    loginctl lock-session
+    return
+  fi
 
   if dotfiles_has cinnamon-screensaver-command && pidof -s cinnamon-screensaver >/dev/null 2>&1; then
-    cinnamon-screensaver-command -l -m "$message"
+    cinnamon-screensaver-command -l
     return
   fi
 
   if dotfiles_has gnome-screensaver-command && pidof -s gnome-screensaver >/dev/null 2>&1; then
-    gnome-screensaver-command -l -m "$message"
+    gnome-screensaver-command -l
     return
   fi
 
@@ -190,6 +200,8 @@ man2pdf() {
 
   if dotfiles_has xdg-open; then
     xdg-open "$out" >/dev/null 2>&1
+  elif dotfiles_has open; then
+    open "$out"
   elif dotfiles_has evince; then
     evince "$out" >/dev/null 2>&1
   else
@@ -227,7 +239,9 @@ mklz() { dotfiles_require lzip && lzip -k9 "$1"; }
 mkrzip() { dotfiles_require rzip && rzip -k9 "$1"; }
 
 most-used-command() {
-  fc -l 1 2>/dev/null | awk '{print $2}' | sort | uniq -c | sort -rn | head -10
+  # fc -l con timestamps produce: "N  YYYY-MM-DD HH:MM:SS  comando args"
+  # el comando está en el campo $4
+  fc -l -t "%F %T" 1 2>/dev/null | awk '{print $4}' | sort | uniq -c | sort -rn | head -10
 }
 
 screenshot() {
@@ -275,7 +289,7 @@ iprivate() {
     return 1
   fi
 }
-lenght() { printf '%s\n' "$HOME"/${(l:$1::?:)~:-}*; }
+length() { printf '%s\n' "$HOME"/${(l:$1::?:)~:-}*; }
 age() { ls -tald **/*(m-"$1"); }
 rmspace() { for a in ./**/*\ *(Dod); do mv -- "$a" "${a:h}/${a:t:gs/ /_}"; done; }
 lower() { autoload -Uz zmv && zmv '(*)' '${(L)1}'; }
@@ -357,12 +371,6 @@ rationalise-dot() {
   fi
 }
 
-ngrok_http() {
-  local port=${1:-80}
-
-  dotfiles_require ngrok || return 1
-  ngrok http "$port" --region eu
-}
 
 if [[ -o interactive ]]; then
   zle -N rationalise-dot
