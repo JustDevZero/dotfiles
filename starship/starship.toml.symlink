@@ -77,4 +77,11 @@ style = "bold cyan"
 disabled = false
 format = '[☸ $context(\[$namespace\])]($style) '
 style = "bold blue"
-detect_files = ["Dockerfile", "docker-compose.yml", "docker-compose.yaml"]
+detect_files = [
+  "Dockerfile",
+  "docker-compose.yml", "docker-compose.yaml",
+  "helmfile.yaml", "helmfile.yml",
+  "kustomization.yaml", "kustomization.yml",
+  "skaffold.yaml"
+]
+detect_folders = [".kube", "k8s", "kubernetes", "helm", "charts"]
