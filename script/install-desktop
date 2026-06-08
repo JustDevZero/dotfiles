@@ -10,37 +10,48 @@ info()    { printf '  [ \033[00;34m..\033[0m ] %s\n' "$1"; }
 success() { printf '  [ \033[00;32mOK\033[0m ] %s\n' "$1"; }
 warn()    { printf '  [ \033[0;33m!!\033[0m ] %s\n' "$1"; }
 fail()    { printf '  [\033[0;31mFAIL\033[0m] %s\n' "$1"; exit 1; }
+manual()  { MANUAL_INSTALLS+=("$1"); }
+
+MANUAL_INSTALLS=()
 
 # ---------------------------------------------------------------------------
-# Detect distro and package manager
+# Detect OS and package manager
 # ---------------------------------------------------------------------------
-_distro=$(grep '^ID=' /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"')
-_version=$(grep '^VERSION_ID=' /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"')
+IS_MACOS=false
+if [ "$(uname -s)" = "Darwin" ]; then
+  IS_MACOS=true
+  if ! command -v brew >/dev/null 2>&1; then
+    fail "Homebrew not found — install it first: https://brew.sh"
+  fi
+else
+  _distro=$(grep '^ID=' /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"')
+  _version=$(grep '^VERSION_ID=' /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"')
 
-case "$_distro" in
-  ubuntu|debian|raspbian)
-    PKG_COL=2
-    install_cmd() { sudo apt-get install -y "$@"; }
-    ;;
-  arch|manjaro|endeavouros)
-    PKG_COL=3
-    install_cmd() { sudo pacman -S --noconfirm "$@"; }
-    ;;
-  fedora)
-    PKG_COL=4
-    if [ "${_version:-0}" -gt 21 ] 2>/dev/null; then
-      install_cmd() { sudo dnf install -y "$@"; }
-    else
-      install_cmd() { sudo yum install -y "$@"; }
-    fi
-    ;;
-  *)
-    fail "unsupported distro: ${_distro:-unknown}"
-    ;;
-esac
+  case "$_distro" in
+    ubuntu|debian|raspbian)
+      PKG_COL=2
+      install_cmd() { sudo apt-get install -y "$@"; }
+      ;;
+    arch|manjaro|endeavouros)
+      PKG_COL=3
+      install_cmd() { sudo pacman -S --noconfirm "$@"; }
+      ;;
+    fedora)
+      PKG_COL=4
+      if [ "${_version:-0}" -gt 21 ] 2>/dev/null; then
+        install_cmd() { sudo dnf install -y "$@"; }
+      else
+        install_cmd() { sudo yum install -y "$@"; }
+      fi
+      ;;
+    *)
+      fail "unsupported distro: ${_distro:-unknown}"
+      ;;
+  esac
+fi
 
 # ---------------------------------------------------------------------------
-# Resolve package name from packages.tsv
+# Install helpers
 # ---------------------------------------------------------------------------
 pkg() {
   local name=$1
@@ -60,6 +71,18 @@ install_pkg() {
   fi
   info "installing $resolved..."
   install_cmd "$resolved" && success "$resolved installed" || warn "$resolved install failed — skipping"
+}
+
+install_brew() {
+  local formula=$1
+  info "installing $formula via brew..."
+  brew install "$formula" && success "$formula installed" || warn "$formula install failed — skipping"
+}
+
+install_brew_cask() {
+  local cask=$1
+  info "installing $cask via brew cask..."
+  brew install --cask "$cask" && success "$cask installed" || warn "$cask install failed — skipping"
 }
 
 # ---------------------------------------------------------------------------
@@ -90,60 +113,96 @@ is_gnome() {
 echo ''
 info "detecting environment..."
 
-# Screenshot tool
-if is_wayland; then
-  info "Wayland detected — installing grim"
-  install_pkg screenshot_wl
+if [ "$IS_MACOS" = true ]; then
+
+  # Screenshot — macOS has built-in screencapture, no extra tool needed
+  success "screenshot: using built-in screencapture"
+
+  # Image viewer
+  install_brew_cask "xee"         # lightweight native image viewer for macOS
+
+  # PDF viewer — Preview is built-in
+  success "PDF viewer: using built-in Preview"
+
+  # Ghostscript (for man2pdf)
+  install_brew "ghostscript"
+
+  # LibreOffice
+  install_brew_cask "libreoffice"
+
+  # GIMP
+  install_brew_cask "gimp"
+
+  # Inkscape
+  install_brew_cask "inkscape"
+
+  # Sensors — macOS uses its own APIs, no lm-sensors
+  manual "temperature monitoring: install 'Stats' from https://github.com/exelban/stats (no brew cask)"
+
 else
-  info "X11 detected — installing scrot"
-  install_pkg screenshot_x11
-fi
 
-# Image viewer
-if is_wayland; then
-  install_pkg image_viewer_wl
-else
-  install_pkg image_viewer_x11
-fi
+  # Screenshot tool
+  if is_wayland; then
+    info "Wayland detected — installing grim"
+    install_pkg screenshot_wl
+  else
+    info "X11 detected — installing scrot"
+    install_pkg screenshot_x11
+  fi
 
-# PDF viewer
-if is_gnome; then
-  install_pkg pdf_gnome
-else
-  install_pkg pdf_fallback
-fi
+  # Image viewer
+  if is_wayland; then
+    install_pkg image_viewer_wl
+  else
+    install_pkg image_viewer_x11
+  fi
 
-# Temperature sensors (skip on Raspberry Pi, uses vcgencmd instead)
-if is_raspberry_pi; then
-  info "Raspberry Pi detected — skipping lm-sensors (uses vcgencmd)"
-else
-  install_pkg sensors
-fi
+  # PDF viewer
+  if is_gnome; then
+    install_pkg pdf_gnome
+  else
+    install_pkg pdf_fallback
+  fi
 
-# Battery tools (only if battery present)
-if has_battery; then
-  info "battery detected — installing acpi and upower"
-  install_pkg battery_acpi
-  install_pkg battery_upower
-else
-  info "no battery detected — skipping acpi/upower"
-fi
+  # Temperature sensors (skip on Raspberry Pi, uses vcgencmd instead)
+  if is_raspberry_pi; then
+    info "Raspberry Pi detected — skipping lm-sensors (uses vcgencmd)"
+  else
+    install_pkg sensors
+  fi
 
-# Ghostscript (for man2pdf)
-install_pkg ghostscript
+  # Battery tools (only if battery present)
+  if has_battery; then
+    info "battery detected — installing acpi and upower"
+    install_pkg battery_acpi
+    install_pkg battery_upower
+  else
+    info "no battery detected — skipping acpi/upower"
+  fi
 
-# LibreOffice
-install_pkg office
+  # Ghostscript (for man2pdf)
+  install_pkg ghostscript
 
-# GIMP
-install_pkg gimp
+  # LibreOffice
+  install_pkg office
 
-# Inkscape (vector graphics)
-if [ "$(uname -s)" = "Darwin" ]; then
-  info "installing inkscape via brew cask..."
-  brew install --cask inkscape && success "inkscape installed" || warn "inkscape install failed — skipping"
-else
+  # GIMP
+  install_pkg gimp
+
+  # Inkscape
   install_pkg inkscape
+
+fi
+
+# ---------------------------------------------------------------------------
+# Summary of manual installs required
+# ---------------------------------------------------------------------------
+if [ "${#MANUAL_INSTALLS[@]}" -gt 0 ]; then
+  echo ''
+  warn "the following require manual installation:"
+  for item in "${MANUAL_INSTALLS[@]}"; do
+    printf '      • %s\n' "$item"
+  done
 fi
 
 echo ''

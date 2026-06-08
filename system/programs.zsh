@@ -144,11 +144,11 @@ afk() {
   return 1
 }
 
-listar() {
+listarchive() {
   local archive=$1
 
   if [[ -z "$archive" || ! -f "$archive" ]]; then
-    printf 'Usage: listar <archive>\n' >&2
+    printf 'Usage: listarchive <archive>\n' >&2
     return 1
   fi
 
@@ -164,7 +164,7 @@ listar() {
     *.ace) dotfiles_require unace && unace l "$archive" ;;
     *.xz|*.lzma|*.tlz) dotfiles_require xz && xz -l "$archive" ;;
     *)
-      printf 'listar: unsupported archive type: %s\n' "$archive" >&2
+      printf 'listarchive: unsupported archive type: %s\n' "$archive" >&2
       return 1
       ;;
   esac
@@ -419,6 +419,7 @@ case "$_dotfiles_lang" in
   es*)
     alias extraer=extract
     alias comprimir=compress
+    alias listar=listarchive
     ;;
 esac
 unset _dotfiles_lang
