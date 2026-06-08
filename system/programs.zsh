@@ -479,6 +479,73 @@ epoch() {
   fi
 }
 
+dsize() {
+  du -sh "${1:-.}"/* 2>/dev/null | sort -h
+}
+
+tmpdir() {
+  local dir
+  dir="$(mktemp -d)"
+  printf 'tmpdir: %s\n' "$dir"
+  cd "$dir"
+}
+
+sslcheck() {
+  local host="${1:?usage: sslcheck <host[:port]>}"
+  local port="${host##*:}"
+  [[ "$port" == "$host" ]] && port=443
+  host="${host%%:*}"
+  dotfiles_require openssl || return 1
+  echo | openssl s_client -servername "$host" -connect "${host}:${port}" 2>/dev/null \
+    | openssl x509 -noout -subject -dates 2>/dev/null \
+    || printf 'sslcheck: could not retrieve certificate for %s:%s\n' "$host" "$port" >&2
+}
+
+passgen() {
+  local len="${1:-32}"
+  LC_ALL=C tr -dc 'A-Za-z0-9!@#$%^&*()-_=+[]{}' </dev/urandom | head -c "$len"
+  printf '\n'
+}
+
+gitignore() {
+  local lang="${1:?usage: gitignore <language>}"
+  dotfiles_require curl || return 1
+  curl -fsS "https://www.toptal.com/developers/gitignore/api/${lang}" 2>/dev/null \
+    || printf 'gitignore: template not found for "%s"\n' "$lang" >&2
+}
+
+b64enc() {
+  if [[ -n "$1" ]]; then
+    printf '%s' "$1" | base64
+  else
+    base64
+  fi
+}
+
+b64dec() {
+  if [[ -n "$1" ]]; then
+    printf '%s' "$1" | base64 --decode 2>/dev/null || printf '%s' "$1" | base64 -d
+  else
+    base64 --decode 2>/dev/null || base64 -d
+  fi
+}
+
+json() {
+  if command -v jq &>/dev/null; then
+    if [[ -n "$1" ]]; then
+      jq . "$1"
+    else
+      jq .
+    fi
+  else
+    if [[ -n "$1" ]]; then
+      python3 -m json.tool "$1"
+    else
+      python3 -m json.tool
+    fi
+  fi
+}
+
 ###      LANGUAGE ALIASES      ###
 _dotfiles_lang="${DOTFILES_LANG:-${LANG:-en}}"
 case "$_dotfiles_lang" in
