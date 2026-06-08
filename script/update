@@ -10,7 +10,7 @@ update_dotfiles() {
   info "updating dotfiles repo..."
   local version_before
   version_before="$(git describe --tags --abbrev=0 2>/dev/null || printf 'untagged')"
-  if git pull --rebase origin master 2>/dev/null; then
+  if git pull --rebase origin main 2>/dev/null; then
     git fetch --tags --quiet 2>/dev/null || true
     local version_after
     version_after="$(git describe --tags --abbrev=0 2>/dev/null || printf 'untagged')"
@@ -79,7 +79,7 @@ update_bofh_excuses() {
     return
   fi
   info "updating bofh-excuses..."
-  if git -C "$dest" pull --rebase origin master 2>/dev/null; then
+  if git -C "$dest" pull --rebase origin main 2>/dev/null; then
     success "bofh-excuses up to date"
   else
     warn "bofh-excuses update failed — skipping"
@@ -92,7 +92,7 @@ check_updates() {
 
   local current remote
   current="$(git describe --tags --abbrev=0 2>/dev/null || printf 'untagged')"
-  remote="$(git describe --tags --abbrev=0 origin/master 2>/dev/null || printf 'untagged')"
+  remote="$(git describe --tags --abbrev=0 origin/main 2>/dev/null || printf 'untagged')"
 
   if [ "$current" = "$remote" ]; then
     success "dotfiles up to date ($current)"

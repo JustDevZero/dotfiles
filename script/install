@@ -2,24 +2,24 @@
 #
 # Remote bootstrap for these dotfiles — safe to run straight from a pipe:
 #
-#   curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/master/script/install | sh
+#   curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/main/script/install | sh
 #
 # Pass bootstrap flags after `-s --`:
 #
-#   curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/master/script/install | sh -s -- --backup
+#   curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/main/script/install | sh -s -- --backup
 #
 # It clones (or updates) the repo into ${DOTFILES:-$HOME/.dotfiles} and then
 # hands off to script/bootstrap. Written in POSIX sh on purpose so it behaves
 # the same under `sh`, `bash` and `zsh`. Overridable via env:
 #   DOTFILES        target dir   (default: $HOME/.dotfiles)
 #   DOTFILES_REPO   clone URL    (default: the public GitHub repo)
-#   DOTFILES_BRANCH branch       (default: master)
+#   DOTFILES_BRANCH branch       (default: main)
 
 set -eu
 
 REPO_URL="${DOTFILES_REPO:-https://github.com/JustDevZero/dotfiles.git}"
 DEST="${DOTFILES:-$HOME/.dotfiles}"
-BRANCH="${DOTFILES_BRANCH:-master}"
+BRANCH="${DOTFILES_BRANCH:-main}"
 
 info() { printf '  [ \033[00;34m..\033[0m ] %s\n' "$1"; }
 ok()   { printf '  [ \033[00;32mOK\033[0m ] %s\n' "$1"; }

@@ -10,13 +10,13 @@ Maintained by Daniel Ripoll — https://github.com/JustDevZero
 One-liner (clones into `~/.dotfiles`, then runs bootstrap):
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/master/script/install | sh
+curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/main/script/install | sh
 ```
 
 Pass bootstrap flags after `-s --`:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/master/script/install | sh -s -- --backup
+curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/main/script/install | sh -s -- --backup
 ```
 
 The installer is POSIX `sh` and overridable via `DOTFILES` (target dir),
@@ -114,7 +114,7 @@ Updates the dotfiles repo, all submodules, uv, mise, starship and bofh-excuses.
 The bootstrap script calls this automatically at the end.
 
 `--check-updates` fetches tags from remote and compares the current version
-against `origin/master` — prints a warning if a newer tag is available.
+tag against the latest remote tag — prints a warning if a newer tag is available.
 
 ---
 
