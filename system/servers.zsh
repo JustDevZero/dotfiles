@@ -1,15 +1,21 @@
 _serve_ruby() {
-  ruby -run -e httpd . -p "$1"
+  local port=$1
+  [ "$port" -lt 1024 ] 2>/dev/null && local sudo_cmd="${IFSUDO:-sudo}" || local sudo_cmd=""
+  ${sudo_cmd:+$sudo_cmd} ruby -run -e httpd . -p "$port"
 }
 
 _serve_python() {
-  python3 -m http.server "$1"
+  local port=$1
+  [ "$port" -lt 1024 ] 2>/dev/null && local sudo_cmd="${IFSUDO:-sudo}" || local sudo_cmd=""
+  ${sudo_cmd:+$sudo_cmd} python3 -m http.server "$port"
 }
 
 _serve_busybox() {
   local port=$1
   local _index="./index.html"
   local _created=0
+  [ "$port" -lt 1024 ] 2>/dev/null && local sudo_cmd="${IFSUDO:-sudo}" || local sudo_cmd=""
+
   if [ ! -f "$_index" ]; then
     printf '<html><body><h1>Index of %s</h1><ul>' "$(pwd)" > "$_index"
     find . -maxdepth 1 -not -name '.' | sort | while read -r f; do
@@ -20,7 +26,7 @@ _serve_busybox() {
     _created=1
   fi
   trap '[ "$_created" -eq 1 ] && rm -f "$_index"' EXIT INT TERM
-  busybox httpd -f -p "$port"
+  ${sudo_cmd:+$sudo_cmd} busybox httpd -f -p "$port"
   [ "$_created" -eq 1 ] && rm -f "$_index"
 }
 
