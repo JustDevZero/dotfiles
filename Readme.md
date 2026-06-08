@@ -30,6 +30,24 @@ macOS automatically applies the defaults from `macos/set-defaults.sh`.
 | `--backup` | Move conflicting files to `*.backup` |
 | `--skip-existing` | Keep existing files untouched |
 | `--force` | Replace conflicting files |
+| `--update-only` | Skip installs, run `script/update` only |
+
+### Desktop packages
+
+For desktop machines, run after bootstrap:
+
+```sh
+script/install-desktop          # installs screenshot, PDF, image viewer, sensors…
+script/install-desktop --gimp   # also installs GIMP
+```
+
+Detects automatically:
+- **Display server** — Wayland (`grim`, `imv`) or X11 (`scrot`, `feh`)
+- **Desktop environment** — GNOME 3+ (`papers`) or other (`evince`)
+- **Battery** — installs `acpi` and `upower` only if a battery is present
+- **Raspberry Pi** — skips `lm-sensors` (uses `vcgencmd` instead)
+
+Package names per distro are defined in `script/packages.conf`.
 
 ---
 
