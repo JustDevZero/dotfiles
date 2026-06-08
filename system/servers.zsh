@@ -9,7 +9,7 @@ function serve {
   elif command -v python3 &>/dev/null; then
     python3 -m http.server "$port"
   elif command -v busybox &>/dev/null && busybox httpd --help &>/dev/null; then
-    busybox httpd -f -p "$port"
+    busybox httpd -f -p "$port" -o dirindex
   else
     printf 'serve: no suitable HTTP server found (ruby, python3 or busybox required)\n' >&2
     return 1
