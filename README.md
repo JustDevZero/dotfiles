@@ -146,7 +146,7 @@ Falls back to a minimal prompt with git branch when Starship is not available.
 ### Login banner
 
 Lives at `~/logo.sh` after bootstrap. Works in bash and zsh. Shows host, kernel,
-temperature, memory, uptime, and IPv4/IPv6 (only if available). Enable with:
+temperature, memory, uptime, local IPv4/IPv6 and public IP (cached). Enable with:
 
 ```sh
 export DOTFILES_SHOW_LOGO=1
@@ -156,6 +156,8 @@ Temperature sources (in order of preference):
 - `lm-sensors` — Linux desktop/server
 - `vcgencmd` — Raspberry Pi (both `/usr/bin` and `/opt/vc/bin`)
 - `osx-cpu-temp` — macOS
+
+Public IP is read from `~/.lastip` if cached (written by `myip`), otherwise fetched live.
 
 ### History
 
@@ -197,20 +199,56 @@ available. Set `DOTFILES_LANG=es` in `~/.localrc` to also enable Spanish aliases
 | `extract <file>` | Extract any archive (tar, zip, 7z, rar, gz, bz2, xz…) |
 | `compress <fmt> <file>` | Compress a file or directory to the given format |
 | `listarchive <file>` | List contents of an archive without extracting |
+| `serve [port]` | Serve current directory over HTTP (ruby → python3 → busybox, default port 3000) |
 | `afk` | Lock the screen (macOS, systemd, GNOME, i3) |
 | `battery` | Show battery status (acpi, upower, or sysfs fallback) |
-| `myip` | Show current public IP, cached for comparison |
+| `myip` | Show current public IP, cached in `~/.lastip` for comparison |
 | `iprivate` | Show current private IP |
 | `state` | Show shell, terminal, login and system info |
 | `man2pdf <page>` | Convert a man page to PDF and open it |
 | `mountiso <file>` | Mount an ISO image under `/media` |
 | `umountiso <file>` | Unmount a previously mounted ISO |
 | `screenshot` | Take a screenshot (Wayland: `grim`, X11: `scrot`, macOS: `screencapture`) |
-| `watchssh` | Watch active SSH connections in real time (`watch -n1 ps aux \| grep ssh`) |
+| `watchssh` | Watch active SSH connections in real time |
 | `cdl <dir>` | `cd` into a directory and list its contents |
 | `most-used-command` | Show the 10 most used shell commands from history |
+| `mkcd <dir>` | Create directory and cd into it |
+| `bak <file>` | Copy file to `<file>.bak` |
+| `up [n]` | Go up n directories (default 1) |
+| `dsize [dir]` | Show disk usage of each entry, sorted by size |
+| `tmpdir` | Create a temporary directory and cd into it |
+| `port <n>` | Show what process is listening on port n |
+| `weather [city]` | Show weather forecast via wttr.in (default: Palma) |
+| `psgrep <pattern>` | Search running processes, excluding the grep itself |
+| `retry <n> <cmd>` | Retry a command up to n times with 1s delay |
+| `epoch [ts]` | Print current unix timestamp, or convert one to human-readable date |
+| `sslcheck <host[:port]>` | Show SSL certificate subject and expiry dates |
+| `passgen [length]` | Generate a random password (default 32 chars) |
+| `gitignore <lang>` | Fetch a `.gitignore` template from gitignore.io |
+| `b64enc [string]` | Base64 encode a string or stdin |
+| `b64dec [string]` | Base64 decode a string or stdin |
+| `json [file]` | Pretty-print JSON via jq or python3 |
 | `extar/extgz/exzip/exrar/ex7z` | Shorthand wrappers for `extract` |
 | `mktar/mktgz/mktbz/mkzip/mk7zp/…` | Shorthand wrappers for `compress` |
+
+### Ansible helpers
+
+Available when `ansible` is installed:
+
+| Function | Description |
+|----------|-------------|
+| `ans` | Alias for `ansible` |
+| `ansp` | Alias for `ansible-playbook --diff` |
+| `ansping <host>` | Ping a host or group |
+| `ansfacts <host>` | Show all facts for a host or group |
+| `ansvault <file>` | Encrypt or decrypt a vault file (auto-detects current state) |
+
+### SSH helpers
+
+| Function | Description |
+|----------|-------------|
+| `sshping <host>` | Verify SSH connectivity with a 5s timeout |
+| `known_hosts_del <host>` | Remove a host entry from `~/.ssh/known_hosts` |
 
 ### zsh-only functions
 
