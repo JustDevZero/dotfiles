@@ -18,8 +18,17 @@ warn() {
 
 update_dotfiles() {
   info "updating dotfiles repo..."
+  local version_before
+  version_before="$(git describe --tags --abbrev=0 2>/dev/null || printf 'untagged')"
   if git pull --rebase origin master 2>/dev/null; then
-    success "dotfiles up to date"
+    git fetch --tags --quiet 2>/dev/null || true
+    local version_after
+    version_after="$(git describe --tags --abbrev=0 2>/dev/null || printf 'untagged')"
+    if [ "$version_before" != "$version_after" ]; then
+      success "dotfiles updated: $version_before → $version_after"
+    else
+      success "dotfiles up to date ($version_after)"
+    fi
   else
     warn "dotfiles update failed — skipping"
   fi

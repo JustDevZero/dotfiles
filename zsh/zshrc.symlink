@@ -6,9 +6,7 @@
 export DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 export ZSH="${ZSH:-$DOTFILES}"
 
-if [[ -r "$DOTFILES/VERSION" ]]; then
-  export DOTFILES_VERSION="$(<"$DOTFILES/VERSION")"
-fi
+export DOTFILES_VERSION="$(git -C "$DOTFILES" describe --tags --abbrev=0 2>/dev/null || printf 'untagged')"
 
 export PROJECTS="${PROJECTS:-$HOME/Projects}"
 
