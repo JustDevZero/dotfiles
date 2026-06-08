@@ -46,6 +46,7 @@ alias top='htop'
 alias mytop='htop -u $USER'
 alias fecha='date "+%A %d, %B, %Y %l:%M %p %Z"'
 alias p='cd ..'
+alias cd..='cd ..'
 
 ###      SECURITY     ###
 alias ln='ln -i'

@@ -709,3 +709,24 @@ case "$_dotfiles_lang" in
     ;;
 esac
 unset _dotfiles_lang
+
+temp() {
+  if command -v sensors &>/dev/null; then
+    sensors | awk '
+      /^[^:]+:/ && !/^(Adapter|Bus)/ { device=$0; next }
+      /°C/ {
+        label=$1; sub(/:$/, "", label)
+        match($0, /[+-]?[0-9]+\.[0-9]+°C/)
+        val=substr($0, RSTART, RLENGTH)
+        printf "  %-30s %s\n", label, val
+      }
+    '
+  elif [ -x /usr/bin/vcgencmd ]; then
+    echo "  CPU  $(/usr/bin/vcgencmd measure_temp | tr -d 'temp=')"
+  elif [ -x /opt/vc/bin/vcgencmd ]; then
+    echo "  CPU  $(/opt/vc/bin/vcgencmd measure_temp | tr -d 'temp=')"
+  else
+    echo "temp: no supported temperature tool found (install lm-sensors)" >&2
+    return 1
+  fi
+}

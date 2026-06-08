@@ -31,9 +31,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-if [ -r "$DOTFILES/bash/aliases.bash" ]; then
-    . "$DOTFILES/bash/aliases.bash"
-fi
 
 if [ -r "$HOME/.bash_aliases" ]; then
     . "$HOME/.bash_aliases"
