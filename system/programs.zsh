@@ -35,12 +35,12 @@ dotfiles_require() {
   done
 }
 
-extraer() {
+extract() {
   local archive=$1
   local destination=${2:-.}
 
   if [[ -z "$archive" || ! -f "$archive" ]]; then
-    printf 'Usage: extraer <archive> [destination]\n' >&2
+    printf 'Usage: extract <archive> [destination]\n' >&2
     return 1
   fi
 
@@ -63,19 +63,19 @@ extraer() {
     *.lz) dotfiles_require lzip && lzip -dk "$archive" ;;
     *.xz|*.lzma|*.tlz) dotfiles_require xz && xz -d "$archive" ;;
     *)
-      printf 'extraer: unsupported archive type: %s\n' "$archive" >&2
+      printf 'extract: unsupported archive type: %s\n' "$archive" >&2
       return 1
       ;;
   esac
 }
 
-comprimir() {
+compress() {
   local format=$1
   local source=$2
   local base
 
   if [[ -z "$format" || -z "$source" ]]; then
-    printf 'Usage: comprimir <format> <file-or-directory>\n' >&2
+    printf 'Usage: compress <format> <file-or-directory>\n' >&2
     return 1
   fi
 
@@ -101,7 +101,7 @@ comprimir() {
     rzip|.rzip) dotfiles_require rzip && rzip -k9 "$base" ;;
     iso|.iso) dotfiles_require mkisofs && mkisofs -r "$base" >"$base.iso" ;;
     *)
-      printf 'comprimir: unsupported format: %s\n' "$format" >&2
+      printf 'compress: unsupported format: %s\n' "$format" >&2
       return 1
       ;;
   esac
@@ -231,21 +231,21 @@ umountiso() {
   ${IFSUDO:-sudo} rmdir "$mountpoint"
 }
 
-extar()  { extraer "$1"; }
-extgz()  { extraer "$1"; }
-exzip()  { extraer "$1"; }
-exrar()  { extraer "$1"; }
-ex7z()   { extraer "$1"; }
+extar()  { extract "$1"; }
+extgz()  { extract "$1"; }
+exzip()  { extract "$1"; }
+exrar()  { extract "$1"; }
+ex7z()   { extract "$1"; }
 
-mktar()  { comprimir tar   "$1"; }
-mktgz()  { comprimir tgz   "$1"; }
-mktbz()  { comprimir tbz2  "$1"; }
-mkrar()  { comprimir rar   "$1"; }
-mkzip()  { comprimir zip   "$1"; }
-mk7zp()  { comprimir 7z    "$1"; }
-mkiso()  { comprimir iso   "$1"; }
-mklz()   { comprimir lz    "$1"; }
-mkrzip() { comprimir rzip  "$1"; }
+mktar()  { compress tar   "$1"; }
+mktgz()  { compress tgz   "$1"; }
+mktbz()  { compress tbz2  "$1"; }
+mkrar()  { compress rar   "$1"; }
+mkzip()  { compress zip   "$1"; }
+mk7zp()  { compress 7z    "$1"; }
+mkiso()  { compress iso   "$1"; }
+mklz()   { compress lz    "$1"; }
+mkrzip() { compress rzip  "$1"; }
 
 most-used-command() {
   # fc -l con timestamps produce: "N  YYYY-MM-DD HH:MM:SS  comando args"
@@ -412,3 +412,13 @@ if [[ -o interactive ]]; then
   zle -N rationalise-dot
   bindkey . rationalise-dot
 fi
+
+###      LANGUAGE ALIASES      ###
+_dotfiles_lang="${DOTFILES_LANG:-${LANG:-en}}"
+case "$_dotfiles_lang" in
+  es*)
+    alias extraer=extract
+    alias comprimir=compress
+    ;;
+esac
+unset _dotfiles_lang

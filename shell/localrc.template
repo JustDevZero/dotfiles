@@ -6,7 +6,7 @@
 # Language for dotfiles shell functions (extract/extraer, compress/comprimir).
 # Supported: en (default), es
 # ---------------------------------------------------------------------------
-# DOTFILES_LANG="en"
+# DOTFILES_LANG="en"     # "es" enables: extraer=extract, comprimir=compress
 
 # ---------------------------------------------------------------------------
 # Login banner
