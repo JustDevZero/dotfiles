@@ -110,6 +110,16 @@ dotfiles_logo_ipv6() {
     fi
 }
 
+dotfiles_logo_public_ip() {
+    command -v curl >/dev/null 2>&1 || return
+    local cache="$HOME/.lastip"
+    if [ -r "$cache" ]; then
+        cat "$cache"
+    else
+        curl -fsS --max-time 5 https://api.ipify.org 2>/dev/null
+    fi
+}
+
 dotfiles_logo() {
     logo_host="$(hostname 2>/dev/null || printf unknown)"
     logo_kernel="$(uname -sr 2>/dev/null || printf unknown)"
@@ -118,6 +128,7 @@ dotfiles_logo() {
     logo_uptime="$(dotfiles_logo_uptime)"
     logo_ipv4="$(dotfiles_logo_ipv4)"
     logo_ipv6="$(dotfiles_logo_ipv6)"
+    logo_pubip="$(dotfiles_logo_public_ip)"
 
     logo_green="$(dotfiles_logo_color setaf 2)"
     logo_blue="$(dotfiles_logo_color setaf 4)"
@@ -131,11 +142,11 @@ dotfiles_logo() {
     printf '██      █████      ██ up:   %s\n' "$logo_uptime"
     [ -n "$logo_ipv4" ] && printf '██     ██/ \██     ██ ipv4: %s\n' "$logo_ipv4" || printf '██     ██/ \██     ██\n'
     [ -n "$logo_ipv6" ] && printf '██   ██/     \██   ██ ipv6: %s\n' "$logo_ipv6" || printf '██   ██/     \██   ██\n'
-    printf ' ██               ██\n'
+    [ -n "$logo_pubip" ] && printf ' ██               ██  pub:  %s\n' "$logo_pubip" || printf ' ██               ██\n'
     printf '   ███████████████\n'
     printf '%s' "$logo_reset"
 
-    unset logo_host logo_kernel logo_temp logo_mem logo_uptime logo_ipv4 logo_ipv6
+    unset logo_host logo_kernel logo_temp logo_mem logo_uptime logo_ipv4 logo_ipv6 logo_pubip
     unset logo_green logo_blue logo_reset
 }
 

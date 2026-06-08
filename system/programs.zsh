@@ -413,6 +413,72 @@ if [[ -o interactive ]]; then
   bindkey . rationalise-dot
 fi
 
+mkcd() {
+  mkdir -p "$1" && cd "$1"
+}
+
+bak() {
+  local target="${1:?usage: bak <file>}"
+  cp -a "$target" "${target}.bak" && printf 'backed up: %s → %s.bak\n' "$target" "$target"
+}
+
+up() {
+  local n="${1:-1}"
+  local path=""
+  for (( i=0; i<n; i++ )); do path+="../"; done
+  cd "$path"
+}
+
+port() {
+  local p="${1:?usage: port <number>}"
+  if command -v ss &>/dev/null; then
+    ss -tlnp "sport = :$p"
+  elif command -v lsof &>/dev/null; then
+    lsof -iTCP:"$p" -sTCP:LISTEN -n -P
+  else
+    printf 'port: requires ss or lsof\n' >&2
+    return 1
+  fi
+}
+
+weather() {
+  local location="${1:-Palma}"
+  dotfiles_require curl || return 1
+  curl -fsSL "https://wttr.in/${location// /+}?lang=es" 2>/dev/null || \
+    printf 'weather: could not reach wttr.in\n' >&2
+}
+
+psgrep() {
+  local term="${1:?usage: psgrep <pattern>}"
+  ps aux | grep -v grep | grep -i "$term"
+}
+
+retry() {
+  local n="${1:?usage: retry <times> <command...>}"
+  shift
+  local i=1
+  until "$@"; do
+    (( i++ ))
+    if (( i > n )); then
+      printf 'retry: command failed after %d attempts\n' "$n" >&2
+      return 1
+    fi
+    printf 'retry: attempt %d/%d failed, retrying...\n' "$((i-1))" "$n" >&2
+    sleep 1
+  done
+}
+
+epoch() {
+  if [[ -z "$1" ]]; then
+    date +%s
+  elif [[ "$1" =~ ^[0-9]+$ ]]; then
+    date -d "@$1" 2>/dev/null || date -r "$1"
+  else
+    printf 'epoch: usage: epoch [unix_timestamp]\n' >&2
+    return 1
+  fi
+}
+
 ###      LANGUAGE ALIASES      ###
 _dotfiles_lang="${DOTFILES_LANG:-${LANG:-en}}"
 case "$_dotfiles_lang" in
