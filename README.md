@@ -105,6 +105,7 @@ against `origin/master` — prints a warning if a newer tag is available.
 
 ```
 bash/       — bashrc, bash aliases
+AGENTS.md   — agent/contributor guide (architecture and conventions)
 emacs/      — emacs init (use-package based, MELPA)
 funny/      — fun shell functions (excuse, reverse)
 git/        — gitconfig, gitignore, git aliases, semantic commit scripts
