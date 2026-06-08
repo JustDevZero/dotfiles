@@ -559,6 +559,31 @@ todo() {
   touch "$desktop/$task" && printf 'todo: %s/%s\n' "$desktop" "$task"
 }
 
+# Translate a high-level (backend, output, WxH[@Hz]) mode into a tool argv,
+# one argument per line (so args containing spaces survive). Used by `res`.
+_res_args() {
+  local backend=$1 output=$2 spec=$3
+  local wxh="${spec%@*}" hz="" modetoken
+  [[ "$spec" == *@* ]] && hz="${spec#*@}"
+  modetoken="$wxh"; [[ -n "$hz" ]] && modetoken="$wxh@$hz"
+
+  case "$backend" in
+    xrandr|gnome-randr)
+      printf '%s\n' --output "$output" --mode "$wxh"
+      [[ -n "$hz" ]] && printf '%s\n' --rate "$hz" ;;
+    wlr-randr)
+      printf '%s\n' --output "$output" --mode "$modetoken" ;;
+    kscreen-doctor)
+      printf '%s\n' "output.$output.mode.$modetoken" ;;
+    displayplacer)
+      if [[ -n "$hz" ]]; then
+        printf '%s\n' "id:$output res:$wxh hz:$hz"
+      else
+        printf '%s\n' "id:$output res:$wxh"
+      fi ;;
+  esac
+}
+
 res() {
   # Pick a display-control backend for the current platform/session.
   #   macOS            -> displayplacer
@@ -591,10 +616,27 @@ res() {
     return 1
   fi
 
-  # Toggle modes are backend- and machine-specific: set RES_MODE_A and
-  # RES_MODE_B in ~/.localrc to an argument string for the backend above.
-  if [[ -z "${RES_MODE_A:-}" || -z "${RES_MODE_B:-}" ]]; then
-    printf 'res: set RES_MODE_A and RES_MODE_B in ~/.localrc (%s arguments) to enable toggling.\n' "$backend" >&2
+  # Build the two toggle commands as argv arrays. Two ways to configure, in
+  # ~/.localrc (raw wins if both are set):
+  #   High-level: RES_OUTPUT + RES_A/RES_B as "WxH" (or "WxH@Hz"); res builds
+  #               the backend-specific command for you.
+  #   Raw:        RES_MODE_A/RES_MODE_B as native arguments for the backend.
+  local -a cmd_a cmd_b
+
+  if [[ -n "${RES_MODE_A:-}" && -n "${RES_MODE_B:-}" ]]; then
+    # displayplacer wants one quoted argument; randr-family want split flags.
+    if [[ "$backend" == displayplacer ]]; then
+      cmd_a=("$RES_MODE_A"); cmd_b=("$RES_MODE_B")
+    else
+      cmd_a=(${=RES_MODE_A}); cmd_b=(${=RES_MODE_B})
+    fi
+  elif [[ -n "${RES_OUTPUT:-}" && -n "${RES_A:-}" && -n "${RES_B:-}" ]]; then
+    cmd_a=("${(@f)$(_res_args "$backend" "$RES_OUTPUT" "$RES_A")}")
+    cmd_b=("${(@f)$(_res_args "$backend" "$RES_OUTPUT" "$RES_B")}")
+  else
+    printf 'res: configure ~/.localrc to enable toggling (%s backend):\n' "$backend" >&2
+    printf 'res:   high-level — RES_OUTPUT + RES_A/RES_B (e.g. RES_A="1920x1080")\n' >&2
+    printf 'res:   or raw      — RES_MODE_A/RES_MODE_B (native %s arguments)\n' "$backend" >&2
     printf 'res: current display layout:\n' >&2
     case "$backend" in
       displayplacer)  displayplacer list ;;
@@ -604,21 +646,15 @@ res() {
     return
   fi
 
-  local state="${TMPDIR:-/tmp}/.res_state"
-  local mode next
+  local state="${TMPDIR:-/tmp}/.res_state" next
+  local -a cmd
   if [[ -r "$state" && "$(<"$state")" == A ]]; then
-    mode="$RES_MODE_B"; next=B
+    cmd=("${cmd_b[@]}"); next=B
   else
-    mode="$RES_MODE_A"; next=A
+    cmd=("${cmd_a[@]}"); next=A
   fi
 
-  # displayplacer takes the whole arrangement as one quoted argument; the
-  # randr-family tools take individual flags, so word-split for them.
-  if [[ "$backend" == displayplacer ]]; then
-    displayplacer "$mode" && printf '%s' "$next" >"$state"
-  else
-    "$backend" ${=mode} && printf '%s' "$next" >"$state"
-  fi
+  "$backend" "${cmd[@]}" && printf '%s' "$next" >"$state"
 }
 
 # ---------------------------------------------------------------------------

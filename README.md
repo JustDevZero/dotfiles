@@ -230,7 +230,7 @@ available. Set `DOTFILES_LANG=es` in `~/.localrc` to also enable Spanish aliases
 | `b64dec [string]` | Base64 decode a string or stdin |
 | `json [file]` | Pretty-print JSON via jq or python3 |
 | `todo <task>` | Create a task file on the Desktop (Linux `xdg-user-dir`, macOS `~/Desktop`) |
-| `res` | Toggle between two display modes (macOS: `displayplacer`; X11: `xrandr`; Wayland: `wlr-randr`/`gnome-randr`/`kscreen-doctor`). Configure `RES_MODE_A`/`RES_MODE_B` in `~/.localrc` with arguments for your backend; with none set, lists the current layout |
+| `res` | Toggle between two display modes; auto-detects the backend (macOS `displayplacer`; X11 `xrandr`; Wayland `wlr-randr`/`gnome-randr`/`kscreen-doctor`). Configure in `~/.localrc` with high-level `RES_OUTPUT` + `RES_A`/`RES_B` (just `WxH`), or raw `RES_MODE_A`/`RES_MODE_B` native arguments. With none set, lists the current layout |
 | `extar/extgz/exzip/exrar/ex7z` | Shorthand wrappers for `extract` |
 | `mktar/mktgz/mktbz/mkzip/mk7zp/…` | Shorthand wrappers for `compress` |
 

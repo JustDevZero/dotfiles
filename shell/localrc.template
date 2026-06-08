@@ -50,28 +50,25 @@ fi
 
 # ---------------------------------------------------------------------------
 # Display resolution toggle (`res` function)
-# RES_MODE_A/RES_MODE_B hold an argument string for your platform's backend;
-# `res` toggles between them. Run `res` with neither set to print the current
-# layout. Backends:
-#   macOS         displayplacer   (brew install displayplacer; see `displayplacer list`)
+# `res` detects your backend automatically — you do NOT need to know its flags:
+#   macOS         displayplacer   (brew install displayplacer)
 #   Linux/X11     xrandr          (covers XFCE, LXQt, GNOME-on-Xorg)
-#   Linux/Wayland wlr-randr | gnome-randr | kscreen-doctor
+#   Linux/Wayland wlr-randr (wlroots/sway) | gnome-randr (GNOME) | kscreen-doctor (KDE)
+# Run `res` with nothing configured to print the current layout and find your
+# output name. (Plain xrandr is a no-op under Wayland, so GNOME/Wayland needs
+# gnome-randr installed; without it `res` points you to Settings.)
+#
+# HIGH-LEVEL (recommended) — just give the output and two resolutions as WxH
+# (optionally WxH@Hz); res builds the right command for whatever backend it found:
 # ---------------------------------------------------------------------------
-# macOS (displayplacer — one quoted arrangement string per mode):
-# RES_MODE_A="id:XXXX res:1440x900 hz:60 color_depth:8 scaling:on origin:(0,0) degree:0"
-# RES_MODE_B="id:XXXX res:1920x1200 hz:60 color_depth:8 scaling:on origin:(0,0) degree:0"
+# RES_OUTPUT="eDP-1"      # on macOS this is the displayplacer screen id
+# RES_A="1440x900"
+# RES_B="1920x1080"
 #
-# X11 (xrandr — run `xrandr` to list outputs/modes):
-# RES_MODE_A="--output eDP-1 --mode 1440x900"
-# RES_MODE_B="--output eDP-1 --mode 1920x1080"
-#
-# Wayland — wlroots/sway (wlr-randr) or GNOME (gnome-randr); both take the same
-# xrandr-style flags. Run the tool with no args to list outputs/modes.
-# NOTE: plain xrandr does NOT work under Wayland (it only drives Xwayland), so
-# GNOME-on-Wayland needs gnome-randr installed; without it `res` points you to
-# Settings instead.
-# RES_MODE_A="--output eDP-1 --mode 1440x900"
-# RES_MODE_B="--output eDP-1 --mode 1920x1080"
+# RAW (advanced, overrides the high-level vars) — pass native backend arguments
+# verbatim, for scaling/rotation/multi-monitor that the high-level form can't express:
+# RES_MODE_A="--output eDP-1 --mode 1440x900"                       # xrandr/wlr-randr/gnome-randr
+# RES_MODE_B="id:XXXX res:1920x1200 scaling:on origin:(0,0) degree:0" # displayplacer (one quoted string)
 
 # ---------------------------------------------------------------------------
 # Local PATH additions
