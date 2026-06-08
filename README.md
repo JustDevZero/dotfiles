@@ -30,7 +30,7 @@ The installer is POSIX `sh` and overridable via env vars:
 To install a specific version:
 
 ```sh
-DOTFILES_VERSION=v1.4 curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/main/script/install | sh
+curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/main/script/install | DOTFILES_VERSION=v1.4 sh
 ```
 
 Or clone manually:
