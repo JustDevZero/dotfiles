@@ -89,6 +89,21 @@ update_bofh_excuses() {
   fi
 }
 
+compile_zsh() {
+  if ! command -v zsh &>/dev/null; then
+    warn "zsh not installed, skipping compile"
+    return
+  fi
+  info "compiling zsh files..."
+  local dotfiles
+  dotfiles="$(cd "$(dirname "$0")/.." && pwd -P)"
+  find "$dotfiles" -name '*.zsh' -not -path '*/.git/*' -not -path '*/plugins/*' | while IFS= read -r f; do
+    zsh -c "zcompile '$f'" 2>/dev/null || true
+  done
+  [ -f "$HOME/.zshrc" ] && zsh -c "zcompile '$HOME/.zshrc'" 2>/dev/null || true
+  success "zsh files compiled"
+}
+
 check_updates() {
   info "checking for updates..."
   git fetch --tags --quiet 2>/dev/null || { warn "could not reach remote — are you online?"; return 1; }
@@ -121,6 +136,7 @@ update_uv
 update_mise
 update_starship
 update_bofh_excuses
+compile_zsh
 
 echo ''
 success "update complete"
