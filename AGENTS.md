@@ -52,7 +52,7 @@ macos/          — macOS Sequoia defaults script
 mise/           — default tool versions (Ruby)
 python/         — uv integration
 ruby/           — mise integration, gemrc, irbrc
-script/         — bootstrap, update, install-base, install-desktop, packages.conf  [AGENTS.md]
+script/         — install (remote), bootstrap, update, install-base, install-desktop, packages.conf  [AGENTS.md]
 servers/        — Apache/server aliases
 shell/          — shared login banner (logo.sh), localrc.template
 starship/       — Starship prompt config

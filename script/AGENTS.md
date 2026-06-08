@@ -10,7 +10,8 @@ that may install software or touch the network. Read the root `AGENTS.md` first.
 | `lib.sh` | Shared logging helpers — **source, never execute**. Provides `info/success/warn/fail`. |
 | `detect-distro.sh` | Source-only. Sets `$_distro`, `$_version`, `$PKG_COL`, and defines `install_cmd()` per distro. |
 | `packages.conf` | Package-name map, one row per logical package. |
-| `bootstrap` | Top-level installer: installs tools, links `*.symlink`, bootstraps emacs, applies macOS defaults, then runs `update`. |
+| `install` | POSIX-sh **remote** bootstrap — meant to be piped (`curl … | sh`). Clones/updates the repo into `${DOTFILES:-$HOME/.dotfiles}` then `exec`s `bootstrap`. Keep it POSIX sh (no bashisms) so it runs under sh/bash/zsh. |
+| `bootstrap` | Top-level **local** installer: installs tools, links `*.symlink`, bootstraps emacs, applies macOS defaults, then runs `update`. Assumes it runs from inside the cloned repo. |
 | `install-base` | Core CLI tools on any machine. |
 | `install-desktop` | GUI tools, auto-detected by display server / DE / hardware. |
 | `update` | Updates the repo, submodules, and the external tools (uv, mise, starship, bofh-excuses). |

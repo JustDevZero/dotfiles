@@ -7,6 +7,23 @@ Maintained by Daniel Ripoll — https://github.com/JustDevZero
 
 ## Installation
 
+One-liner (clones into `~/.dotfiles`, then runs bootstrap):
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/master/script/install | sh
+```
+
+Pass bootstrap flags after `-s --`:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/master/script/install | sh -s -- --backup
+```
+
+The installer is POSIX `sh` and overridable via `DOTFILES` (target dir),
+`DOTFILES_REPO` (clone URL) and `DOTFILES_BRANCH`.
+
+Or clone manually:
+
 ```sh
 git clone --recursive https://github.com/JustDevZero/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
