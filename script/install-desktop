@@ -136,8 +136,9 @@ if [ "$IS_MACOS" = true ]; then
   # Inkscape
   install_brew_cask "inkscape"
 
-  # Sensors — macOS uses its own APIs, no lm-sensors
-  manual "temperature monitoring: install 'Stats' from https://github.com/exelban/stats (no brew cask)"
+  # Temperature — osx-cpu-temp for CLI (used by logo.sh), stats for menu bar
+  install_brew "osx-cpu-temp"
+  install_brew_cask "stats"
 
 else
 

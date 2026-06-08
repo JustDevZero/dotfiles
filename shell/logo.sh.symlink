@@ -65,8 +65,13 @@ dotfiles_logo_temp_raspberry_pi() {
     fi
 }
 
+dotfiles_logo_temp_macos() {
+    command -v osx-cpu-temp >/dev/null 2>&1 || return 1
+    osx-cpu-temp 2>/dev/null | grep -oE '[0-9]+\.[0-9]+°C' | head -1
+}
+
 dotfiles_logo_temperature() {
-    dotfiles_logo_temp_lm_sensors || dotfiles_logo_temp_raspberry_pi || printf 'n/a'
+    dotfiles_logo_temp_lm_sensors || dotfiles_logo_temp_raspberry_pi || dotfiles_logo_temp_macos || printf 'n/a'
 }
 
 dotfiles_logo_memory() {
