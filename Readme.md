@@ -132,16 +132,9 @@ auto-capitalisation.
 
 ## TODO
 
-- [ ] Review and modernise `zsh/prompt.zsh` — currently only loads Starship,
-      could add fallback prompt with git info for machines without Starship
-- [ ] Consider migrating Emacs config to a dedicated repo with a proper
-      `init.el` / `early-init.el` structure (straight.el or elpaca)
 - [ ] Add `shell/` module tests — verify logo.sh works on both bash and zsh
       and that thermal fallbacks work correctly on Raspberry Pi
 - [ ] Review `system/programs.zsh` for further modernisation (not touched in
       this pass)
-- [ ] Add support for Arch Linux in `system/aliases.zsh` package manager block
-- [ ] Evaluate adding `~/.config/mise/config.toml` to the repo for default
-      Ruby version across machines
 - [ ] `script/bootstrap` — add `--update-only` flag to skip installs and
       jump straight to `script/update`

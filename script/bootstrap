@@ -181,6 +181,9 @@ install_dotfiles() {
       starship.toml.symlink)
         mkdir -p "$HOME/.config/starship"
         dst="$HOME/.config/starship.toml" ;;
+      config.toml.symlink)
+        mkdir -p "$HOME/.config/mise"
+        dst="$HOME/.config/mise/config.toml" ;;
       *)
         dst="$HOME/.$(basename "${src%.*}")" ;;
     esac

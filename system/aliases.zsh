@@ -102,8 +102,18 @@ case "$_distro" in
             alias reinstall="${IFSUDO:-sudo} yum reinstall"
         fi
         ;;
+    arch|manjaro|endeavouros)
+        alias update="${IFSUDO:-sudo} pacman -Sy"
+        alias upgrade="${IFSUDO:-sudo} pacman -Syu"
+        alias instal="${IFSUDO:-sudo} pacman -S"
+        alias afind='pacman -Ss'
+        alias ainfo='pacman -Si'
+        alias afile='pacman -F'
+        alias uninstall="${IFSUDO:-sudo} pacman -R"
+        alias purge="${IFSUDO:-sudo} pacman -Rns"
+        alias clean="${IFSUDO:-sudo} pacman -Sc"
+        ;;
 esac
-unset _distro _version
 
 ###      FILE EXTENSION ASSOCIATIONS (zsh only)    ###
 if [[ -n "$ZSH_VERSION" ]]; then
@@ -117,5 +127,6 @@ if [[ -n "$ZSH_VERSION" ]]; then
     [[ -n "$EDITOR" ]]      && alias -s txt="$EDITOR"
     [[ -n "$PDFVIEWER" ]]   && alias -s pdf="$PDFVIEWER"
     [[ -n "$GIMP" ]]        && alias -s {xcf,psd}="$GIMP"
-    [[ "$_distro" = "arch" ]] && alias -s PKGBUILD="$EDITOR"
+    [[ "$_distro" = "arch" || "$_distro" = "manjaro" || "$_distro" = "endeavouros" ]] && alias -s PKGBUILD="$EDITOR"
 fi
+unset _distro _version
