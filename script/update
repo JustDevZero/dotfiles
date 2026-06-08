@@ -96,6 +96,28 @@ update_bofh_excuses() {
   fi
 }
 
+check_updates() {
+  info "checking for updates..."
+  git fetch --tags --quiet 2>/dev/null || { warn "could not reach remote — are you online?"; return 1; }
+
+  local current remote
+  current="$(git describe --tags --abbrev=0 2>/dev/null || printf 'untagged')"
+  remote="$(git describe --tags --abbrev=0 origin/master 2>/dev/null || printf 'untagged')"
+
+  if [ "$current" = "$remote" ]; then
+    success "dotfiles up to date ($current)"
+  else
+    warn "update available: $current → $remote (run script/update to apply)"
+  fi
+}
+
+if [ "${1:-}" = "--check-updates" ]; then
+  echo ''
+  check_updates
+  echo ''
+  exit 0
+fi
+
 echo ''
 info "updating dotfiles and tools..."
 echo ''
