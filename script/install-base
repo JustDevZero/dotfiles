@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+DOTFILES_ROOT="$(pwd -P)"
+PACKAGES_CONF="$DOTFILES_ROOT/script/packages.conf"
+
+info()    { printf '  [ \033[00;34m..\033[0m ] %s\n' "$1"; }
+success() { printf '  [ \033[00;32mOK\033[0m ] %s\n' "$1"; }
+warn()    { printf '  [ \033[0;33m!!\033[0m ] %s\n' "$1"; }
+fail()    { printf '  [\033[0;31mFAIL\033[0m] %s\n' "$1"; exit 1; }
+
+# ---------------------------------------------------------------------------
+# Detect distro and package manager
+# ---------------------------------------------------------------------------
+if [ "$(uname -s)" = "Darwin" ]; then
+  IS_MACOS=true
+else
+  IS_MACOS=false
+  _distro=$(grep '^ID=' /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"')
+  _version=$(grep '^VERSION_ID=' /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"')
+
+  case "$_distro" in
+    ubuntu|debian|raspbian)
+      PKG_COL=2
+      install_cmd() { sudo apt-get install -y "$@"; }
+      ;;
+    arch|manjaro|endeavouros)
+      PKG_COL=3
+      install_cmd() { sudo pacman -S --noconfirm "$@"; }
+      ;;
+    fedora)
+      PKG_COL=4
+      if [ "${_version:-0}" -gt 21 ] 2>/dev/null; then
+        install_cmd() { sudo dnf install -y "$@"; }
+      else
+        install_cmd() { sudo yum install -y "$@"; }
+      fi
+      ;;
+    *)
+      fail "unsupported distro: ${_distro:-unknown}"
+      ;;
+  esac
+fi
+
+# ---------------------------------------------------------------------------
+# Resolve package name from packages.conf
+# ---------------------------------------------------------------------------
+pkg() {
+  local name=$1
+  awk -F'|' -v name="$name" -v col="$PKG_COL" '
+    /^#/ { next }
+    $1 == name { print $col; exit }
+  ' "$PACKAGES_CONF"
+}
+
+install_pkg() {
+  local name=$1
+  local resolved
+  resolved=$(pkg "$name")
+  if [ -z "$resolved" ]; then
+    warn "no package mapping for '$name' on this distro — skipping"
+    return
+  fi
+  info "installing $resolved..."
+  install_cmd "$resolved" && success "$resolved installed" || warn "$resolved install failed — skipping"
+}
+
+install_brew() {
+  local formula=$1
+  info "installing $formula via brew..."
+  brew install "$formula" && success "$formula installed" || warn "$formula install failed — skipping"
+}
+
+# ---------------------------------------------------------------------------
+# Install
+# ---------------------------------------------------------------------------
+echo ''
+info "installing base packages..."
+echo ''
+
+BASE_PKGS="curl wget zip unzip p7zip unrar lzip lzop xz watch htop git"
+
+if [ "$IS_MACOS" = true ]; then
+  if ! command -v brew >/dev/null 2>&1; then
+    fail "Homebrew not found — install it first: https://brew.sh"
+  fi
+  for pkg_name in $BASE_PKGS; do
+    install_brew "$pkg_name"
+  done
+else
+  for pkg_name in $BASE_PKGS; do
+    install_pkg "$pkg_name"
+  done
+fi
+
+echo ''
+success "base install complete"
