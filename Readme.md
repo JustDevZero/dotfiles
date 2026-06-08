@@ -132,6 +132,5 @@ auto-capitalisation.
 
 ## TODO
 
-- [ ] Review `system/programs.zsh` for further modernisation
 - [ ] `script/bootstrap` — add `--update-only` flag to skip installs and
       jump straight to `script/update`

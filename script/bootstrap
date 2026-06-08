@@ -9,6 +9,7 @@ overwrite_all=false
 backup_all=false
 skip_existing=false
 dry_run=false
+update_only=false
 
 info() {
   printf '  [ \033[00;34m..\033[0m ] %s\n' "$1"
@@ -32,6 +33,7 @@ Options:
   --backup         Move existing files to <name>.backup instead of prompting.
   --skip-existing  Keep existing files instead of prompting.
   --dry-run        Show what would be linked without changing files.
+  --update-only    Skip installs and jump straight to script/update.
   -h, --help       Show this help.
 EOF
 }
@@ -49,6 +51,9 @@ while [ "$#" -gt 0 ]; do
       ;;
     --dry-run)
       dry_run=true
+      ;;
+    --update-only)
+      update_only=true
       ;;
     -h|--help)
       usage
@@ -314,14 +319,19 @@ install_macos_defaults() {
   fi
 }
 
-ensure_localrc
-install_uv
-install_mise
-install_starship
-install_bofh_excuses
-install_dotfiles
-install_emacs_packages
-install_macos_defaults
+if [ "$update_only" = true ]; then
+  echo ''
+  info "update-only mode — skipping installs"
+else
+  ensure_localrc
+  install_uv
+  install_mise
+  install_starship
+  install_bofh_excuses
+  install_dotfiles
+  install_emacs_packages
+  install_macos_defaults
+fi
 
 echo ''
 info "running update to sync everything..."
