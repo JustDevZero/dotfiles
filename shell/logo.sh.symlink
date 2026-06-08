@@ -128,12 +128,10 @@ dotfiles_logo() {
     printf '██   ██\     /██   ██ temp: %s\n' "$logo_temp"
     printf '██     ██\ /██     ██ mem:  %s\n' "$logo_mem"
     printf '██      █████      ██ up:   %s\n' "$logo_uptime"
-    printf '██     ██/ \██     ██\n'
-    printf '██   ██/     \██   ██\n'
+    [ -n "$logo_ipv4" ] && printf '██     ██/ \██     ██ ipv4: %s\n' "$logo_ipv4" || printf '██     ██/ \██     ██\n'
+    [ -n "$logo_ipv6" ] && printf '██   ██/     \██   ██ ipv6: %s\n' "$logo_ipv6" || printf '██   ██/     \██   ██\n'
     printf ' ██               ██\n'
     printf '   ███████████████\n'
-    [ -n "$logo_ipv4" ] && printf '           ipv4:  %s\n' "$logo_ipv4"
-    [ -n "$logo_ipv6" ] && printf '           ipv6:  %s\n' "$logo_ipv6"
     printf '%s' "$logo_reset"
 
     unset logo_host logo_kernel logo_temp logo_mem logo_uptime logo_ipv4 logo_ipv6
