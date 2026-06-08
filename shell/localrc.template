@@ -49,13 +49,25 @@ fi
 # PAGER="less"
 
 # ---------------------------------------------------------------------------
-# Display resolution toggle (macOS, `res` function)
-# Requires displayplacer: brew install displayplacer
-# Run `displayplacer list` and copy the arrangement argument string for each of
-# the two modes you want `res` to toggle between.
+# Display resolution toggle (`res` function)
+# RES_MODE_A/RES_MODE_B hold an argument string for your platform's backend;
+# `res` toggles between them. Run `res` with neither set to print the current
+# layout. Backends:
+#   macOS         displayplacer   (brew install displayplacer; see `displayplacer list`)
+#   Linux/X11     xrandr          (covers XFCE, LXQt, GNOME-on-Xorg)
+#   Linux/Wayland wlr-randr | gnome-randr | kscreen-doctor
 # ---------------------------------------------------------------------------
+# macOS (displayplacer — one quoted arrangement string per mode):
 # RES_MODE_A="id:XXXX res:1440x900 hz:60 color_depth:8 scaling:on origin:(0,0) degree:0"
 # RES_MODE_B="id:XXXX res:1920x1200 hz:60 color_depth:8 scaling:on origin:(0,0) degree:0"
+#
+# X11 (xrandr — run `xrandr` to list outputs/modes):
+# RES_MODE_A="--output eDP-1 --mode 1440x900"
+# RES_MODE_B="--output eDP-1 --mode 1920x1080"
+#
+# Wayland/wlroots (wlr-randr — run `wlr-randr` to list outputs/modes):
+# RES_MODE_A="--output eDP-1 --mode 1440x900"
+# RES_MODE_B="--output eDP-1 --mode 1920x1080"
 
 # ---------------------------------------------------------------------------
 # Local PATH additions

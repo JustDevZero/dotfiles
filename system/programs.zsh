@@ -560,30 +560,64 @@ todo() {
 }
 
 res() {
-  if [[ "$(uname -s)" != "Darwin" ]]; then
-    printf 'res: macOS only\n' >&2
+  # Pick a display-control backend for the current platform/session.
+  #   macOS            -> displayplacer
+  #   Linux/Wayland    -> wlr-randr | gnome-randr | kscreen-doctor
+  #   Linux/X11        -> xrandr  (covers XFCE, LXQt and GNOME-on-Xorg)
+  local backend=""
+
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    if ! dotfiles_has displayplacer; then
+      printf 'res: displayplacer not found — install with: brew install displayplacer\n' >&2
+      return 1
+    fi
+    backend=displayplacer
+  elif [[ "${XDG_SESSION_TYPE:-}" == "wayland" || -n "${WAYLAND_DISPLAY:-}" ]]; then
+    if dotfiles_has wlr-randr; then
+      backend=wlr-randr
+    elif dotfiles_has gnome-randr; then
+      backend=gnome-randr
+    elif dotfiles_has kscreen-doctor; then
+      backend=kscreen-doctor
+    else
+      printf 'res: no Wayland resolution tool found (tried wlr-randr, gnome-randr, kscreen-doctor).\n' >&2
+      printf 'res: GNOME on Wayland has no standard CLI — use Settings, or install gnome-randr.\n' >&2
+      return 1
+    fi
+  elif dotfiles_has xrandr; then
+    backend=xrandr
+  else
+    printf 'res: no supported tool found (need displayplacer, xrandr or wlr-randr).\n' >&2
     return 1
   fi
 
-  if ! dotfiles_has displayplacer; then
-    printf 'res: displayplacer not found — install with: brew install displayplacer\n' >&2
-    return 1
-  fi
-
-  # Toggle modes are machine-specific: set RES_MODE_A and RES_MODE_B in
-  # ~/.localrc to a `displayplacer` argument string each (see `displayplacer list`).
+  # Toggle modes are backend- and machine-specific: set RES_MODE_A and
+  # RES_MODE_B in ~/.localrc to an argument string for the backend above.
   if [[ -z "${RES_MODE_A:-}" || -z "${RES_MODE_B:-}" ]]; then
-    printf 'res: set RES_MODE_A and RES_MODE_B in ~/.localrc to enable toggling.\n' >&2
+    printf 'res: set RES_MODE_A and RES_MODE_B in ~/.localrc (%s arguments) to enable toggling.\n' "$backend" >&2
     printf 'res: current display layout:\n' >&2
-    displayplacer list
+    case "$backend" in
+      displayplacer)  displayplacer list ;;
+      kscreen-doctor) kscreen-doctor -o ;;
+      *)              "$backend" ;;
+    esac
     return
   fi
 
   local state="${TMPDIR:-/tmp}/.res_state"
+  local mode next
   if [[ -r "$state" && "$(<"$state")" == A ]]; then
-    displayplacer ${=RES_MODE_B} && printf 'B' >"$state"
+    mode="$RES_MODE_B"; next=B
   else
-    displayplacer ${=RES_MODE_A} && printf 'A' >"$state"
+    mode="$RES_MODE_A"; next=A
+  fi
+
+  # displayplacer takes the whole arrangement as one quoted argument; the
+  # randr-family tools take individual flags, so word-split for them.
+  if [[ "$backend" == displayplacer ]]; then
+    displayplacer "$mode" && printf '%s' "$next" >"$state"
+  else
+    "$backend" ${=mode} && printf '%s' "$next" >"$state"
   fi
 }
 
