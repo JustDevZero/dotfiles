@@ -278,6 +278,16 @@ install_emacs_packages() {
     return
   fi
 
+  local emacs_init
+  if [ -f "$HOME/.emacs" ]; then
+    emacs_init="$HOME/.emacs"
+  elif [ -f "$HOME/.emacs.d/init.el" ]; then
+    emacs_init="$HOME/.emacs.d/init.el"
+  else
+    info "no emacs config found, skipping package bootstrap"
+    return
+  fi
+
   if [ "$dry_run" = true ]; then
     info "would bootstrap emacs packages"
     return
@@ -285,7 +295,7 @@ install_emacs_packages() {
 
   info "bootstrapping emacs packages..."
   if emacs --batch \
-      --load "$HOME/.emacs" \
+      --load "$emacs_init" \
       --eval "(package-refresh-contents)" \
       --eval "(package-install-selected-packages)" \
       2>/dev/null; then
