@@ -138,5 +138,13 @@ install_pkg office
 # GIMP
 install_pkg gimp
 
+# Inkscape (vector graphics)
+if [ "$(uname -s)" = "Darwin" ]; then
+  info "installing inkscape via brew cask..."
+  brew install --cask inkscape && success "inkscape installed" || warn "inkscape install failed — skipping"
+else
+  install_pkg inkscape
+fi
+
 echo ''
 success "desktop install complete"

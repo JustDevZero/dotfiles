@@ -127,6 +127,7 @@ if [[ -n "$ZSH_VERSION" ]]; then
     [[ -n "$EDITOR" ]]      && alias -s txt="$EDITOR"
     [[ -n "$PDFVIEWER" ]]   && alias -s pdf="$PDFVIEWER"
     [[ -n "$GIMP" ]]        && alias -s {xcf,psd}="$GIMP"
+    [[ -n "$SVG_EDITOR" ]]  && alias -s svg="$SVG_EDITOR"
     [[ "$_distro" = "arch" || "$_distro" = "manjaro" || "$_distro" = "endeavouros" ]] && alias -s PKGBUILD="$EDITOR"
 fi
 unset _distro _version

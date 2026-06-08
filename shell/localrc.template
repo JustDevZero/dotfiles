@@ -35,6 +35,7 @@ fi
 # OFFICESUITE="libreoffice"
 # PDFVIEWER="papers"          # GNOME 3+; use "evince" on older systems
 # GIMP="gimp"
+# SVG_EDITOR="inkscape"
 
 # ---------------------------------------------------------------------------
 # Projects directory
