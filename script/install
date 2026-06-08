@@ -18,9 +18,18 @@
 
 set -eu
 
-REPO_URL="${DOTFILES_REPO:-https://github.com/JustDevZero/dotfiles.git}"
 DEST="${DOTFILES:-$HOME/.dotfiles}"
 VERSION="${DOTFILES_VERSION:-main}"
+
+# Prefer SSH if gh is available and authenticated, fall back to HTTPS
+_default_repo_url() {
+  if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+    printf 'git@github.com:JustDevZero/dotfiles.git'
+  else
+    printf 'https://github.com/JustDevZero/dotfiles.git'
+  fi
+}
+REPO_URL="${DOTFILES_REPO:-$(_default_repo_url)}"
 
 info() { printf '  [ \033[00;34m..\033[0m ] %s\n' "$1"; }
 ok()   { printf '  [ \033[00;32mOK\033[0m ] %s\n' "$1"; }
