@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    name: shellcheck & syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck and zsh
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq shellcheck zsh
+
+      - name: shellcheck (bash scripts)
+        run: |
+          # zsh modules are not POSIX/bash, so shellcheck only the bash scripts.
+          files=(
+            script/bootstrap script/update script/install-base
+            script/install-desktop script/uninstall
+            script/lib.sh script/detect-distro.sh
+            git/bin/git-*
+          )
+          printf 'shellchecking:\n'; printf '  %s\n' "${files[@]}"
+          shellcheck -e SC1090 -e SC1091 "${files[@]}"
+
+      - name: bash -n (bash scripts)
+        run: |
+          for f in script/bootstrap script/update script/install-base \
+                   script/install-desktop script/uninstall \
+                   git/bin/git-* bash/bashrc.symlink bash/aliases.bash; do
+            bash -n "$f" && echo "ok: $f"
+          done
+
+      - name: zsh -n (zsh modules)
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            case "$f" in zsh/plugins/*) continue ;; esac
+            if zsh -n "$f"; then echo "ok: $f"; else echo "FAIL: $f"; fail=1; fi
+          done < <(git ls-files '*.zsh' '*.zsh.symlink' 'zsh/zshrc.symlink')
+          exit "$fail"
+
+      - name: sh -n (login banner)
+        run: sh -n shell/logo.sh.symlink
+
+  dry-run:
+    name: bootstrap --dry-run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: bootstrap --dry-run (isolated HOME, no mutations)
+        run: |
+          export HOME="$(mktemp -d)"
+          ./script/bootstrap --dry-run

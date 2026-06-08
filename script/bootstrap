@@ -335,14 +335,23 @@ if [ "$install_desktop" = false ]; then
 fi
 
 if [ "$install_desktop" = true ]; then
-  echo ''
-  info "running desktop package install..."
-  "$(dirname "$0")/install-desktop"
+  if [ "$dry_run" = true ]; then
+    info "would run script/install-desktop"
+  else
+    echo ''
+    info "running desktop package install..."
+    "$(dirname "$0")/install-desktop"
+  fi
 fi
 
-echo ''
-info "running update to sync everything..."
-"$(dirname "$0")/update"
+if [ "$dry_run" = true ]; then
+  echo ''
+  info "would run script/update"
+else
+  echo ''
+  info "running update to sync everything..."
+  "$(dirname "$0")/update"
+fi
 
 echo ''
 success "bootstrap complete"
