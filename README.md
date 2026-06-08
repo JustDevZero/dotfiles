@@ -15,6 +15,13 @@ curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/main/script/in
 
 Pass bootstrap flags after `-s --`:
 
+| Flag | Behaviour |
+|---|---|
+| `--skip-existing` | Keep existing files, skip prompt |
+| `--backup` | Move existing files to `<name>.backup`, skip prompt |
+| `--force` | Overwrite existing files, skip prompt |
+| `--dry-run` | Show what would change without touching anything |
+
 ```sh
 curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/main/script/install | sh -s -- --backup
 ```
