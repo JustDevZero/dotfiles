@@ -65,7 +65,11 @@ fi
 # RES_MODE_A="--output eDP-1 --mode 1440x900"
 # RES_MODE_B="--output eDP-1 --mode 1920x1080"
 #
-# Wayland/wlroots (wlr-randr — run `wlr-randr` to list outputs/modes):
+# Wayland — wlroots/sway (wlr-randr) or GNOME (gnome-randr); both take the same
+# xrandr-style flags. Run the tool with no args to list outputs/modes.
+# NOTE: plain xrandr does NOT work under Wayland (it only drives Xwayland), so
+# GNOME-on-Wayland needs gnome-randr installed; without it `res` points you to
+# Settings instead.
 # RES_MODE_A="--output eDP-1 --mode 1440x900"
 # RES_MODE_B="--output eDP-1 --mode 1920x1080"
 
