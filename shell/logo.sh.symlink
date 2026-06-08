@@ -117,8 +117,6 @@ dotfiles_logo() {
     logo_uptime="$(dotfiles_logo_uptime)"
     logo_ipv4="$(dotfiles_logo_ipv4)"
     logo_ipv6="$(dotfiles_logo_ipv6)"
-    [ -z "$logo_ipv4" ] && logo_ipv4="n/a"
-    [ -z "$logo_ipv6" ] && logo_ipv6="n/a"
 
     logo_green="$(dotfiles_logo_color setaf 2)"
     logo_blue="$(dotfiles_logo_color setaf 4)"
@@ -134,8 +132,8 @@ dotfiles_logo() {
     printf '██   ██/     \██   ██\n'
     printf ' ██               ██\n'
     printf '   ███████████████\n'
-    printf '           ipv4:  %s\n' "$logo_ipv4"
-    printf '           ipv6:  %s\n' "$logo_ipv6"
+    [ -n "$logo_ipv4" ] && printf '           ipv4:  %s\n' "$logo_ipv4"
+    [ -n "$logo_ipv6" ] && printf '           ipv6:  %s\n' "$logo_ipv6"
     printf '%s' "$logo_reset"
 
     unset logo_host logo_kernel logo_temp logo_mem logo_uptime logo_ipv4 logo_ipv6
