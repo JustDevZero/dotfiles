@@ -10,6 +10,7 @@ backup_all=false
 skip_existing=false
 dry_run=false
 update_only=false
+install_desktop=false
 
 info() {
   printf '  [ \033[00;34m..\033[0m ] %s\n' "$1"
@@ -34,6 +35,7 @@ Options:
   --skip-existing  Keep existing files instead of prompting.
   --dry-run        Show what would be linked without changing files.
   --update-only    Skip installs and jump straight to script/update.
+  --desktop        Run script/install-desktop (auto-detected if X11/Wayland session present).
   -h, --help       Show this help.
 EOF
 }
@@ -54,6 +56,9 @@ while [ "$#" -gt 0 ]; do
       ;;
     --update-only)
       update_only=true
+      ;;
+    --desktop)
+      install_desktop=true
       ;;
     -h|--help)
       usage
@@ -331,6 +336,19 @@ else
   install_dotfiles
   install_emacs_packages
   install_macos_defaults
+fi
+
+if [ "$install_desktop" = false ]; then
+  if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ] || [ "${XDG_SESSION_TYPE:-}" = "wayland" ]; then
+    install_desktop=true
+    info "graphical session detected — will run install-desktop"
+  fi
+fi
+
+if [ "$install_desktop" = true ]; then
+  echo ''
+  info "running desktop package install..."
+  "$(dirname "$0")/install-desktop"
 fi
 
 echo ''

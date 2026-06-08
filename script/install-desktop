@@ -135,10 +135,8 @@ install_pkg ghostscript
 # LibreOffice
 install_pkg office
 
-# GIMP (optional — pass --gimp to install)
-if [[ "${1:-}" == "--gimp" ]]; then
-  install_pkg gimp
-fi
+# GIMP
+install_pkg gimp
 
 echo ''
 success "desktop install complete"

@@ -34,11 +34,12 @@ macOS automatically applies the defaults from `macos/set-defaults.sh`.
 
 ### Desktop packages
 
-For desktop machines, run after bootstrap:
+`script/install-desktop` runs automatically during bootstrap when a graphical
+session is detected (`$DISPLAY` or `$WAYLAND_DISPLAY`). To force it manually:
 
 ```sh
-script/install-desktop          # installs screenshot, PDF, image viewer, sensors…
-script/install-desktop --gimp   # also installs GIMP
+script/bootstrap --desktop
+script/install-desktop          # standalone
 ```
 
 Detects automatically:
