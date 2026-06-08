@@ -265,7 +265,7 @@ install_starship() {
   fi
 
   info "installing starship..."
-  if curl -sS https://starship.rs/install.sh | sh -s -- --yes --bin-dir "$HOME/.local/bin"; then
+  if curl -sS https://starship.rs/install.sh | sh -s -- --yes --bin-dir "$HOME/.local/bin" >/dev/null 2>&1; then
     success "starship installed"
   else
     fail "starship installation failed"
