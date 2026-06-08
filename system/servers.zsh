@@ -1,17 +1,17 @@
 _serve_ruby() {
-  local port=$1
+  local port="${1:-3000}"
   [ "$port" -lt 1024 ] 2>/dev/null && local sudo_cmd="${IFSUDO:-sudo}" || local sudo_cmd=""
   ${sudo_cmd:+$sudo_cmd} ruby -run -e httpd . -p "$port"
 }
 
 _serve_python() {
-  local port=$1
+  local port="${1:-3000}"
   [ "$port" -lt 1024 ] 2>/dev/null && local sudo_cmd="${IFSUDO:-sudo}" || local sudo_cmd=""
   ${sudo_cmd:+$sudo_cmd} python3 -m http.server "$port"
 }
 
 _serve_busybox() {
-  local port=$1
+  local port="${1:-3000}"
   local _index="./index.html"
   local _created=0
   [ "$port" -lt 1024 ] 2>/dev/null && local sudo_cmd="${IFSUDO:-sudo}" || local sudo_cmd=""
