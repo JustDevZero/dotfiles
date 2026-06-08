@@ -89,11 +89,15 @@ Edit it to set machine-specific values — it is never tracked by git:
 ## Updating
 
 ```sh
-script/update
+script/update                   # update everything
+script/update --check-updates   # check for new version without updating
 ```
 
 Updates the dotfiles repo, all submodules, uv, mise, starship and bofh-excuses.
 The bootstrap script calls this automatically at the end.
+
+`--check-updates` fetches tags from remote and compares the current version
+against `origin/master` — prints a warning if a newer tag is available.
 
 ---
 
