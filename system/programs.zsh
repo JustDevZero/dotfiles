@@ -546,6 +546,48 @@ json() {
   fi
 }
 
+# ---------------------------------------------------------------------------
+# Ansible
+# ---------------------------------------------------------------------------
+if command -v ansible &>/dev/null; then
+  alias ans='ansible'
+  alias ansp='ansible-playbook --diff'
+
+  ansping() {
+    local host="${1:?usage: ansping <host|group>}"
+    ansible "$host" -m ping
+  }
+
+  ansfacts() {
+    local host="${1:?usage: ansfacts <host|group>}"
+    ansible "$host" -m setup
+  }
+
+  ansvault() {
+    local file="${1:?usage: ansvault <file>}"
+    if grep -q '^\$ANSIBLE_VAULT;' "$file" 2>/dev/null; then
+      ansible-vault decrypt "$file"
+    else
+      ansible-vault encrypt "$file"
+    fi
+  }
+fi
+
+# ---------------------------------------------------------------------------
+# SSH helpers
+# ---------------------------------------------------------------------------
+sshping() {
+  local host="${1:?usage: sshping <host>}"
+  ssh -o ConnectTimeout=5 -o BatchMode=yes "$host" true 2>/dev/null \
+    && printf '%s: ok\n' "$host" \
+    || printf '%s: unreachable\n' "$host" >&2
+}
+
+known_hosts_del() {
+  local host="${1:?usage: known_hosts_del <host>}"
+  ssh-keygen -R "$host" 2>/dev/null && printf 'removed %s from known_hosts\n' "$host"
+}
+
 ###      LANGUAGE ALIASES      ###
 _dotfiles_lang="${DOTFILES_LANG:-${LANG:-en}}"
 case "$_dotfiles_lang" in
