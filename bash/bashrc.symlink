@@ -73,8 +73,4 @@ if [ "${DOTFILES_SHOW_LOGO:-0}" = 1 ]; then
     fi
 fi
 
-if [ -r /usr/bin/virtualenvwrapper.sh ]; then
-   . /usr/bin/virtualenvwrapper.sh
-fi
-
 unset bash_chroot
