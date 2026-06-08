@@ -1,0 +1,53 @@
+# ~/.localrc — machine-specific configuration, not tracked by git
+# Copy this file to ~/.localrc and uncomment the values you want to change.
+
+# ---------------------------------------------------------------------------
+# Language
+# Language for dotfiles shell functions (extract/extraer, compress/comprimir).
+# Supported: en (default), es
+# ---------------------------------------------------------------------------
+# DOTFILES_LANG="en"
+
+# ---------------------------------------------------------------------------
+# Login banner
+# Show the dotfiles logo on shell login.
+# ---------------------------------------------------------------------------
+# DOTFILES_SHOW_LOGO=0
+
+# ---------------------------------------------------------------------------
+# Privilege escalation
+# Prefix for package manager commands. Leave unset to use sudo by default.
+# Set to "" to run without sudo (e.g. if you are root).
+# ---------------------------------------------------------------------------
+# IFSUDO="sudo"
+
+# ---------------------------------------------------------------------------
+# Default applications
+# Used by file extension associations in zsh (alias -s).
+# ---------------------------------------------------------------------------
+# BROWSER="firefox"
+if command -v emacs >/dev/null 2>&1; then
+  EDITOR="emacs"
+else
+  EDITOR="vim"
+fi
+# VISOR="feh"
+# OFFICESUITE="libreoffice"
+# PDFVIEWER="papers"          # GNOME 3+; use "evince" on older systems
+# GIMP="gimp"
+
+# ---------------------------------------------------------------------------
+# Projects directory
+# Base path for your code projects.
+# ---------------------------------------------------------------------------
+# PROJECTS="$HOME/Projects"
+
+# ---------------------------------------------------------------------------
+# Pager
+# ---------------------------------------------------------------------------
+# PAGER="less"
+
+# ---------------------------------------------------------------------------
+# Local PATH additions
+# ---------------------------------------------------------------------------
+# export PATH="$HOME/.local/bin:$PATH"

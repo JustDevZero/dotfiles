@@ -67,8 +67,13 @@ ensure_localrc() {
     return
   fi
 
-  touch "$HOME/.localrc"
-  success "ensured $HOME/.localrc"
+  if [ -f "$HOME/.localrc" ]; then
+    success "already exists $HOME/.localrc"
+    return
+  fi
+
+  cp "$DOTFILES_ROOT/shell/localrc.template" "$HOME/.localrc"
+  success "created $HOME/.localrc from template"
 }
 
 same_link_target() {
