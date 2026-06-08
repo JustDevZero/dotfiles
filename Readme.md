@@ -19,8 +19,9 @@ The bootstrap script installs the following tools if not present:
 - **Starship** — cross-shell prompt
 - **bofh-devops-excuses** — cloned to `~/.bofh-excuses`
 
-Then links all `*.symlink` files to `$HOME`, bootstraps Emacs packages, and on
-macOS automatically applies the defaults from `macos/set-defaults.sh`.
+Then links all `*.symlink` files to `$HOME`, bootstraps Emacs packages, copies
+`shell/localrc.template` to `~/.localrc` if it does not exist, and on macOS
+automatically applies the defaults from `macos/set-defaults.sh`.
 
 ### Bootstrap options
 
@@ -31,6 +32,18 @@ macOS automatically applies the defaults from `macos/set-defaults.sh`.
 | `--skip-existing` | Keep existing files untouched |
 | `--force` | Replace conflicting files |
 | `--update-only` | Skip installs, run `script/update` only |
+| `--desktop` | Force desktop package install (auto-detected if graphical session present) |
+
+### Base packages
+
+Install core CLI tools on any machine:
+
+```sh
+script/install-base
+```
+
+Installs: `curl`, `wget`, `zip`, `unzip`, `p7zip`, `unrar`, `lzip`, `lzop`, `xz`, `watch`, `htop`, `git`.
+On macOS uses Homebrew. On Linux uses the distro package manager.
 
 ### Desktop packages
 
@@ -47,8 +60,29 @@ Detects automatically:
 - **Desktop environment** — GNOME 3+ (`papers`) or other (`evince`)
 - **Battery** — installs `acpi` and `upower` only if a battery is present
 - **Raspberry Pi** — skips `lm-sensors` (uses `vcgencmd` instead)
+- **macOS** — uses brew casks: `libreoffice`, `gimp`, `inkscape`, `stats`, `osx-cpu-temp`
 
 Package names per distro are defined in `script/packages.conf`.
+
+### Machine-specific config
+
+Bootstrap creates `~/.localrc` from `shell/localrc.template` on first run.
+Edit it to set machine-specific values — it is never tracked by git:
+
+| Variable | Purpose |
+|----------|---------|
+| `DOTFILES_LANG` | Shell function language: `en` (default) or `es` |
+| `DOTFILES_SHOW_LOGO` | Show login banner (`1` to enable) |
+| `IFSUDO` | Privilege prefix for package commands (default: `sudo`) |
+| `EDITOR` | Default editor (auto-detected: emacs or vim) |
+| `BROWSER` | Browser for `.html` file associations |
+| `VISOR` | Image viewer for `.png/.jpg/…` associations |
+| `PDFVIEWER` | PDF viewer for `.pdf` associations |
+| `OFFICESUITE` | Office suite for `.doc/.xls/…` associations |
+| `GIMP` | GIMP path for `.xcf/.psd` associations |
+| `SVG_EDITOR` | SVG editor for `.svg` associations |
+| `PROJECTS` | Base path for code projects |
+| `PAGER` | Pager (default: `less`) |
 
 ---
 
@@ -71,11 +105,12 @@ emacs/      — emacs init (use-package based, MELPA)
 funny/      — fun shell functions (excuse, reverse)
 git/        — gitconfig, gitignore, git aliases, semantic commit scripts
 macos/      — macOS Sequoia defaults script
+mise/       — default tool versions (Ruby 3.3)
 python/     — uv integration
 ruby/       — mise integration, gemrc, irbrc
-script/     — bootstrap and update scripts
+script/     — bootstrap, update, install-base, install-desktop, packages.conf
 servers/    — Apache/server aliases
-shell/      — shared login banner (logo.sh)
+shell/      — shared login banner (logo.sh), localrc.template
 starship/   — Starship prompt config
 system/     — general aliases, programs, profile
 vim/        — vimrc
@@ -102,14 +137,21 @@ Powered by [Starship](https://starship.rs). Shows:
 - Kubernetes context when relevant
 - Command duration for slow commands
 
+Falls back to a minimal prompt with git branch when Starship is not available.
+
 ### Login banner
 
-Lives at `~/logo.sh` after bootstrap. Works in bash and zsh, uses `lm-sensors`
-when available and falls back to Raspberry Pi thermal sensors. Enable with:
+Lives at `~/logo.sh` after bootstrap. Works in bash and zsh. Shows host, kernel,
+temperature, memory, uptime, and IPv4/IPv6 (only if available). Enable with:
 
 ```sh
 export DOTFILES_SHOW_LOGO=1
 ```
+
+Temperature sources (in order of preference):
+- `lm-sensors` — Linux desktop/server
+- `vcgencmd` — Raspberry Pi (both `/usr/bin` and `/opt/vc/bin`)
+- `osx-cpu-temp` — macOS
 
 ### History
 
@@ -142,23 +184,43 @@ Source: https://github.com/JustDevZero/bofh-devops-excuses
 
 ## Shell functions
 
+Functions are defined in `system/programs.zsh`. English names are always
+available. Set `DOTFILES_LANG=es` in `~/.localrc` to also enable Spanish aliases
+(`extraer`, `comprimir`, `listar`).
+
 | Function | Description |
 |----------|-------------|
 | `extract <file>` | Extract any archive (tar, zip, 7z, rar, gz, bz2, xz…) |
 | `compress <fmt> <file>` | Compress a file or directory to the given format |
-| `listar <file>` | List contents of an archive without extracting |
+| `listarchive <file>` | List contents of an archive without extracting |
 | `afk` | Lock the screen (macOS, systemd, GNOME, i3) |
 | `battery` | Show battery status (acpi, upower, or sysfs fallback) |
 | `myip` | Show current public IP, cached for comparison |
 | `iprivate` | Show current private IP |
 | `state` | Show shell, terminal, login and system info |
 | `man2pdf <page>` | Convert a man page to PDF and open it |
-| `mountiso <file>` | Mount an ISO image under /media |
+| `mountiso <file>` | Mount an ISO image under `/media` |
 | `umountiso <file>` | Unmount a previously mounted ISO |
-| `screenshot` | Take a screenshot (Wayland: grim, X11: scrot, macOS: screencapture) |
+| `screenshot` | Take a screenshot (Wayland: `grim`, X11: `scrot`, macOS: `screencapture`) |
 | `watchssh` | Watch active SSH connections in real time (`watch -n1 ps aux \| grep ssh`) |
 | `cdl <dir>` | `cd` into a directory and list its contents |
 | `most-used-command` | Show the 10 most used shell commands from history |
+| `extar/extgz/exzip/exrar/ex7z` | Shorthand wrappers for `extract` |
+| `mktar/mktgz/mktbz/mkzip/mk7zp/…` | Shorthand wrappers for `compress` |
+
+### zsh-only functions
+
+These require zsh and are only loaded when running under zsh:
+
+| Function | Description |
+|----------|-------------|
+| `ndir` | Show the most recently modified directory |
+| `nfile` | Show the most recently modified file |
+| `rmtype <ext>` | Remove all files with the given extension (interactive) |
+| `age <days>` | List files modified within the last N days |
+| `rmspace` | Rename files replacing spaces with underscores |
+| `lower` | Rename files in current directory to lowercase |
+| `uper` | Rename files in current directory to uppercase |
 
 ---
 
@@ -170,5 +232,3 @@ screenshots to Desktop, TextEdit in plain text mode, no autocorrect or
 auto-capitalisation.
 
 ---
-
-
