@@ -19,8 +19,19 @@ Pass bootstrap flags after `-s --`:
 curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/main/script/install | sh -s -- --backup
 ```
 
-The installer is POSIX `sh` and overridable via `DOTFILES` (target dir),
-`DOTFILES_REPO` (clone URL) and `DOTFILES_BRANCH`.
+The installer is POSIX `sh` and overridable via env vars:
+
+| Variable | Default | Description |
+|---|---|---|
+| `DOTFILES` | `~/.dotfiles` | Target clone directory |
+| `DOTFILES_REPO` | public GitHub URL | Repo to clone |
+| `DOTFILES_VERSION` | `main` | Branch, tag, or commit id to checkout |
+
+To install a specific version:
+
+```sh
+DOTFILES_VERSION=v1.4 curl -fsSL https://raw.githubusercontent.com/JustDevZero/dotfiles/main/script/install | sh
+```
 
 Or clone manually:
 

@@ -11,15 +11,16 @@
 # It clones (or updates) the repo into ${DOTFILES:-$HOME/.dotfiles} and then
 # hands off to script/bootstrap. Written in POSIX sh on purpose so it behaves
 # the same under `sh`, `bash` and `zsh`. Overridable via env:
-#   DOTFILES        target dir   (default: $HOME/.dotfiles)
-#   DOTFILES_REPO   clone URL    (default: the public GitHub repo)
-#   DOTFILES_BRANCH branch       (default: main)
+#   DOTFILES         target dir   (default: $HOME/.dotfiles)
+#   DOTFILES_REPO    clone URL    (default: the public GitHub repo)
+#   DOTFILES_VERSION branch, tag, or commit id (default: main)
+#                    examples: main, v1.4, a3f9c12
 
 set -eu
 
 REPO_URL="${DOTFILES_REPO:-https://github.com/JustDevZero/dotfiles.git}"
 DEST="${DOTFILES:-$HOME/.dotfiles}"
-BRANCH="${DOTFILES_BRANCH:-main}"
+VERSION="${DOTFILES_VERSION:-main}"
 
 info() { printf '  [ \033[00;34m..\033[0m ] %s\n' "$1"; }
 ok()   { printf '  [ \033[00;32mOK\033[0m ] %s\n' "$1"; }
@@ -27,17 +28,39 @@ die()  { printf '  [\033[0;31mFAIL\033[0m] %s\n' "$1" >&2; exit 1; }
 
 command -v git >/dev/null 2>&1 || die "git is required — install it first, then re-run."
 
+# Detect whether VERSION looks like a bare commit id (hex, 7-40 chars).
+# Branches and tags are checked out the same way; commit ids need a plain checkout.
+is_commit_id() {
+  printf '%s' "$1" | grep -qE '^[0-9a-f]{7,40}$'
+}
+
+checkout_version() {
+  local dest="$1" ver="$2"
+  if is_commit_id "$ver"; then
+    git -C "$dest" fetch --unshallow 2>/dev/null || true
+    git -C "$dest" checkout "$ver" || die "could not checkout commit $ver"
+  else
+    git -C "$dest" fetch origin "$ver" || die "could not fetch $ver"
+    git -C "$dest" checkout "$ver" || die "could not checkout $ver"
+  fi
+}
+
 if [ -e "$DEST/.git" ]; then
-  info "updating existing clone at $DEST"
-  git -C "$DEST" pull --rebase --autostash origin "$BRANCH" || die "could not update $DEST"
+  info "updating existing clone at $DEST to $VERSION"
+  checkout_version "$DEST" "$VERSION"
   git -C "$DEST" submodule update --init --recursive || true
   ok "updated $DEST"
 elif [ -e "$DEST" ]; then
   die "$DEST exists but is not a git clone — move it aside and re-run."
 else
   info "cloning $REPO_URL into $DEST"
-  git clone --recursive --branch "$BRANCH" "$REPO_URL" "$DEST" || die "clone failed"
-  ok "cloned into $DEST"
+  if is_commit_id "$VERSION"; then
+    git clone --recursive "$REPO_URL" "$DEST" || die "clone failed"
+    git -C "$DEST" checkout "$VERSION" || die "could not checkout commit $VERSION"
+  else
+    git clone --recursive --branch "$VERSION" "$REPO_URL" "$DEST" || die "clone failed"
+  fi
+  ok "cloned into $DEST ($VERSION)"
 fi
 
 [ -x "$DEST/script/bootstrap" ] || chmod +x "$DEST/script/bootstrap" 2>/dev/null || true
