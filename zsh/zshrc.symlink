@@ -65,3 +65,8 @@ if (( $+commands[gpg-connect-agent] )); then
 fi
 
 unset -f dotfiles_source_readable
+
+# Prompt — must run last so zsh hooks register after compinit and plugins
+if command -v starship &>/dev/null; then
+  eval "$(starship init zsh)"
+fi
