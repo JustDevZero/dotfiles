@@ -121,6 +121,28 @@ Source: https://github.com/JustDevZero/bofh-devops-excuses
 
 ---
 
+## Shell functions
+
+| Function | Description |
+|----------|-------------|
+| `extract <file>` | Extract any archive (tar, zip, 7z, rar, gz, bz2, xz…) |
+| `compress <fmt> <file>` | Compress a file or directory to the given format |
+| `listar <file>` | List contents of an archive without extracting |
+| `afk` | Lock the screen (macOS, systemd, GNOME, i3) |
+| `battery` | Show battery status (acpi, upower, or sysfs fallback) |
+| `myip` | Show current public IP, cached for comparison |
+| `iprivate` | Show current private IP |
+| `state` | Show shell, terminal, login and system info |
+| `man2pdf <page>` | Convert a man page to PDF and open it |
+| `mountiso <file>` | Mount an ISO image under /media |
+| `umountiso <file>` | Unmount a previously mounted ISO |
+| `screenshot` | Take a screenshot (Wayland: grim, X11: scrot, macOS: screencapture) |
+| `watchssh` | Watch active SSH connections in real time (`watch -n1 ps aux \| grep ssh`) |
+| `cdl <dir>` | `cd` into a directory and list its contents |
+| `most-used-command` | Show the 10 most used shell commands from history |
+
+---
+
 ## macOS
 
 Configures Sequoia defaults automatically on bootstrap: tap-to-click, fast key

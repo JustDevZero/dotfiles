@@ -1,0 +1,144 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+DOTFILES_ROOT="$(pwd -P)"
+PACKAGES_CONF="$DOTFILES_ROOT/script/packages.conf"
+
+info()    { printf '  [ \033[00;34m..\033[0m ] %s\n' "$1"; }
+success() { printf '  [ \033[00;32mOK\033[0m ] %s\n' "$1"; }
+warn()    { printf '  [ \033[0;33m!!\033[0m ] %s\n' "$1"; }
+fail()    { printf '  [\033[0;31mFAIL\033[0m] %s\n' "$1"; exit 1; }
+
+# ---------------------------------------------------------------------------
+# Detect distro and package manager
+# ---------------------------------------------------------------------------
+_distro=$(grep '^ID=' /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"')
+_version=$(grep '^VERSION_ID=' /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"')
+
+case "$_distro" in
+  ubuntu|debian|raspbian)
+    PKG_COL=2
+    install_cmd() { sudo apt-get install -y "$@"; }
+    ;;
+  arch|manjaro|endeavouros)
+    PKG_COL=3
+    install_cmd() { sudo pacman -S --noconfirm "$@"; }
+    ;;
+  fedora)
+    PKG_COL=4
+    if [ "${_version:-0}" -gt 21 ] 2>/dev/null; then
+      install_cmd() { sudo dnf install -y "$@"; }
+    else
+      install_cmd() { sudo yum install -y "$@"; }
+    fi
+    ;;
+  *)
+    fail "unsupported distro: ${_distro:-unknown}"
+    ;;
+esac
+
+# ---------------------------------------------------------------------------
+# Resolve package name from packages.tsv
+# ---------------------------------------------------------------------------
+pkg() {
+  local name=$1
+  awk -F'|' -v name="$name" -v col="$PKG_COL" '
+    /^#/ { next }
+    $1 == name { print $col; exit }
+  ' "$PACKAGES_CONF"
+}
+
+install_pkg() {
+  local name=$1
+  local resolved
+  resolved=$(pkg "$name")
+  if [ -z "$resolved" ]; then
+    warn "no package mapping for '$name' on this distro — skipping"
+    return
+  fi
+  info "installing $resolved..."
+  install_cmd "$resolved" && success "$resolved installed" || warn "$resolved install failed — skipping"
+}
+
+# ---------------------------------------------------------------------------
+# Detect environment
+# ---------------------------------------------------------------------------
+is_raspberry_pi() {
+  grep -qi "raspberry pi" /sys/firmware/devicetree/base/model 2>/dev/null
+}
+
+has_battery() {
+  ls /sys/class/power_supply/BAT* >/dev/null 2>&1
+}
+
+is_wayland() {
+  [ "${XDG_SESSION_TYPE:-}" = "wayland" ] || [ -n "${WAYLAND_DISPLAY:-}" ]
+}
+
+is_gnome() {
+  case "${XDG_CURRENT_DESKTOP:-${DESKTOP_SESSION:-}}" in
+    *GNOME*|*gnome*) return 0 ;;
+  esac
+  return 1
+}
+
+# ---------------------------------------------------------------------------
+# Install
+# ---------------------------------------------------------------------------
+echo ''
+info "detecting environment..."
+
+# Screenshot tool
+if is_wayland; then
+  info "Wayland detected — installing grim"
+  install_pkg screenshot_wl
+else
+  info "X11 detected — installing scrot"
+  install_pkg screenshot_x11
+fi
+
+# Image viewer
+if is_wayland; then
+  install_pkg image_viewer_wl
+else
+  install_pkg image_viewer_x11
+fi
+
+# PDF viewer
+if is_gnome; then
+  install_pkg pdf_gnome
+else
+  install_pkg pdf_fallback
+fi
+
+# Temperature sensors (skip on Raspberry Pi, uses vcgencmd instead)
+if is_raspberry_pi; then
+  info "Raspberry Pi detected — skipping lm-sensors (uses vcgencmd)"
+else
+  install_pkg sensors
+fi
+
+# Battery tools (only if battery present)
+if has_battery; then
+  info "battery detected — installing acpi and upower"
+  install_pkg battery_acpi
+  install_pkg battery_upower
+else
+  info "no battery detected — skipping acpi/upower"
+fi
+
+# Ghostscript (for man2pdf)
+install_pkg ghostscript
+
+# LibreOffice
+install_pkg office
+
+# GIMP (optional — pass --gimp to install)
+if [[ "${1:-}" == "--gimp" ]]; then
+  install_pkg gimp
+fi
+
+echo ''
+success "desktop install complete"
