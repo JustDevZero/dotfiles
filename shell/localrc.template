@@ -49,6 +49,15 @@ fi
 # PAGER="less"
 
 # ---------------------------------------------------------------------------
+# Display resolution toggle (macOS, `res` function)
+# Requires displayplacer: brew install displayplacer
+# Run `displayplacer list` and copy the arrangement argument string for each of
+# the two modes you want `res` to toggle between.
+# ---------------------------------------------------------------------------
+# RES_MODE_A="id:XXXX res:1440x900 hz:60 color_depth:8 scaling:on origin:(0,0) degree:0"
+# RES_MODE_B="id:XXXX res:1920x1200 hz:60 color_depth:8 scaling:on origin:(0,0) degree:0"
+
+# ---------------------------------------------------------------------------
 # Local PATH additions
 # ---------------------------------------------------------------------------
 # export PATH="$HOME/.local/bin:$PATH"

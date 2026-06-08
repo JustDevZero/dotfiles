@@ -546,6 +546,47 @@ json() {
   fi
 }
 
+todo() {
+  local task="${*:?usage: todo <task description>}"
+  local desktop=""
+
+  if dotfiles_has xdg-user-dir; then
+    desktop="$(xdg-user-dir DESKTOP 2>/dev/null)"
+  fi
+  [[ -n "$desktop" && -d "$desktop" ]] || desktop="$HOME/Desktop"
+
+  mkdir -p "$desktop"
+  touch "$desktop/$task" && printf 'todo: %s/%s\n' "$desktop" "$task"
+}
+
+res() {
+  if [[ "$(uname -s)" != "Darwin" ]]; then
+    printf 'res: macOS only\n' >&2
+    return 1
+  fi
+
+  if ! dotfiles_has displayplacer; then
+    printf 'res: displayplacer not found — install with: brew install displayplacer\n' >&2
+    return 1
+  fi
+
+  # Toggle modes are machine-specific: set RES_MODE_A and RES_MODE_B in
+  # ~/.localrc to a `displayplacer` argument string each (see `displayplacer list`).
+  if [[ -z "${RES_MODE_A:-}" || -z "${RES_MODE_B:-}" ]]; then
+    printf 'res: set RES_MODE_A and RES_MODE_B in ~/.localrc to enable toggling.\n' >&2
+    printf 'res: current display layout:\n' >&2
+    displayplacer list
+    return
+  fi
+
+  local state="${TMPDIR:-/tmp}/.res_state"
+  if [[ -r "$state" && "$(<"$state")" == A ]]; then
+    displayplacer ${=RES_MODE_B} && printf 'B' >"$state"
+  else
+    displayplacer ${=RES_MODE_A} && printf 'A' >"$state"
+  fi
+}
+
 # ---------------------------------------------------------------------------
 # Ansible
 # ---------------------------------------------------------------------------

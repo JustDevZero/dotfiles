@@ -228,6 +228,8 @@ available. Set `DOTFILES_LANG=es` in `~/.localrc` to also enable Spanish aliases
 | `b64enc [string]` | Base64 encode a string or stdin |
 | `b64dec [string]` | Base64 decode a string or stdin |
 | `json [file]` | Pretty-print JSON via jq or python3 |
+| `todo <task>` | Create a task file on the Desktop (Linux `xdg-user-dir`, macOS `~/Desktop`) |
+| `res` | macOS: toggle between two display modes via `displayplacer` (configure `RES_MODE_A`/`RES_MODE_B` in `~/.localrc`); with none set, lists the current layout |
 | `extar/extgz/exzip/exrar/ex7z` | Shorthand wrappers for `extract` |
 | `mktar/mktgz/mktbz/mkzip/mk7zp/…` | Shorthand wrappers for `compress` |
 
