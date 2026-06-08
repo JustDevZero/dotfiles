@@ -3,6 +3,10 @@
 [include]
     path = ~/.gitconfig.local
 
+[user]
+    name = Daniel Ripoll
+    email = i@danielripoll.es
+
 [init]
     templatedir = ~/.git-templates
     defaultBranch = main
