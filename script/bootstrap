@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+source "$(dirname "$0")/lib.sh"
+
 cd "$(dirname "$0")/.."
 DOTFILES_ROOT="$(pwd -P)"
 
@@ -11,19 +13,6 @@ skip_existing=false
 dry_run=false
 update_only=false
 install_desktop=false
-
-info() {
-  printf '  [ \033[00;34m..\033[0m ] %s\n' "$1"
-}
-
-success() {
-  printf '  [ \033[00;32mOK\033[0m ] %s\n' "$1"
-}
-
-fail() {
-  printf '  [\033[0;31mFAIL\033[0m] %s\n' "$1"
-  exit 1
-}
 
 usage() {
   cat <<EOF

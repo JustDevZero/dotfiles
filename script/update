@@ -2,19 +2,9 @@
 
 set -euo pipefail
 
+source "$(dirname "$0")/lib.sh"
+
 cd "$(dirname "$0")/.."
-
-info() {
-  printf '  [ \033[00;34m..\033[0m ] %s\n' "$1"
-}
-
-success() {
-  printf '  [ \033[00;32mOK\033[0m ] %s\n' "$1"
-}
-
-warn() {
-  printf '  [ \033[0;33m!!\033[0m ] %s\n' "$1"
-}
 
 update_dotfiles() {
   info "updating dotfiles repo..."

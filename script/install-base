@@ -2,14 +2,12 @@
 
 set -euo pipefail
 
+source "$(dirname "$0")/lib.sh"
+
 cd "$(dirname "$0")/.."
 DOTFILES_ROOT="$(pwd -P)"
 PACKAGES_CONF="$DOTFILES_ROOT/script/packages.conf"
 
-info()    { printf '  [ \033[00;34m..\033[0m ] %s\n' "$1"; }
-success() { printf '  [ \033[00;32mOK\033[0m ] %s\n' "$1"; }
-warn()    { printf '  [ \033[0;33m!!\033[0m ] %s\n' "$1"; }
-fail()    { printf '  [\033[0;31mFAIL\033[0m] %s\n' "$1"; exit 1; }
 
 # ---------------------------------------------------------------------------
 # Detect distro and package manager
@@ -18,30 +16,8 @@ if [ "$(uname -s)" = "Darwin" ]; then
   IS_MACOS=true
 else
   IS_MACOS=false
-  _distro=$(grep '^ID=' /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"')
-  _version=$(grep '^VERSION_ID=' /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"')
-
-  case "$_distro" in
-    ubuntu|debian|raspbian)
-      PKG_COL=2
-      install_cmd() { sudo apt-get install -y "$@"; }
-      ;;
-    arch|manjaro|endeavouros)
-      PKG_COL=3
-      install_cmd() { sudo pacman -S --noconfirm "$@"; }
-      ;;
-    fedora)
-      PKG_COL=4
-      if [ "${_version:-0}" -gt 21 ] 2>/dev/null; then
-        install_cmd() { sudo dnf install -y "$@"; }
-      else
-        install_cmd() { sudo yum install -y "$@"; }
-      fi
-      ;;
-    *)
-      fail "unsupported distro: ${_distro:-unknown}"
-      ;;
-  esac
+  # shellcheck source=detect-distro.sh
+  source "$(dirname "$0")/detect-distro.sh"
 fi
 
 # ---------------------------------------------------------------------------

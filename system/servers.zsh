@@ -1,12 +1,19 @@
+_serve_needs_sudo() {
+  local port=$1
+  [[ "$port" =~ ^[0-9]+$ ]] && [ "$port" -lt 1024 ]
+}
+
 _serve_ruby() {
   local port="${1:-3000}"
-  [ "$port" -lt 1024 ] 2>/dev/null && local sudo_cmd="${IFSUDO:-sudo}" || local sudo_cmd=""
+  local sudo_cmd=""
+  _serve_needs_sudo "$port" && sudo_cmd="${IFSUDO:-sudo}"
   ${sudo_cmd:+$sudo_cmd} ruby -run -e httpd . -p "$port"
 }
 
 _serve_python() {
   local port="${1:-3000}"
-  [ "$port" -lt 1024 ] 2>/dev/null && local sudo_cmd="${IFSUDO:-sudo}" || local sudo_cmd=""
+  local sudo_cmd=""
+  _serve_needs_sudo "$port" && sudo_cmd="${IFSUDO:-sudo}"
   ${sudo_cmd:+$sudo_cmd} python3 -m http.server "$port"
 }
 
@@ -14,7 +21,8 @@ _serve_busybox() {
   local port="${1:-3000}"
   local _index="./index.html"
   local _created=0
-  [ "$port" -lt 1024 ] 2>/dev/null && local sudo_cmd="${IFSUDO:-sudo}" || local sudo_cmd=""
+  local sudo_cmd=""
+  _serve_needs_sudo "$port" && sudo_cmd="${IFSUDO:-sudo}"
 
   if [ ! -f "$_index" ]; then
     printf '<html><body><h1>Index of %s</h1><ul>' "$(pwd)" > "$_index"

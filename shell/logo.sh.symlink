@@ -38,9 +38,10 @@ dotfiles_logo_temp_raspberry_pi() {
 
     if [ -r /sys/class/thermal/thermal_zone0/temp ]; then
         cpu_raw="$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null || printf '')"
-        if [ "$cpu_raw" != "" ]; then
-            cpu_temp="$((cpu_raw / 1000))C"
-        fi
+        case "$cpu_raw" in
+            ''|*[!0-9]*) : ;;
+            *) cpu_temp="$((cpu_raw / 1000))C" ;;
+        esac
     fi
 
     # vcgencmd: firmware moderno en /usr/bin, antiguo en /opt/vc/bin
