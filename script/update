@@ -65,7 +65,7 @@ update_starship() {
     return
   fi
   info "updating starship..."
-  if curl -sS https://starship.rs/install.sh | sh -s -- --yes --bin-dir "$HOME/.local/bin" 2>/dev/null; then
+  if curl -sS https://starship.rs/install.sh | sh -s -- --yes --bin-dir "$HOME/.local/bin" >/dev/null 2>&1; then
     success "starship updated ($(starship --version | head -1))"
   else
     warn "starship update failed — skipping"
@@ -79,7 +79,10 @@ update_bofh_excuses() {
     return
   fi
   info "updating bofh-excuses..."
-  if git -C "$dest" pull --rebase origin main 2>/dev/null; then
+  local bofh_branch
+  bofh_branch="$(git -C "$dest" rev-parse --abbrev-ref origin/HEAD 2>/dev/null | sed 's|origin/||')"
+  bofh_branch="${bofh_branch:-master}"
+  if git -C "$dest" pull --rebase origin "$bofh_branch" 2>/dev/null; then
     success "bofh-excuses up to date"
   else
     warn "bofh-excuses update failed — skipping"
