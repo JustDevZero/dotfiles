@@ -97,6 +97,9 @@ comprimir() {
     bz2|.bz2) dotfiles_require bzip2 && bzip2 -v "$base" ;;
     xz|.xz) dotfiles_require xz && xz -v "$base" ;;
     lzma|.lzma) dotfiles_require lzma && lzma -v "$base" ;;
+    lz|.lz) dotfiles_require lzip && lzip -k9 "$base" ;;
+    rzip|.rzip) dotfiles_require rzip && rzip -k9 "$base" ;;
+    iso|.iso) dotfiles_require mkisofs && mkisofs -r "$base" >"$base.iso" ;;
     *)
       printf 'comprimir: unsupported format: %s\n' "$format" >&2
       return 1
@@ -209,34 +212,40 @@ man2pdf() {
   fi
 }
 
-miso() {
+mountiso() {
   local iso=$1
   local mountpoint
 
-  [[ -f "$iso" ]] || { printf 'Usage: miso <iso-file>\n' >&2; return 1; }
-  mountpoint="/media/${${iso:t}%.iso}"
+  [ -f "$iso" ] || { printf 'Usage: mountiso <iso-file>\n' >&2; return 1; }
+  mountpoint="/media/${${iso##*/}%.iso}"
   ${IFSUDO:-sudo} mkdir -p "$mountpoint"
   ${IFSUDO:-sudo} mount -o loop "$iso" "$mountpoint"
 }
 
-umiso() {
+umountiso() {
   local iso=$1
-  local mountpoint="/media/${${iso:t}%.iso}"
+  local mountpoint="/media/${${iso##*/}%.iso}"
 
-  [[ -d "$mountpoint" ]] || { printf 'umiso: not a valid mount point: %s\n' "$mountpoint" >&2; return 1; }
+  [ -d "$mountpoint" ] || { printf 'umountiso: not a valid mount point: %s\n' "$mountpoint" >&2; return 1; }
   ${IFSUDO:-sudo} umount "$mountpoint"
   ${IFSUDO:-sudo} rmdir "$mountpoint"
 }
 
-mktar() { dotfiles_require tar && tar cf "${1%%/}.tar" "${1%%/}/"; }
-mktgz() { dotfiles_require tar && tar czf "${1%%/}.tar.gz" "${1%%/}/"; }
-mktbz() { dotfiles_require tar && tar cjf "${1%%/}.tar.bz2" "${1%%/}/"; }
-mkrar() { dotfiles_require rar && rar a "${1%%/}.rar" "${1%%/}/"; }
-mkzip() { dotfiles_require zip && zip -r "${1%%/}.zip" "${1%%/}/"; }
-mk7zp() { dotfiles_require 7z && 7z a "${1%%/}.7z" "${1%%/}/"; }
-mkiso() { dotfiles_require mkisofs && mkisofs -r "$1" >"$1.iso"; }
-mklz() { dotfiles_require lzip && lzip -k9 "$1"; }
-mkrzip() { dotfiles_require rzip && rzip -k9 "$1"; }
+extar()  { extraer "$1"; }
+extgz()  { extraer "$1"; }
+exzip()  { extraer "$1"; }
+exrar()  { extraer "$1"; }
+ex7z()   { extraer "$1"; }
+
+mktar()  { comprimir tar   "$1"; }
+mktgz()  { comprimir tgz   "$1"; }
+mktbz()  { comprimir tbz2  "$1"; }
+mkrar()  { comprimir rar   "$1"; }
+mkzip()  { comprimir zip   "$1"; }
+mk7zp()  { comprimir 7z    "$1"; }
+mkiso()  { comprimir iso   "$1"; }
+mklz()   { comprimir lz    "$1"; }
+mkrzip() { comprimir rzip  "$1"; }
 
 most-used-command() {
   # fc -l con timestamps produce: "N  YYYY-MM-DD HH:MM:SS  comando args"
@@ -247,8 +256,7 @@ most-used-command() {
 screenshot() {
   local pictures_dir
   local screenshots_dir
-
-  dotfiles_require scrot || return 1
+  local out
 
   if dotfiles_has xdg-user-dir; then
     pictures_dir="$(xdg-user-dir PICTURES)"
@@ -258,13 +266,20 @@ screenshot() {
 
   screenshots_dir="$pictures_dir/Screenshots"
   mkdir -p "$screenshots_dir"
-  scrot "$screenshots_dir/screenshot_$(date +%Y%m%d%H%M%S).png"
+  out="$screenshots_dir/screenshot_$(date +%Y%m%d%H%M%S).png"
+
+  if [[ "$(uname -s)" = "Darwin" ]]; then
+    screencapture -x "$out"
+  elif [[ "${XDG_SESSION_TYPE:-}" = "wayland" || -n "${WAYLAND_DISPLAY:-}" ]]; then
+    dotfiles_require grim || return 1
+    grim "$out"
+  else
+    dotfiles_require scrot || return 1
+    scrot "$out"
+  fi
 }
 
 cdl() { cd "$@" && ls; }
-ndir() { ls -ld *(/om[1]); }
-nfile() { ls *(.om[1]); }
-rmtype() { [[ -n "$1" ]] && rm -i *."$1"(.); }
 iprivate() {
   local ip_addr=""
 
@@ -289,11 +304,32 @@ iprivate() {
     return 1
   fi
 }
+
+if [[ -n "$ZSH_VERSION" ]]; then
+
+ndir() {
+  local newest=(*(/om[1]))
+  [[ ${#newest} -gt 0 ]] && ls -ld "$newest[1]" || printf 'ndir: no directories found\n' >&2
+}
+nfile() {
+  local newest=(*(.om[1]))
+  [[ ${#newest} -gt 0 ]] && ls "$newest[1]" || printf 'nfile: no files found\n' >&2
+}
+rmtype() {
+  [[ -n "$1" ]] || { printf 'Usage: rmtype <extension>\n' >&2; return 1; }
+  local files=(*."$1"(.N))
+  [[ ${#files} -gt 0 ]] && rm -i "${files[@]}" || printf 'rmtype: no .%s files found\n' "$1" >&2
+}
 length() { printf '%s\n' "$HOME"/${(l:$1::?:)~:-}*; }
-age() { ls -tald **/*(m-"$1"); }
+age() {
+  [[ "$1" =~ ^[0-9]+$ ]] || { printf 'Usage: age <days>\n' >&2; return 1; }
+  ls -tald **/*(m-"$1")
+}
 rmspace() { for a in ./**/*\ *(Dod); do mv -- "$a" "${a:h}/${a:t:gs/ /_}"; done; }
 lower() { autoload -Uz zmv && zmv '(*)' '${(L)1}'; }
 uper() { autoload -Uz zmv && zmv '(*)' '${(U)1}'; }
+
+fi # end zsh-only block
 watchssh() { dotfiles_require watch && watch -n 1 'ps aux | grep ssh | grep -v grep'; }
 
 battery() {

@@ -132,9 +132,6 @@ auto-capitalisation.
 
 ## TODO
 
-- [ ] Add `shell/` module tests — verify logo.sh works on both bash and zsh
-      and that thermal fallbacks work correctly on Raspberry Pi
-- [ ] Review `system/programs.zsh` for further modernisation (not touched in
-      this pass)
+- [ ] Review `system/programs.zsh` for further modernisation
 - [ ] `script/bootstrap` — add `--update-only` flag to skip installs and
       jump straight to `script/update`
